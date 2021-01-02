@@ -57,7 +57,7 @@ ADSR<CONTROL_RATE, AUDIO_RATE> gMEnvTomHiP;
 
 
 void playNote() {
-  byte aNote = gSeqNotes[gSeqNoteIndex];
+  byte aNote = gSeqNotes[gSeqPatternIndex][gSeqNoteIndex];
 
   // 01 - kick
   if (aNote & D_KICK) {

@@ -27,8 +27,8 @@ byte gSeqNoteIndex = 0;
 
 typedef struct {
     uint8_t gSeqGatePercent;
-    byte gSeqBPM = 120;          // tempo, BPM (beats per minute)
-    unsigned int gSeqT16 = 125;  // length in ms of 1/16
+    byte gSeqBPM;          // tempo, BPM (beats per minute)
+    unsigned int gSeqT16;  // length in ms of 1/16
 } SeqBase;
 
 SeqBase gSeqBase;
