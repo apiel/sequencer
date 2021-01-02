@@ -1,5 +1,4 @@
 #include <ADSR.h>
-#include <ClickButton.h>
 #include <MozziGuts.h>
 #include <Oscil.h>  // oscillator template
 #include <tables/sin2048_int8.h>
@@ -15,12 +14,6 @@
 #define D_CLAP 8
 #define D_CRASH 16
 #define D_TOMHI 32
-
-#define PIN_BTN_1 5   // d1
-#define PIN_BTN_2 16  // d0
-#define PIN_BTN_3 0   // d3
-
-ClickButton btn3(PIN_BTN_3, LOW, CLICKBTN_PULLUP);
 
 byte gSeqNotes[MAX_NOTES] = {D_KICK,  0, D_HIHAT, 0,     D_SNARE, 0,
                              D_HIHAT, 0, D_KICK,  0,     D_HIHAT, 0,
@@ -85,12 +78,6 @@ int updateAudio() {
 
 void setup() {
     Serial.begin(115200);
-    pinMode(PIN_BTN_1, INPUT);
-    pinMode(PIN_BTN_2, INPUT);
-
-    btn3.debounceTime = 20;     // Debounce timer in ms
-    btn3.multiclickTime = 250;  // Time limit for multi clicks
-    btn3.longClickTime = 3000;  // time until "held-down clicks" register
 
     gSeqBase.gSeqBPM = 120;  // tempo, BPM (beats per minute)
     gSeqBase.gSeqGatePercent = 50;
