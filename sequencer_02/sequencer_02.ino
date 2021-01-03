@@ -16,7 +16,7 @@
 #define D_TOMHI 32
 
 byte gSeqNotes[MAX_NOTES] = {
-  D_KICK, 0, D_KICK, 0, 
+  D_KICK + D_SNARE, 0, D_KICK, 0, 
   D_KICK, 0, D_KICK, 0,
   D_KICK, 0, D_KICK, 0,
   D_KICK, 0, D_KICK, D_KICK};

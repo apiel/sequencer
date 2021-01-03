@@ -1,6 +1,17 @@
-#define PIN_BTN_1 5   // d1
-#define PIN_BTN_2 16  // d0
-#define PIN_BTN_3 0   // d3
+
+#ifdef WEMOS_BOARD
+    #define PIN_BTN_1 5   // d1
+    #define PIN_BTN_2 16  // d0
+    #define PIN_BTN_3 0   // d3
+#else
+    #define PIN_BTN_1 39
+    #define PIN_BTN_2 38
+    #define PIN_BTN_3 0
+#endif
+
+// could make a tree selection?
+// or sel button could be to switch between menu selection
+// and value selection
 
 unsigned long gBtnTimeLast = 0;
 
