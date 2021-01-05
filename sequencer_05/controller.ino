@@ -209,10 +209,8 @@ void setValue() {
 }
 
 unsigned int fnPlay(int val) {
-    gSeqPlay = val == 1;
-    Serial.print("Play: ");
-    Serial.println(gSeqPlay);
-
+    gSeqPlay = val == 1 || val == 0; // to have it on by default: 0 for default value setup, -1 will be off
+    // gSeqPlay = val == 1; // to have it off by default
     return gSeqPlay ? 1 : 0;
 }
 
@@ -222,9 +220,6 @@ unsigned int fnBPM(int val) {
         gSeqBase.gSeqBPM = bpm;
         setTempo();
     }
-    Serial.print("set BPM: ");
-    Serial.println(gSeqBase.gSeqBPM);
-
     return gSeqBase.gSeqBPM;
 }
 
@@ -234,32 +229,20 @@ unsigned int fnSeqGate(int val) {
         gSeqBase.gSeqGatePercent = pct;
         calcGate();
     }
-    Serial.print("set sequence gate percentage: ");
-    Serial.println(gSeqBase.gSeqGatePercent);
-
     return gSeqBase.gSeqGatePercent;
 }
 
 unsigned int fnPattern(int val) {
     gSeqPatternIndex = (gSeqPatternIndex + val) % MAX_PATTERNS;
-    Serial.print("set pattern: ");
-    Serial.println(gSeqPatternIndex);
-
     return gSeqPatternIndex;
 }
 
 unsigned int fnKick1Env(int val) {
     gMSynthKick.sMEnvSlope = gMSynthKick.sMEnvSlope + val;
-    Serial.print("val: ");
-    Serial.println(gMSynthKick.sMEnvSlope);
-
     return gMSynthKick.sMEnvSlope;
 }
 
 unsigned int fnKick1Freq(int val) {
     gMSynthKick.sMFrequency = gMSynthKick.sMFrequency + (val * 5);
-    Serial.print("val: ");
-    Serial.println(gMSynthKick.sMFrequency);
-
     return gMSynthKick.sMFrequency;
 }
