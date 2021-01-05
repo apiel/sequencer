@@ -8,33 +8,6 @@
 #define HIHAT_FREQ4 384
 #define HIHAT_FREQ5 512
 
-typedef struct {
-  // settings
-  int sMFrequency;
-  unsigned int sMAttackTime;
-  unsigned int sMDecayTime;
-  unsigned int sMSustainTime;
-  unsigned int sMReleaseTime;
-  unsigned int sMReleaseTimeP;
-  byte sMAttackLevel;
-  byte sMDecayLevel;
-  byte sMSustainLevel;
-  byte sMReleaseLevel;
-  //  unsigned int sMFilterFrequency;
-  //  Q0n8 sMFilterResonance;
-  byte sMEnvSlope;
-  // state
-  byte sMEnvValueA;
-  byte sMEnvValueP;
-} MDSynth;
-
-MDSynth gMSynthKick;
-MDSynth gMSynthSnare;
-MDSynth gMSynthHihat;
-MDSynth gMSynthClap;
-MDSynth gMSynthCrash;
-MDSynth gMSynthTomHi;
-
 // oscillators
 Oscil<SIN2048_NUM_CELLS, AUDIO_RATE> gMDOscKick(SIN2048_DATA);
 Oscil<SIN2048_NUM_CELLS, AUDIO_RATE> gMDOscSnare(SIN2048_DATA);

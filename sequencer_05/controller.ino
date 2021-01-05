@@ -21,11 +21,12 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RST);
 #define PIN_BTN_3 0
 #endif
 
-#define OPTION_COUNT 8
+#define OPTION_COUNT 6
 
 typedef struct {
     char* name;
     bool isCategory = false;
+    void (*fn)(int val);
 } Option;
 
 Option gOption[OPTION_COUNT];
@@ -68,14 +69,18 @@ void controllerSetup() {
 
     gOption[0].isCategory = true;
     gOption[0].name = "Play";
+    gOption[0].fn = &fnPlay;
     gOption[1].name = "BPM";
+    gOption[1].fn = &fnBPM;
     gOption[2].name = "Sequence gate";
+    gOption[2].fn = &fnSeqGate;
     gOption[3].name = "Pattern";
+    gOption[3].fn = &fnPattern;
     gOption[4].isCategory = true;
-    gOption[4].name = "yo";
-    gOption[5].name = "abc";
-    gOption[6].name = "hihi";
-    gOption[7].name = "hiho";
+    gOption[4].name = "Kick1 envelope";
+    gOption[4].fn = &fnKick1Env;
+    gOption[5].name = "Kick1 Freq";
+    gOption[5].fn = &fnKick1Freq;
 
     updateDisplay();
 }
@@ -85,7 +90,7 @@ void controllerHandler() {
     setValue();
 }
 
-bool isClick(int pin, int ms = 100, int val = HIGH) {
+bool isClick(int pin, int ms = 200, int val = HIGH) {
     if (millis() - gBtnTimeLast > ms) {
         int btn = digitalRead(pin);
         if (btn == val) {
@@ -96,7 +101,7 @@ bool isClick(int pin, int ms = 100, int val = HIGH) {
     return false;
 }
 
-bool isClick2(int pin, int ms = 200, int val = HIGH) {
+bool isClick2(int pin, int ms = 400, int val = HIGH) {
     if (millis() - gBtnTimeLast2 > ms) {
         int btn = digitalRead(pin);
         if (btn == val) {
@@ -119,21 +124,21 @@ void updateDisplay() {
     } else {
         display.println("# category #");
     }
-    display.println(gOption[mod(gSelected - 3, OPTION_COUNT)].name);
-    display.println(gOption[mod(gSelected - 2, OPTION_COUNT)].name);
-    display.println(gOption[mod(gSelected - 1, OPTION_COUNT)].name);
+    display.println(gOption[mod(gSelected + 3, OPTION_COUNT)].name);
+    display.println(gOption[mod(gSelected + 2, OPTION_COUNT)].name);
+    display.println(gOption[mod(gSelected + 1, OPTION_COUNT)].name);
     display.print(">");
     display.println(gOption[gSelected].name);
-    display.println(gOption[mod(gSelected + 1, OPTION_COUNT)].name);
-    display.println(gOption[mod(gSelected + 2, OPTION_COUNT)].name);
-    display.println(gOption[mod(gSelected + 3, OPTION_COUNT)].name);
+    display.println(gOption[mod(gSelected - 1, OPTION_COUNT)].name);
+    display.println(gOption[mod(gSelected - 2, OPTION_COUNT)].name);
+    display.println(gOption[mod(gSelected - 3, OPTION_COUNT)].name);
     display.display();
 }
 
 void setSelector() {
     if (isClick(PIN_BTN_3, 300, LOW)) {
         // if second click is under 2x300 then it is double click
-        if (!isClick2(PIN_BTN_3, 600, LOW)) {
+        if (!isClick2(PIN_BTN_3, 500, LOW)) {
             gSelMod = SEL_MOD_CATEGORY;
             Serial.println("double click");
         } else {
@@ -167,10 +172,6 @@ void setSelector() {
             do {
                 gSelected = mod(gSelected + val, OPTION_COUNT);
             } while (!gOption[gSelected].isCategory);
-            // Serial.print("Cat ");
-            // Serial.print(gOption[gSelected].isCategory);
-            // Serial.print(" > ");
-            // Serial.println(gOption[gSelected].name);
             updateDisplay();
         }
     }
@@ -183,32 +184,51 @@ void setValue() {
 
         if (btn1 || btn2) {
             int val = btn1 ? 1 : -1;
-
-            if (gSelected == 0) {
-                gSeqPlay = btn1;
-                Serial.print("Play: ");
-                Serial.println(gSeqPlay);
-            } else if (gSelected == 1) {
-                int bpm = gSeqBase.gSeqBPM + val;
-                if (bpm > 10 && bpm < 250) {
-                    gSeqBase.gSeqBPM = bpm;
-                    setTempo();
-                }
-                Serial.print("set BPM: ");
-                Serial.println(gSeqBase.gSeqBPM);
-            } else if (gSelected == 2) {
-                int pct = gSeqBase.gSeqGatePercent + val;
-                if (pct > 0 && pct < 99) {
-                    gSeqBase.gSeqGatePercent = pct;
-                    calcGate();
-                }
-                Serial.print("set sequence gate percentage: ");
-                Serial.println(gSeqBase.gSeqGatePercent);
-            } else if (gSelected == 3) {
-                gSeqPatternIndex = (gSeqPatternIndex + val) % MAX_PATTERNS;
-                Serial.print("set pattern: ");
-                Serial.println(gSeqPatternIndex);
-            }
+            (*gOption[gSelected].fn)(val);
         }
     }
+}
+
+void fnPlay(int val) {
+    gSeqPlay = val == 1;
+    Serial.print("Play: ");
+    Serial.println(gSeqPlay);
+}
+
+void fnBPM(int val) {
+    int bpm = gSeqBase.gSeqBPM + val;
+    if (bpm > 10 && bpm < 250) {
+        gSeqBase.gSeqBPM = bpm;
+        setTempo();
+    }
+    Serial.print("set BPM: ");
+    Serial.println(gSeqBase.gSeqBPM);
+}
+
+void fnSeqGate(int val) {
+    int pct = gSeqBase.gSeqGatePercent + val;
+    if (pct > 0 && pct < 99) {
+        gSeqBase.gSeqGatePercent = pct;
+        calcGate();
+    }
+    Serial.print("set sequence gate percentage: ");
+    Serial.println(gSeqBase.gSeqGatePercent);
+}
+
+void fnPattern(int val) {
+    gSeqPatternIndex = (gSeqPatternIndex + val) % MAX_PATTERNS;
+    Serial.print("set pattern: ");
+    Serial.println(gSeqPatternIndex);
+}
+
+void fnKick1Env(int val) {
+    gMSynthKick.sMEnvSlope = gMSynthKick.sMEnvSlope + val;
+    Serial.print("val: ");
+    Serial.println(gMSynthKick.sMEnvSlope);
+}
+
+void fnKick1Freq(int val) {
+    gMSynthKick.sMFrequency = gMSynthKick.sMFrequency + val;
+    Serial.print("val: ");
+    Serial.println(gMSynthKick.sMFrequency);
 }
