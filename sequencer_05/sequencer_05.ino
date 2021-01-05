@@ -120,8 +120,6 @@ int updateAudio() {
 void setup() {
   Serial.begin(115200);
 
-  controllerSetup();
-
   gSeqBase.gSeqBPM = 120; // tempo, BPM (beats per minute)
   gSeqBase.gSeqGatePercent = 50;
   setTempo();
@@ -131,6 +129,9 @@ void setup() {
   gSeqTimeLast = gSeqTimeCurrent;
 
   setupNotes();
+
+  // should be at the end to get default values
+  controllerSetup();
 
   startMozzi(CONTROL_RATE);
 }

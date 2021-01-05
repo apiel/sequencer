@@ -26,7 +26,9 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RST);
 typedef struct {
     char* name;
     bool isCategory = false;
-    void (*fn)(int val);
+    unsigned int (*fn)(int val);
+    unsigned int val;
+    char* unit = "";
 } Option;
 
 Option gOption[OPTION_COUNT];
@@ -73,6 +75,7 @@ void controllerSetup() {
     gOption[1].name = "BPM";
     gOption[1].fn = &fnBPM;
     gOption[2].name = "Sequence gate";
+    gOption[2].unit = "%";
     gOption[2].fn = &fnSeqGate;
     gOption[3].name = "Pattern";
     gOption[3].fn = &fnPattern;
@@ -82,6 +85,10 @@ void controllerSetup() {
     gOption[5].name = "Kick1 Freq";
     gOption[5].fn = &fnKick1Freq;
 
+    for (int i = 0; i < OPTION_COUNT; i++) {
+        gOption[i].val = (*gOption[i].fn)(0);
+    }
+
     updateDisplay();
 }
 
@@ -90,6 +97,7 @@ void controllerHandler() {
     setValue();
 }
 
+// basic click
 bool isClick(int pin, int ms = 200, int val = HIGH) {
     if (millis() - gBtnTimeLast > ms) {
         int btn = digitalRead(pin);
@@ -101,6 +109,7 @@ bool isClick(int pin, int ms = 200, int val = HIGH) {
     return false;
 }
 
+// long click use for double click
 bool isClick2(int pin, int ms = 400, int val = HIGH) {
     if (millis() - gBtnTimeLast2 > ms) {
         int btn = digitalRead(pin);
@@ -124,17 +133,26 @@ void updateDisplay() {
     } else {
         display.println("# category #");
     }
-    display.println(gOption[mod(gSelected + 3, OPTION_COUNT)].name);
-    display.println(gOption[mod(gSelected + 2, OPTION_COUNT)].name);
-    display.println(gOption[mod(gSelected + 1, OPTION_COUNT)].name);
+    displayPrintRow(mod(gSelected + 3, OPTION_COUNT));
+    displayPrintRow(mod(gSelected + 2, OPTION_COUNT));
+    displayPrintRow(mod(gSelected + 1, OPTION_COUNT));
     display.print(">");
-    display.println(gOption[gSelected].name);
-    display.println(gOption[mod(gSelected - 1, OPTION_COUNT)].name);
-    display.println(gOption[mod(gSelected - 2, OPTION_COUNT)].name);
-    display.println(gOption[mod(gSelected - 3, OPTION_COUNT)].name);
+    displayPrintRow(gSelected);
+    displayPrintRow(mod(gSelected - 1, OPTION_COUNT));
+    displayPrintRow(mod(gSelected - 2, OPTION_COUNT));
+    displayPrintRow(mod(gSelected - 3, OPTION_COUNT));
     display.display();
 }
 
+void displayPrintRow(int row) {
+    display.print(gOption[row].name);
+    display.print(": ");
+    display.print(gOption[row].val);
+    display.println(gOption[row].unit);
+}
+
+// maybe we should do click sel + up or down for menu selection
+// and still double click sel to switch (to) category (selection)
 void setSelector() {
     if (isClick(PIN_BTN_3, 300, LOW)) {
         // if second click is under 2x300 then it is double click
@@ -184,51 +202,64 @@ void setValue() {
 
         if (btn1 || btn2) {
             int val = btn1 ? 1 : -1;
-            (*gOption[gSelected].fn)(val);
+            gOption[gSelected].val = (*gOption[gSelected].fn)(val);
+            updateDisplay();
         }
     }
 }
 
-void fnPlay(int val) {
+unsigned int fnPlay(int val) {
     gSeqPlay = val == 1;
     Serial.print("Play: ");
     Serial.println(gSeqPlay);
+
+    return gSeqPlay ? 1 : 0;
 }
 
-void fnBPM(int val) {
-    int bpm = gSeqBase.gSeqBPM + val;
+unsigned int fnBPM(int val) {
+    unsigned int bpm = gSeqBase.gSeqBPM + val;
     if (bpm > 10 && bpm < 250) {
         gSeqBase.gSeqBPM = bpm;
         setTempo();
     }
     Serial.print("set BPM: ");
     Serial.println(gSeqBase.gSeqBPM);
+
+    return gSeqBase.gSeqBPM;
 }
 
-void fnSeqGate(int val) {
-    int pct = gSeqBase.gSeqGatePercent + val;
+unsigned int fnSeqGate(int val) {
+    unsigned int pct = gSeqBase.gSeqGatePercent + val;
     if (pct > 0 && pct < 99) {
         gSeqBase.gSeqGatePercent = pct;
         calcGate();
     }
     Serial.print("set sequence gate percentage: ");
     Serial.println(gSeqBase.gSeqGatePercent);
+
+    return gSeqBase.gSeqGatePercent;
 }
 
-void fnPattern(int val) {
+unsigned int fnPattern(int val) {
     gSeqPatternIndex = (gSeqPatternIndex + val) % MAX_PATTERNS;
     Serial.print("set pattern: ");
     Serial.println(gSeqPatternIndex);
+
+    return gSeqPatternIndex;
 }
 
-void fnKick1Env(int val) {
+unsigned int fnKick1Env(int val) {
     gMSynthKick.sMEnvSlope = gMSynthKick.sMEnvSlope + val;
     Serial.print("val: ");
     Serial.println(gMSynthKick.sMEnvSlope);
+
+    return gMSynthKick.sMEnvSlope;
 }
 
-void fnKick1Freq(int val) {
-    gMSynthKick.sMFrequency = gMSynthKick.sMFrequency + val;
+unsigned int fnKick1Freq(int val) {
+    gMSynthKick.sMFrequency = gMSynthKick.sMFrequency + (val * 5);
     Serial.print("val: ");
     Serial.println(gMSynthKick.sMFrequency);
+
+    return gMSynthKick.sMFrequency;
 }
