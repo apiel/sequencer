@@ -158,6 +158,21 @@ void setSelector() {
             Serial.println(gOption[gSelected].name);
             updateDisplay();
         }
+    } else if (gSelMod == SEL_MOD_CATEGORY) {
+        bool btn1 = isClick(PIN_BTN_1, 300);
+        bool btn2 = isClick(PIN_BTN_2, 300);
+
+        if (btn1 || btn2) {
+            int val = btn1 ? 1 : -1;
+            do {
+                gSelected = mod(gSelected + val, OPTION_COUNT);
+            } while (!gOption[gSelected].isCategory);
+            // Serial.print("Cat ");
+            // Serial.print(gOption[gSelected].isCategory);
+            // Serial.print(" > ");
+            // Serial.println(gOption[gSelected].name);
+            updateDisplay();
+        }
     }
 }
 
