@@ -166,10 +166,18 @@ void setValue() {
 }
 
 unsigned int fnPlay(int val) {
-    gSeqPlay = val == 1 || val == 0;  // to have it on by default: 0 for default
-                                      // value setup, -1 will be off
-    // gSeqPlay = val == 1; // to have it off by default
-    return gSeqPlay ? 1 : 0;
+    // val can be 0 for default initialization
+    // if we to have the player off by default then put || val == 0
+    if (val == -1) {
+        gSeqPlay = false;
+        return 0;
+    }
+    gSeqPlay = true;
+    gSeqNoteIndex = 0;
+    gSeqTimeCurrent = millis();
+    gSeqTimeLast = gSeqTimeCurrent;
+    gSeqNoteOn = false;
+    return 1;
 }
 
 unsigned int fnBPM(int val) {
