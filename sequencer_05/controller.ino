@@ -33,14 +33,11 @@ typedef struct {
 
 Option gOption[OPTION_COUNT];
 
-unsigned long gBtnTimeLast = 0;
-unsigned long gBtnTimeLast2 = 0;
 unsigned int gSelected = 0;
 
 #define SEL_MOD_MENU 1
 #define SEL_MOD_VALUE 2
-#define SEL_MOD_CATEGORY 3
-byte gSelMod = SEL_MOD_MENU;
+byte gSelMod = SEL_MOD_VALUE;
 
 void controllerSetup() {
     pinMode(PIN_BTN_1, INPUT);
@@ -97,30 +94,6 @@ void controllerHandler() {
     setValue();
 }
 
-// basic click
-bool isClick(int pin, int ms = 200, int val = HIGH) {
-    if (millis() - gBtnTimeLast > ms) {
-        int btn = digitalRead(pin);
-        if (btn == val) {
-            gBtnTimeLast = millis();
-            return true;
-        }
-    }
-    return false;
-}
-
-// long click use for double click
-bool isClick2(int pin, int ms = 400, int val = HIGH) {
-    if (millis() - gBtnTimeLast2 > ms) {
-        int btn = digitalRead(pin);
-        if (btn == val) {
-            gBtnTimeLast2 = millis();
-            return true;
-        }
-    }
-    return false;
-}
-
 int mod(int n, int m) { return ((n % m) + m) % m; }
 
 void updateDisplay() {
@@ -130,8 +103,6 @@ void updateDisplay() {
         display.println("# menu #");
     } else if (gSelMod == SEL_MOD_VALUE) {
         display.println("# value #");
-    } else {
-        display.println("# category #");
     }
     displayPrintRow(mod(gSelected + 3, OPTION_COUNT));
     displayPrintRow(mod(gSelected + 2, OPTION_COUNT));
@@ -151,47 +122,33 @@ void displayPrintRow(int row) {
     display.println(gOption[row].unit);
 }
 
+void setSelMod(byte selMod) {
+    if (gSelMod != selMod) {
+        gSelMod = selMod;
+        updateDisplay();
+    }
+}
+
 // maybe we should do click sel + up or down for menu selection
 // and still double click sel to switch (to) category (selection)
 void setSelector() {
-    if (isClick(PIN_BTN_3, 300, LOW)) {
-        // if second click is under 2x300 then it is double click
-        if (!isClick2(PIN_BTN_3, 500, LOW)) {
-            gSelMod = SEL_MOD_CATEGORY;
-            Serial.println("double click");
-        } else {
-            if (gSelMod == SEL_MOD_CATEGORY || gSelMod == SEL_MOD_VALUE) {
-                gSelMod = SEL_MOD_MENU;
-            } else {
-                gSelMod = SEL_MOD_VALUE;
-            }
-            Serial.println("click");
-        }
-        Serial.print("sel mod ");
-        Serial.println(gSelMod);
+    if (isDoubleClick(PIN_BTN_3, 500, LOW)) {
+        Serial.println("double click, switch category");
+        do {
+            gSelected = mod(gSelected + 1, OPTION_COUNT);
+        } while (!gOption[gSelected].isCategory);
         updateDisplay();
-    } else if (gSelMod == SEL_MOD_MENU) {
-        bool btn1 = isClick(PIN_BTN_1, 300);
-        bool btn2 = isClick(PIN_BTN_2, 300);
-
-        if (btn1 || btn2) {
-            int val = btn1 ? 1 : -1;
-            gSelected = mod(gSelected + val, OPTION_COUNT);
-            Serial.print("Sel ");
-            Serial.println(gOption[gSelected].name);
+    } else if (isPressed(PIN_BTN_3, LOW)) {
+        if (isClick(PIN_BTN_1, 200)) {
+            gSelected = mod(gSelected + 1, OPTION_COUNT);
+            updateDisplay();
+        } else if (isClick(PIN_BTN_2, 200)) {
+            gSelected = mod(gSelected - 1, OPTION_COUNT);
             updateDisplay();
         }
-    } else if (gSelMod == SEL_MOD_CATEGORY) {
-        bool btn1 = isClick(PIN_BTN_1, 300);
-        bool btn2 = isClick(PIN_BTN_2, 300);
-
-        if (btn1 || btn2) {
-            int val = btn1 ? 1 : -1;
-            do {
-                gSelected = mod(gSelected + val, OPTION_COUNT);
-            } while (!gOption[gSelected].isCategory);
-            updateDisplay();
-        }
+        setSelMod(SEL_MOD_MENU);
+    } else {
+        setSelMod(SEL_MOD_VALUE);
     }
 }
 
@@ -209,7 +166,8 @@ void setValue() {
 }
 
 unsigned int fnPlay(int val) {
-    gSeqPlay = val == 1 || val == 0; // to have it on by default: 0 for default value setup, -1 will be off
+    gSeqPlay = val == 1 || val == 0;  // to have it on by default: 0 for default
+                                      // value setup, -1 will be off
     // gSeqPlay = val == 1; // to have it off by default
     return gSeqPlay ? 1 : 0;
 }
