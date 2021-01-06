@@ -1,13 +1,13 @@
-#include <MozziGuts.h>
 #include <ADSR.h>
-#include <Oscil.h> // oscillator template
+#include <MozziGuts.h>
+#include <Oscil.h>  // oscillator template
 #include <tables/sin2048_int8.h>
 #include <tables/triangle2048_int8.h>
 #include <tables/whitenoise8192_int8.h>
 
 #define PIN_SYNC_OUT 27
 
-#define CONTROL_RATE 128 // Hz, powers of 2 are most reliable
+#define CONTROL_RATE 128  // Hz, powers of 2 are most reliable
 
 #define MAX_PATTERNS 3
 #define MAX_NOTES 16  // max # of notes in sequence
@@ -19,26 +19,24 @@
 #define D_TOMHI 32
 
 byte gSeqNotes[MAX_PATTERNS][MAX_NOTES] = {
-  { D_KICK, 0, D_HIHAT, 0, D_SNARE, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT, 0,
-    D_SNARE, 0, D_HIHAT, D_KICK
-  },
-  { D_KICK + D_CRASH, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT,
-    0, D_CLAP, 0, D_HIHAT, D_KICK
-  },
-  {D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0}
-};
+    {D_KICK, 0, D_HIHAT, 0, D_SNARE, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT, 0,
+     D_SNARE, 0, D_HIHAT, D_KICK},
+    {D_KICK + D_CRASH, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT,
+     0, D_CLAP, 0, D_HIHAT, D_KICK},
+    {D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0}};
 
 bool gSeqNoteOn = false;
 bool gSeqPlay = true;
+bool gSeqMute = false;
 bool gSyncNoteOn = false;
 
 byte gSeqNoteIndex = 0;
 byte gSeqPatternIndex = 0;
 
 typedef struct {
-  uint8_t gSeqGatePercent;
-  byte gSeqBPM; // tempo, BPM (beats per minute)
-  unsigned int gSeqT16; // length in ms of 1/16
+    uint8_t gSeqGatePercent;
+    byte gSeqBPM;          // tempo, BPM (beats per minute)
+    unsigned int gSeqT16;  // length in ms of 1/16
 } SeqBase;
 
 SeqBase gSeqBase;
@@ -48,75 +46,76 @@ unsigned long gSeqTimeLast;
 unsigned long gSeqTimeGate;
 
 void setTempo() {
-  gSeqBase.gSeqT16 = 1000 / ((gSeqBase.gSeqBPM * 4) / ((float)60));
+    gSeqBase.gSeqT16 = 1000 / ((gSeqBase.gSeqBPM * 4) / ((float)60));
 }
 
 void calcGate() {
-  gSeqTimeGate = (gSeqBase.gSeqT16 * gSeqBase.gSeqGatePercent) / 100;
+    gSeqTimeGate = (gSeqBase.gSeqT16 * gSeqBase.gSeqGatePercent) / 100;
 }
 
 byte gSyncTempo = HIGH;
 
 void updateControl() {
-  controllerHandler();
+    controllerHandler();
 
-  if (gSeqPlay) {
-    gSeqTimeCurrent = millis();
-    if ((gSeqTimeCurrent - gSeqTimeLast >= gSeqBase.gSeqT16) && !gSeqNoteOn) {
-      // gSyncNoteOn should not be necessary, we could run playNote directly there
-      gSyncNoteOn = true;
-      gSeqTimeLast = gSeqTimeLast + gSeqBase.gSeqT16;
-    } else {
-      gSyncNoteOn = false;
-    }
+    if (gSeqPlay) {
+        gSeqTimeCurrent = millis();
+        if ((gSeqTimeCurrent - gSeqTimeLast >= gSeqBase.gSeqT16) &&
+            !gSeqNoteOn) {
+            // gSyncNoteOn should not be necessary, we could run playNote
+            // directly there
+            gSyncNoteOn = true;
+            gSeqTimeLast = gSeqTimeLast + gSeqBase.gSeqT16;
+        } else {
+            gSyncNoteOn = false;
+        }
 
-    if (gSyncNoteOn) {
-      gSeqNoteIndex++;
-      if (gSeqNoteIndex >= MAX_NOTES) {
-        gSeqNoteIndex = 0;
-      }
-      gSyncTempo = (gSyncTempo + 1) % 2;
-      digitalWrite(PIN_SYNC_OUT, gSyncTempo);
-      playNote();
-      // Serial.println("should play note");
-      gSyncNoteOn = false;
-    }
+        if (gSyncNoteOn) {
+            gSeqNoteIndex++;
+            if (gSeqNoteIndex >= MAX_NOTES) {
+                gSeqNoteIndex = 0;
+            }
+            gSyncTempo = (gSyncTempo + 1) % 2;
+            digitalWrite(PIN_SYNC_OUT, gSyncTempo);
+            if (!gSeqMute) {
+                playNote();
+            }
+            gSyncNoteOn = false;
+        }
 
-    if (gSeqTimeCurrent - gSeqTimeLast >= gSeqTimeGate) {
-      gSeqNoteOn = false;
+        if (gSeqTimeCurrent - gSeqTimeLast >= gSeqTimeGate) {
+            gSeqNoteOn = false;
+        }
+        updateEnvelopes();
     }
-    updateEnvelopes();
-  }
 }
 
 int updateAudio() {
-  if (gSeqPlay) {
-    return updateAudioSeq();
-  }
-  return 0;
+    if (gSeqPlay && !gSeqMute) {
+        return updateAudioSeq();
+    }
+    return 0;
 }
 
 void setup() {
-  Serial.begin(115200);
+    Serial.begin(115200);
 
-  pinMode(PIN_SYNC_OUT, OUTPUT);
+    pinMode(PIN_SYNC_OUT, OUTPUT);
 
-  gSeqBase.gSeqBPM = 120; // tempo, BPM (beats per minute)
-  gSeqBase.gSeqGatePercent = 50;
-  setTempo();
-  calcGate();
+    gSeqBase.gSeqBPM = 120;  // tempo, BPM (beats per minute)
+    gSeqBase.gSeqGatePercent = 50;
+    setTempo();
+    calcGate();
 
-  gSeqTimeCurrent = millis();
-  gSeqTimeLast = gSeqTimeCurrent;
+    gSeqTimeCurrent = millis();
+    gSeqTimeLast = gSeqTimeCurrent;
 
-  setupNotes();
+    setupNotes();
 
-  // should be at the end to get default values
-  controllerSetup();
+    // should be at the end to get default values
+    controllerSetup();
 
-  startMozzi(CONTROL_RATE);
+    startMozzi(CONTROL_RATE);
 }
 
-void loop() {
-  audioHook();
-}
+void loop() { audioHook(); }

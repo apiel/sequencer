@@ -21,7 +21,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RST);
 #define PIN_BTN_3 0
 #endif
 
-#define OPTION_COUNT 6
+#define OPTION_COUNT 7
 
 typedef struct {
     char* name;
@@ -69,18 +69,20 @@ void controllerSetup() {
     gOption[0].isCategory = true;
     gOption[0].name = "Play";
     gOption[0].fn = &fnPlay;
-    gOption[1].name = "BPM";
-    gOption[1].fn = &fnBPM;
-    gOption[2].name = "Sequence gate";
-    gOption[2].unit = "%";
-    gOption[2].fn = &fnSeqGate;
-    gOption[3].name = "Pattern";
-    gOption[3].fn = &fnPattern;
-    gOption[4].isCategory = true;
-    gOption[4].name = "Kick1 envelope";
-    gOption[4].fn = &fnKick1Env;
-    gOption[5].name = "Kick1 Freq";
-    gOption[5].fn = &fnKick1Freq;
+    gOption[1].name = "Mute";
+    gOption[1].fn = &fnMute;
+    gOption[2].name = "BPM";
+    gOption[2].fn = &fnBPM;
+    gOption[3].name = "Sequence gate";
+    gOption[3].unit = "%";
+    gOption[3].fn = &fnSeqGate;
+    gOption[4].name = "Pattern";
+    gOption[4].fn = &fnPattern;
+    gOption[5].isCategory = true;
+    gOption[5].name = "Kick1 envelope";
+    gOption[5].fn = &fnKick1Env;
+    gOption[6].name = "Kick1 Freq";
+    gOption[6].fn = &fnKick1Freq;
 
     for (int i = 0; i < OPTION_COUNT; i++) {
         gOption[i].val = (*gOption[i].fn)(0);
@@ -178,6 +180,17 @@ unsigned int fnPlay(int val) {
     gSeqTimeLast = gSeqTimeCurrent;
     gSeqNoteOn = false;
     return 1;
+}
+
+unsigned int fnMute(int val) {
+    // val can be 0 for default initialization
+    // if we to have the player mute by default then put || val == 0
+    if (val == 1) {
+        gSeqMute = true;
+        return 1;
+    }
+    gSeqMute = false;
+    return 0;
 }
 
 unsigned int fnBPM(int val) {
