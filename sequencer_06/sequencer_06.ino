@@ -41,6 +41,8 @@ typedef struct {
 
 SeqBase gSeqBase;
 
+// should we use EventDelay instead?
+// see https://github.com/sensorium/Mozzi/blob/master/examples/07.Envelopes/ADSR_Audio_Rate_Envelope/ADSR_Audio_Rate_Envelope.ino
 unsigned long gSeqTimeCurrent;
 unsigned long gSeqTimeLast;
 unsigned long gSeqTimeGate;
