@@ -21,7 +21,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RST);
 #define PIN_BTN_3 0
 #endif
 
-#define OPTION_COUNT 7
+#define OPTION_COUNT 8
 
 typedef struct {
     char* name;
@@ -83,6 +83,8 @@ void controllerSetup() {
     gOption[5].fn = &fnKick1Env;
     gOption[6].name = "Kick1 Freq";
     gOption[6].fn = &fnKick1Freq;
+    gOption[7].name = "Kick1 R.time";
+    gOption[7].fn = &fnKick1ReleaseTime;
 
     for (int i = 0; i < OPTION_COUNT; i++) {
         gOption[i].val = (*gOption[i].fn)(0);
