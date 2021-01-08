@@ -24,11 +24,11 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RST);
 #define OPTION_COUNT 8
 
 typedef struct {
-    char* name;
+    const char* name;
     bool isCategory = false;
     unsigned int (*fn)(int val);
     unsigned int val;
-    char* unit = "";
+    const char* unit = "";
 } Option;
 
 Option gOption[OPTION_COUNT];
