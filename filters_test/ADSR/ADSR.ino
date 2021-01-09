@@ -1,9 +1,6 @@
 #include <ADSR.h>
 #include <MozziGuts.h>
 #include <Oscil.h>  // oscillator template
-#include <tables/sin2048_int8.h>
-#include <tables/triangle2048_int8.h>
-#include <tables/whitenoise8192_int8.h>
 
 #define CONTROL_RATE 128  // Hz, powers of 2 are most reliable
 
