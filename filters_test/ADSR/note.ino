@@ -25,6 +25,7 @@
 #include <tables/waveshape_sigmoid_int8.h>
 #include <tables/waveshape_tanh_int8.h>
 #include <tables/whitenoise8192_int8.h>
+#include <tables/square_no_alias_2048_int8.h> 
 
 #include <ADSR.h>
 #include <mozzi_rand.h>
@@ -76,7 +77,8 @@ Oscil<SIN2048_NUM_CELLS, AUDIO_RATE> gMDOscKick(SIN2048_DATA);
 // Oscil<CHEBYSHEV_3RD_256_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(CHEBYSHEV_3RD_256_DATA);
 // Oscil<WAVESHAPE_SIGMOID_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(WAVESHAPE_SIGMOID_DATA);
 // Oscil<WAVESHAPE_TANH_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(WAVESHAPE_TANH_DATA);
-Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(WHITENOISE8192_DATA);
+// Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(WHITENOISE8192_DATA);
+Oscil<SQUARE_NO_ALIAS_2048_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(SQUARE_NO_ALIAS_2048_DATA);
 
 // envelopes
 ADSR<CONTROL_RATE, AUDIO_RATE> gMEnvKickA;
