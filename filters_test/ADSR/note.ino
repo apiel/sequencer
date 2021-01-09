@@ -8,6 +8,23 @@
 #include <tables/cos256_int8.h>
 #include <tables/noise_static_1_16384_int8.h>
 #include <tables/phasor256_int8.h>
+#include <tables/pinknoise8192_int8.h>
+#include <tables/saw512_int8.h>
+#include <tables/brownnoise8192_int8.h>
+#include <tables/chum78_int8.h>
+#include <tables/saw_analogue512_int8.h>
+#include <tables/smoothsquare8192_int8.h>
+#include <tables/triangle1024_int8.h>
+#include <tables/triangle_dist_cubed_2048_int8.h>
+#include <tables/triangle_hermes_2048_int8.h>
+#include <tables/triangle_dist_squared_2048_int8.h>
+#include <tables/triangle_valve_2048_int8.h>
+#include <tables/triangle_valve_2_2048_int8.h>
+#include <tables/waveshape1_softclip_int8.h>
+#include <tables/waveshape_chebyshev_3rd_256_int8.h>
+#include <tables/waveshape_sigmoid_int8.h>
+#include <tables/waveshape_tanh_int8.h>
+#include <tables/whitenoise8192_int8.h>
 
 #include <ADSR.h>
 #include <mozzi_rand.h>
@@ -42,7 +59,24 @@ Oscil<SIN2048_NUM_CELLS, AUDIO_RATE> gMDOscKick(SIN2048_DATA);
 // Oscil<SQUARE_ANALOGUE512_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(SQUARE_ANALOGUE512_DATA);
 // Oscil<COS256_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(COS256_DATA); // not really diff
 // Oscil<NOISE_STATIC_1_16384_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(NOISE_STATIC_1_16384_DATA); // like a fuse
-Oscil<PHASOR256_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(PHASOR256_DATA);
+// Oscil<PHASOR256_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(PHASOR256_DATA);
+// Oscil<PINKNOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(PINKNOISE8192_DATA);
+// Oscil<SAW512_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(SAW512_DATA);
+// Oscil<BROWNNOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(BROWNNOISE8192_DATA);
+// Oscil<CHUM78_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(CHUM78_DATA);
+// Oscil<SAW_ANALOGUE512_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(SAW_ANALOGUE512_DATA);
+// Oscil<SMOOTHSQUARE8192_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(SMOOTHSQUARE8192_DATA);
+// Oscil<TRIANGLE1024_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(TRIANGLE1024_DATA);
+// Oscil<TRIANGLE_DIST_CUBED_2048_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(TRIANGLE_DIST_CUBED_2048_DATA); // cooooool
+// Oscil<TRIANGLE_HERMES_2048_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(TRIANGLE_HERMES_2048_DATA); // cool as well
+// Oscil<TRIANGLE_DIST_SQUARED_2048_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(TRIANGLE_DIST_SQUARED_2048_DATA); // cool cool
+// Oscil<TRIANGLE_VALVE_2048_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(TRIANGLE_VALVE_2048_DATA);
+// Oscil<TRIANGLE_VALVE_2_2048_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(TRIANGLE_VALVE_2_2048_DATA); // coooooool
+// Oscil<WAVESHAPE1_SOFTCLIP_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(WAVESHAPE1_SOFTCLIP_DATA); // cool
+// Oscil<CHEBYSHEV_3RD_256_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(CHEBYSHEV_3RD_256_DATA);
+// Oscil<WAVESHAPE_SIGMOID_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(WAVESHAPE_SIGMOID_DATA);
+// Oscil<WAVESHAPE_TANH_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(WAVESHAPE_TANH_DATA);
+Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscKickBis(WHITENOISE8192_DATA);
 
 // envelopes
 ADSR<CONTROL_RATE, AUDIO_RATE> gMEnvKickA;
