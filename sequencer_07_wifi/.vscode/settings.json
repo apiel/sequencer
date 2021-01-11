@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "cstddef": "cpp"
+    },
+    "emeraldwalk.runonsave": {
+        "commands": [
+            {
+                "match": "\\.html$",
+                "cmd": "xxd -i ${relativeFile} > ${relativeFile}.h"
+            }
+        ]
+    }
+}
