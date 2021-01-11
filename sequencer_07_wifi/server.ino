@@ -12,11 +12,26 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
 
     } else if (type == WS_EVT_DISCONNECT) {
         Serial.println("Client disconnected");
+    } else if (type == WS_EVT_DATA) {
+        Serial.println("Data received: ");
+
+        for (int i = 0; i < len; i++) {
+            Serial.print(data[i]);
+            Serial.print("|");
+        }
+
+        Serial.println();
+        Serial.println(atol((const char*)data),HEX);
+
+        if (atol((const char*)data) == 0xFA) {
+            Serial.println("Play");
+        }
     }
 }
 
 void handleIndexHtml(AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", (const uint8_t *)index_html, index_html_len);
+    request->send_P(200, "text/html", (const uint8_t *)index_html,
+                    index_html_len);
 }
 
 void handleIndexJs(AsyncWebServerRequest *request) {

@@ -8,3 +8,5 @@ ws.onmessage = function (event) {
     console.log('ws:', event.data);
 }
 
+// play: ws.send(0xFA);
+
