@@ -32,7 +32,7 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
             Serial.print(val);
             Serial.println();
 
-            callFn(key, val);
+            callFn(key, val, false);
         }
     }
 }

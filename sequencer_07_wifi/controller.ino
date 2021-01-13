@@ -26,7 +26,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RST);
 typedef struct {
     const char* name;
     bool isCategory = false;
-    unsigned int (*fn)(int val);
+    unsigned int (*fn)(int val, int isInc);
     unsigned int val;
     const char* unit = "";
 } Option;
@@ -87,7 +87,7 @@ void controllerSetup() {
     gOption[7].fn = &fnKick1ReleaseTime;
 
     for (int i = 0; i < OPTION_COUNT; i++) {
-        gOption[i].val = (*gOption[i].fn)(0);
+        gOption[i].val = callFn(i, 0, true);
     }
 
     updateDisplay();
@@ -163,17 +163,19 @@ void setValue() {
 
         if (btn1 || btn2) {
             int val = btn1 ? 1 : -1;
-            callFn(gSelected, val);
+            callFn(gSelected, val, true);
         }
     }
 }
 
-void callFn(byte fnKey, int val) {
-    gOption[fnKey].val = (*gOption[fnKey].fn)(val);
+unsigned int callFn(byte fnKey, int val, int isInc) {
+    gOption[fnKey].val = (*gOption[fnKey].fn)(val, isInc);
     updateDisplay();
+
+    return gOption[fnKey].val;
 }
 
-unsigned int fnPlay(int val) {
+unsigned int fnPlay(int val, int isInc) {
     // val can be 0 for default initialization
     // if we to have the player off by default then put || val == 0
     if (val == -1) {
@@ -188,9 +190,9 @@ unsigned int fnPlay(int val) {
     return 1;
 }
 
-unsigned int fnMute(int val) {
+unsigned int fnMute(int val, int isInc) {
     // val can be 0 for default initialization
-    // if we to have the player mute by default then put || val == 0
+    // if we want to have the player mute by default then put || val == 0
     if (val == 1) {
         gSeqMute = true;
         return 1;
@@ -199,25 +201,21 @@ unsigned int fnMute(int val) {
     return 0;
 }
 
-unsigned int fnBPM(int val) {
-    unsigned int bpm = gSeqBase.gSeqBPM + val;
-    if (bpm > 10 && bpm < 250) {
-        gSeqBase.gSeqBPM = bpm;
-        setTempo();
-    }
+unsigned int fnBPM(int val, int isInc) {
+    int bpm = getVal(gSeqBase.gSeqBPM, val, isInc);
+    gSeqBase.gSeqBPM = between(bpm, 10, 250);
+    setTempo();
     return gSeqBase.gSeqBPM;
 }
 
-unsigned int fnSeqGate(int val) {
-    unsigned int pct = gSeqBase.gSeqGatePercent + val;
-    if (pct > 0 && pct < 99) {
-        gSeqBase.gSeqGatePercent = pct;
-        calcGate();
-    }
+unsigned int fnSeqGate(int val, int isInc) {
+    int pct = getVal(gSeqBase.gSeqGatePercent, val, isInc);
+    gSeqBase.gSeqGatePercent = between(pct, 0, 100);
+    calcGate();
     return gSeqBase.gSeqGatePercent;
 }
 
-unsigned int fnPattern(int val) {
-    gSeqPatternIndex = (gSeqPatternIndex + val) % MAX_PATTERNS;
+unsigned int fnPattern(int val, int isInc) {
+    gSeqPatternIndex = getVal(gSeqPatternIndex, val, isInc) % MAX_PATTERNS;
     return gSeqPatternIndex;
 }

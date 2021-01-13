@@ -59,18 +59,20 @@ ADSR<CONTROL_RATE, AUDIO_RATE> gMEnvTomHiP;
 
 // Controller
 
-unsigned int fnKick1Env(int val) {
-    gMSynthKick.sMEnvSlope += val;
+unsigned int fnKick1Env(int val, int isInc) {
+    gMSynthKick.sMEnvSlope = getVal(gMSynthKick.sMEnvSlope, val, isInc);
     return gMSynthKick.sMEnvSlope;
 }
 
-unsigned int fnKick1Freq(int val) {
-    gMSynthKick.sMFrequency += (val * 5);
+unsigned int fnKick1Freq(int val, int isInc) {
+    // gMSynthKick.sMFrequency += (val * 5);
+    gMSynthKick.sMFrequency = getVal(gMSynthKick.sMFrequency, val, isInc, 5);
     return gMSynthKick.sMFrequency;
 }
 
-unsigned int fnKick1ReleaseTime(int val) {
-    gMSynthKick.sMReleaseTime += (val * 10);
+unsigned int fnKick1ReleaseTime(int val, int isInc) {
+    // gMSynthKick.sMReleaseTime += (val * 10);
+    gMSynthKick.sMFrequency = getVal(gMSynthKick.sMReleaseTime, val, isInc, 10);
     gMEnvKickA.setReleaseTime(gMSynthKick.sMReleaseTime);
     return gMSynthKick.sMReleaseTime;
 }
