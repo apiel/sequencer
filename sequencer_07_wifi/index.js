@@ -8,5 +8,7 @@ ws.onmessage = function (event) {
     console.log('ws:', event.data);
 }
 
-// play: ws.send(0xFA);
-
+document.getElementById('ctrl-play').onclick = () => ws.send(0xFA);
+document.getElementById('ctrl-stop').onclick = () => ws.send(0xFC);
+document.getElementById('ctrl-mute').onclick = () => ws.send(0xF1);
+document.getElementById('ctrl-unmute').onclick = () => ws.send(0xF0);

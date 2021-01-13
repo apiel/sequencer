@@ -21,10 +21,20 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
         }
 
         Serial.println();
-        Serial.println(atol((const char*)data),HEX);
+        Serial.println(atol((const char *)data), HEX);
 
-        if (atol((const char*)data) == 0xFA) {
-            Serial.println("Play");
+        if (atol((const char *)data) == 0xFA) {
+            Serial.println("WS Play");
+            fnPlay(1);
+        } else if (atol((const char *)data) == 0xFC) {
+            Serial.println("WS Stop");
+            fnPlay(-1);
+        } else if (atol((const char *)data) == 0xF1) {
+            Serial.println("WS mute");
+            fnMute(1);
+        } else if (atol((const char *)data) == 0xF0) {
+            Serial.println("WS unmute");
+            fnMute(-1);
         }
     }
 }
