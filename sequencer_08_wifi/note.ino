@@ -16,7 +16,8 @@ typedef struct {
     bool isDoubleEnv;
     ADSR<CONTROL_RATE, AUDIO_RATE> sMEnvA;
     ADSR<CONTROL_RATE, AUDIO_RATE> sMEnvP;
-    Oscil<MAX_NUM_CELLS, AUDIO_RATE> gMDOsc;
+    Oscil<MAX_NUM_CELLS, AUDIO_RATE> sMDOsc;
+    int8_t sMDOscTable[MAX_NUM_CELLS];
     // settings
     int sMFrequency;
     unsigned int sMAttackTime;
@@ -44,7 +45,7 @@ MDSynth gMSynthCrash;
 MDSynth gMSynthTomHi;
 
 // oscillators
-Oscil<SIN2048_NUM_CELLS, AUDIO_RATE> gMDOscKick(SIN2048_DATA);
+// Oscil<SIN2048_NUM_CELLS, AUDIO_RATE> gMDOscKick(SIN2048_DATA);
 Oscil<SIN2048_NUM_CELLS, AUDIO_RATE> gMDOscSnare(SIN2048_DATA);
 Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscSnareN(WHITENOISE8192_DATA);
 Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscHihatN(WHITENOISE8192_DATA);
@@ -113,7 +114,7 @@ void playNote() {
 // }
 
 void playDKick() {
-    gMDOscKick.setFreq(gMSynthKick.sMFrequency);
+    gMSynthKick.sMDOsc.setFreq(gMSynthKick.sMFrequency);
     gMSynthKick.sMEnvA.noteOn();
     gMSynthKick.sMEnvP.noteOn();
     gMSynthKick.sMEnvA.noteOff();
@@ -167,6 +168,14 @@ void playDTomLo() {
 }
 
 void setupNotes() {
+    // gMSynthKick.sMDOscTable // SIN2048_DATA
+    for (int i = 0; i < SIN2048_NUM_CELLS; i++) {
+        gMSynthKick.sMDOscTable[i*4] = SIN2048_DATA[i];
+        gMSynthKick.sMDOscTable[i*4+1] = SIN2048_DATA[i];
+        gMSynthKick.sMDOscTable[i*4+2] = SIN2048_DATA[i];
+        gMSynthKick.sMDOscTable[i*4+3] = SIN2048_DATA[i];
+    }
+    gMSynthKick.sMDOsc.setTable(gMSynthKick.sMDOscTable);
     gMSynthKick.sMFrequency = 45;  // (setting)
     gMSynthKick.sMAttackTime = 0;
     gMSynthKick.sMDecayTime = 0;
@@ -318,7 +327,7 @@ void setupNotes() {
 void updateEnvelopes() {
     gMSynthKick.sMEnvA.update();
     gMSynthKick.sMEnvP.update();
-    gMDOscKick.setFreq(
+    gMSynthKick.sMDOsc.setFreq(
         gMSynthKick.sMFrequency +
         (gMSynthKick.sMEnvValueP >> gMSynthKick.sMEnvSlope));  // (setting)
 
@@ -352,7 +361,7 @@ int updateAudioSeq() {
     gMSynthTomHi.sMEnvValueA = gMSynthTomHi.sMEnvA.next();
     gMSynthTomHi.sMEnvValueP = gMSynthTomHi.sMEnvP.next();
 
-    return (int)(((gMSynthKick.sMEnvValueA * gMDOscKick.next()) >> 1) +
+    return (int)(((gMSynthKick.sMEnvValueA * gMSynthKick.sMDOsc.next()) >> 1) +
                  ((gMSynthSnare.sMEnvValueA *
                        (gMDOscSnare.next() + gMDOscSnareN.next()) >>
                    2)) +
