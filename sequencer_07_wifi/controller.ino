@@ -163,10 +163,14 @@ void setValue() {
 
         if (btn1 || btn2) {
             int val = btn1 ? 1 : -1;
-            gOption[gSelected].val = (*gOption[gSelected].fn)(val);
-            updateDisplay();
+            callFn(gSelected, val);
         }
     }
+}
+
+void callFn(byte fnKey, int val) {
+    gOption[fnKey].val = (*gOption[fnKey].fn)(val);
+    updateDisplay();
 }
 
 unsigned int fnPlay(int val) {

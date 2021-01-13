@@ -4,6 +4,8 @@
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 
+byte c2nb(char c) { return c - 48; }
+
 void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
                AwsEventType type, void *arg, uint8_t *data, size_t len) {
     if (type == WS_EVT_CONNECT) {
@@ -13,28 +15,24 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
     } else if (type == WS_EVT_DISCONNECT) {
         Serial.println("Client disconnected");
     } else if (type == WS_EVT_DATA) {
-        Serial.println("Data received: ");
+        // Serial.println("Data received: ");
+        // for (int i = 0; i < len; i++) {
+        //     Serial.print(data[i]);
+        //     Serial.print("|");
+        // }
+        if (data[0] == '#') {
+            byte key = c2nb(data[1]) * 10 + c2nb(data[2]);
+            int sign = data[3] == '-' ? -1 : 1;
+            int val = sign * (c2nb(data[4]) * 1000 + c2nb(data[5]) * 100 +
+                              c2nb(data[6]) * 10 + c2nb(data[7]));
 
-        for (int i = 0; i < len; i++) {
-            Serial.print(data[i]);
-            Serial.print("|");
-        }
+            Serial.print("ws key: ");
+            Serial.print(key);
+            Serial.print(" val: ");
+            Serial.print(val);
+            Serial.println();
 
-        Serial.println();
-        Serial.println(atol((const char *)data), HEX);
-
-        if (atol((const char *)data) == 0xFA) {
-            Serial.println("WS Play");
-            fnPlay(1);
-        } else if (atol((const char *)data) == 0xFC) {
-            Serial.println("WS Stop");
-            fnPlay(-1);
-        } else if (atol((const char *)data) == 0xF1) {
-            Serial.println("WS mute");
-            fnMute(1);
-        } else if (atol((const char *)data) == 0xF0) {
-            Serial.println("WS unmute");
-            fnMute(-1);
+            callFn(key, val);
         }
     }
 }
