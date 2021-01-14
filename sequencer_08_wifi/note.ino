@@ -1,12 +1,4 @@
-#define DRUM_LEVEL 150  // 128
 #define DRUM_LEVEL_B 200
-#define DRUM_NOISE_FREQ 100  // doesn't matter for white noise
-
-#define HIHAT_FREQ1 100
-#define HIHAT_FREQ2 128
-#define HIHAT_FREQ3 256
-#define HIHAT_FREQ4 384
-#define HIHAT_FREQ5 512
 
 #define MAX_NUM_CELLS 8192
 #define SYNTH_COUNT 6
@@ -148,29 +140,17 @@ void setupNotes() {
 }
 
 void updateEnvelopes() {
-    gMSynth[0].sMEnvA.update();
-    gMSynth[0].sMEnvP.update();
-    gMSynth[0].sMDOsc.setFreq(
-        gMSynth[0].sMFrequency +
-        (gMSynth[0].sMEnvValueP >> gMSynth[0].sMEnvSlope));  // (setting)
-
-    gMSynth[1].sMEnvA.update();
-    gMSynth[1].sMEnvP.update();
-    gMSynth[1].sMDOsc.setFreq(
-        gMSynth[1].sMFrequency +
-        (gMSynth[1].sMEnvValueP >> gMSynth[1].sMEnvSlope));  // (setting)
-
-    gMSynth[2].sMEnvA.update();
-
-    gMSynth[3].sMEnvA.update();
-
-    gMSynth[4].sMEnvA.update();
-
-    gMSynth[5].sMEnvA.update();
-    gMSynth[5].sMEnvP.update();
-    gMSynth[5].sMDOsc.setFreq(
-        gMSynth[5].sMFrequency +
-        (gMSynth[5].sMEnvValueP >> gMSynth[5].sMEnvSlope));  // (setting)
+    for (int i = 0; i < SYNTH_COUNT; i++) {
+        if (gMSynth[i].isDoubleEnv) {
+            gMSynth[i].sMEnvA.update();
+            gMSynth[i].sMEnvP.update();
+            gMSynth[i].sMDOsc.setFreq(gMSynth[i].sMFrequency +
+                                      (gMSynth[i].sMEnvValueP >>
+                                       gMSynth[i].sMEnvSlope));
+        } else {
+            gMSynth[i].sMEnvA.update();
+        }
+    }
 }
 
 int updateAudioSeq() {
