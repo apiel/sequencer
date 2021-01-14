@@ -144,9 +144,9 @@ void updateEnvelopes() {
         if (gMSynth[i].isDoubleEnv) {
             gMSynth[i].sMEnvA.update();
             gMSynth[i].sMEnvP.update();
-            gMSynth[i].sMDOsc.setFreq(gMSynth[i].sMFrequency +
-                                      (gMSynth[i].sMEnvValueP >>
-                                       gMSynth[i].sMEnvSlope));
+            gMSynth[i].sMDOsc.setFreq(
+                gMSynth[i].sMFrequency +
+                (gMSynth[i].sMEnvValueP >> gMSynth[i].sMEnvSlope));
         } else {
             gMSynth[i].sMEnvA.update();
         }
@@ -154,21 +154,12 @@ void updateEnvelopes() {
 }
 
 int updateAudioSeq() {
-    gMSynth[0].sMEnvValueA = gMSynth[0].sMEnvA.next();
-    gMSynth[0].sMEnvValueP = gMSynth[0].sMEnvP.next();
-    gMSynth[1].sMEnvValueA = gMSynth[1].sMEnvA.next();
-    gMSynth[1].sMEnvValueP = gMSynth[1].sMEnvP.next();
-    gMSynth[2].sMEnvValueA = gMSynth[2].sMEnvA.next();
-    gMSynth[3].sMEnvValueA = gMSynth[3].sMEnvA.next();
-    gMSynth[4].sMEnvValueA = gMSynth[4].sMEnvA.next();
-    gMSynth[5].sMEnvValueA = gMSynth[5].sMEnvA.next();
-    gMSynth[5].sMEnvValueP = gMSynth[5].sMEnvP.next();
+    int ret = 0;
+    for (int i = 0; i < SYNTH_COUNT; i++) {
+        gMSynth[i].sMEnvValueA = gMSynth[i].sMEnvA.next();
+        gMSynth[i].sMEnvValueP = gMSynth[i].sMEnvP.next();
+        ret += (int)((gMSynth[i].sMEnvValueA * gMSynth[i].sMDOsc.next()) >> 1);
+    }
 
-    return (int)(((gMSynth[0].sMEnvValueA * gMSynth[0].sMDOsc.next()) >> 1) +
-                 ((gMSynth[1].sMEnvValueA * gMSynth[1].sMDOsc.next()) >> 2) +
-                 ((gMSynth[2].sMEnvValueA * gMSynth[2].sMDOsc.next()) >> 1) +
-                 ((gMSynth[3].sMEnvValueA * gMSynth[3].sMDOsc.next()) >> 1) +
-                 ((gMSynth[5].sMEnvValueA * gMSynth[5].sMDOsc.next()) >> 1) +
-                 ((gMSynth[4].sMEnvValueA * gMSynth[4].sMDOsc.next()) >> 2)) >>
-           8;
+    return ret >> 8;
 }
