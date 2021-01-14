@@ -67,19 +67,21 @@ void setNoteOption(byte key, byte optionKey, int val) {
     } else if (optionKey == 1) {
         gMSynth[key].sMEnvSlope = between(val, 0, 8);
     } else if (optionKey == 2) {
-        gMSynth[key].sMFrequency = between(val, -2000, 2000);
+        gMSynth[key].isDoubleEnv = val == 2;
     } else if (optionKey == 3) {
-        gMSynth[key].sMAttackTime = between(val, 0, 2000);
+        gMSynth[key].sMFrequency = between(val, -2000, 2000);
     } else if (optionKey == 4) {
-        gMSynth[key].sMDecayTime = between(val, 0, 2000);
+        gMSynth[key].sMAttackTime = between(val, 0, 2000);
     } else if (optionKey == 5) {
-        gMSynth[key].sMSustainTime = between(val, 0, 2000);
+        gMSynth[key].sMDecayTime = between(val, 0, 2000);
     } else if (optionKey == 6) {
-        gMSynth[key].sMReleaseTime = between(val, 0, 2000);
+        gMSynth[key].sMSustainTime = between(val, 0, 2000);
     } else if (optionKey == 7) {
+        gMSynth[key].sMReleaseTime = between(val, 0, 2000);
+    } else if (optionKey == 8) {
         gMSynth[key].sMReleaseTimeP = between(val, 0, 2000);
     }
-    if (optionKey > 1) {
+    if (optionKey > 2) {
         applySetting(key);
     }
 }
