@@ -3,12 +3,7 @@
 #include <ESPAsyncWebServer.h>
 // http server
 
-#include <ADSR.h>
 #include <MozziGuts.h>
-#include <Oscil.h>  // oscillator template
-#include <tables/sin2048_int8.h>
-#include <tables/triangle2048_int8.h>
-#include <tables/whitenoise8192_int8.h>
 
 #define PIN_SYNC_OUT 27
 

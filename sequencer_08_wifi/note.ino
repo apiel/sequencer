@@ -1,3 +1,30 @@
+#include <ADSR.h>
+#include <Oscil.h>  // oscillator template
+#include <tables/brownnoise8192_int8.h>
+#include <tables/chum78_int8.h>
+#include <tables/cos256_int8.h>
+#include <tables/noise_static_1_16384_int8.h>
+#include <tables/phasor256_int8.h>
+#include <tables/pinknoise8192_int8.h>
+#include <tables/saw512_int8.h>
+#include <tables/saw_analogue512_int8.h>
+#include <tables/sin2048_int8.h>
+#include <tables/smoothsquare8192_int8.h>
+#include <tables/square_analogue512_int8.h>
+#include <tables/square_no_alias_2048_int8.h>
+#include <tables/triangle1024_int8.h>
+#include <tables/triangle2048_int8.h>
+#include <tables/triangle_dist_cubed_2048_int8.h>
+#include <tables/triangle_dist_squared_2048_int8.h>
+#include <tables/triangle_hermes_2048_int8.h>
+#include <tables/triangle_valve_2048_int8.h>
+#include <tables/triangle_valve_2_2048_int8.h>
+#include <tables/waveshape1_softclip_int8.h>
+#include <tables/waveshape_chebyshev_3rd_256_int8.h>
+#include <tables/waveshape_sigmoid_int8.h>
+#include <tables/waveshape_tanh_int8.h>
+#include <tables/whitenoise8192_int8.h>
+
 #define DRUM_LEVEL_B 200
 
 #define MAX_NUM_CELLS 8192
@@ -31,37 +58,13 @@ typedef struct MDSynth {
 
 MDSynth gMSynth[SYNTH_COUNT];
 
-// Controller
-
-unsigned int fnKick1Env(int val, int isInc) {
-    gMSynth[0].sMEnvSlope = getVal(gMSynth[0].sMEnvSlope, val, isInc);
-    return gMSynth[0].sMEnvSlope;
-}
-
-unsigned int fnKick1Freq(int val, int isInc) {
-    // gMSynth[0].sMFrequency += (val * 5);
-    gMSynth[0].sMFrequency = getVal(gMSynth[0].sMFrequency, val, isInc, 5);
-    return gMSynth[0].sMFrequency;
-}
-
-unsigned int fnKick1ReleaseTime(int val, int isInc) {
-    // gMSynth[0].sMReleaseTime += (val * 10);
-    gMSynth[0].sMFrequency = getVal(gMSynth[0].sMReleaseTime, val, isInc, 10);
-    gMSynth[0].sMEnvA.setReleaseTime(gMSynth[0].sMReleaseTime);
-    return gMSynth[0].sMReleaseTime;
-}
-
-// Controller end
 // WS controller
-
-// unsigned int fnSetEnv(byte key, int val) {
-//     gMSynth[key].sMEnvSlope = between(val, 0, 8);
-//     return gMSynth[key].sMEnvSlope;
-// }
 
 void setNoteOption(byte key, byte optionKey, int val) {
     // 0 is for set table
-    if (optionKey == 1) {
+    if (optionKey == 0) {
+        setNoteOptionTable(key, (byte)val);
+    } else if (optionKey == 1) {
         gMSynth[key].sMEnvSlope = between(val, 0, 8);
     } else if (optionKey == 2) {
         gMSynth[key].sMFrequency = between(val, -2000, 2000);
@@ -194,4 +197,66 @@ int updateAudioSeq() {
     }
 
     return ret >> 8;
+}
+
+void setNoteOptionTable(byte key, byte tableId) {
+    if (tableId == 1) {
+        assignTable(key, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
+    } else if (tableId == 2) {
+        assignTable(key, TRIANGLE2048_DATA, TRIANGLE2048_NUM_CELLS);
+    } else if (tableId == 3) {
+        assignTable(key, SQUARE_ANALOGUE512_DATA, SQUARE_ANALOGUE512_NUM_CELLS);
+    } else if (tableId == 4) {
+        assignTable(key, COS256_DATA, COS256_NUM_CELLS);
+    } else if (tableId == 5) {
+        assignTable(key, NOISE_STATIC_1_16384_DATA,
+                    NOISE_STATIC_1_16384_NUM_CELLS);
+    } else if (tableId == 6) {
+        assignTable(key, PHASOR256_DATA, PHASOR256_NUM_CELLS);
+    } else if (tableId == 7) {
+        assignTable(key, PINKNOISE8192_DATA, PINKNOISE8192_NUM_CELLS);
+    } else if (tableId == 8) {
+        assignTable(key, SAW512_DATA, SAW512_NUM_CELLS);
+    } else if (tableId == 9) {
+        assignTable(key, BROWNNOISE8192_DATA, BROWNNOISE8192_NUM_CELLS);
+    } else if (tableId == 10) {
+        assignTable(key, CHUM78_DATA, CHUM78_NUM_CELLS);
+    } else if (tableId == 11) {
+        assignTable(key, SAW_ANALOGUE512_DATA, SAW_ANALOGUE512_NUM_CELLS);
+    } else if (tableId == 12) {
+        assignTable(key, SMOOTHSQUARE8192_DATA, SMOOTHSQUARE8192_NUM_CELLS);
+    } else if (tableId == 13) {
+        assignTable(key, TRIANGLE1024_DATA, TRIANGLE1024_NUM_CELLS);
+    } else if (tableId == 14) {
+        assignTable(key, TRIANGLE_HERMES_2048_DATA,
+                    TRIANGLE_HERMES_2048_NUM_CELLS);
+    } else if (tableId == 15) {
+        assignTable(key, TRIANGLE_DIST_CUBED_2048_DATA,
+                    TRIANGLE_DIST_CUBED_2048_NUM_CELLS);
+    } else if (tableId == 16) {
+        assignTable(key, TRIANGLE_DIST_SQUARED_2048_DATA,
+                    TRIANGLE_DIST_SQUARED_2048_NUM_CELLS);
+    } else if (tableId == 17) {
+        assignTable(key, TRIANGLE_VALVE_2048_DATA,
+                    TRIANGLE_VALVE_2048_NUM_CELLS);
+    } else if (tableId == 18) {
+        assignTable(key, TRIANGLE_VALVE_2_2048_DATA,
+                    TRIANGLE_VALVE_2_2048_NUM_CELLS);
+    } else if (tableId == 19) {
+        assignTable(key, WAVESHAPE1_SOFTCLIP_DATA,
+                    WAVESHAPE1_SOFTCLIP_NUM_CELLS);
+    } else if (tableId == 20) {
+        assignTable(key, CHEBYSHEV_3RD_256_DATA, CHEBYSHEV_3RD_256_NUM_CELLS);
+    } else if (tableId == 21) {
+        assignTable(key, WAVESHAPE_SIGMOID_DATA, WAVESHAPE_SIGMOID_NUM_CELLS);
+    } else if (tableId == 22) {
+        assignTable(key, WAVESHAPE_TANH_DATA, WAVESHAPE_TANH_NUM_CELLS);
+    } else if (tableId == 23) {
+        assignTable(key, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
+    } else if (tableId == 24) {
+        assignTable(key, SQUARE_NO_ALIAS_2048_DATA,
+                    SQUARE_NO_ALIAS_2048_NUM_CELLS);
+    } else {
+        assignTable(key, SIN2048_DATA, SIN2048_NUM_CELLS);
+    }
 }
