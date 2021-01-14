@@ -39,13 +39,6 @@ typedef struct MDSynth {
 
 MDSynth gMSynth[SYNTH_COUNT];
 
-// MDSynth gMSynth[0];
-// MDSynth gMSynth[1];
-// MDSynth gMSynth[2];
-// MDSynth gMSynth[3];
-// MDSynth gMSynth[4];
-// MDSynth gMSynth[5];
-
 // Controller
 
 unsigned int fnKick1Env(int val, int isInc) {
