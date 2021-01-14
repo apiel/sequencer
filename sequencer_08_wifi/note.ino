@@ -71,32 +71,32 @@ void playNote() {
 
     // 01 - kick
     if (aNote & D_KICK) {
-        playDKick();
+        playDoubleEnvNote(&gMSynthKick);
     }
 
     // 02 - snare
     if (aNote & D_SNARE) {
-        playDSnare();
+        playDoubleEnvNote(&gMSynthSnare);
     }
 
     // 04 - hihat
     if (aNote & D_HIHAT) {
-        playDHihat();
+        playSimpleEnvNote(&gMSynthHihat);
     }
 
     // 08 - clap
     if (aNote & D_CLAP) {
-        playDClap();
+        playSimpleEnvNote(&gMSynthClap);
     }
 
     // 16 - crash
     if (aNote & D_CRASH) {
-        playDCrash();
+        playSimpleEnvNote(&gMSynthCrash);
     }
 
     // 32 - tom hi
     if (aNote & D_TOMHI) {
-        playDTomHi();
+        playDoubleEnvNote(&gMSynthTomHi);
     }
 }
 
@@ -114,38 +114,6 @@ void playDoubleEnvNote(struct MDSynth* ptrSynth) {
     ptrSynth->sMEnvP.noteOn();
     ptrSynth->sMEnvA.noteOff();
     ptrSynth->sMEnvP.noteOff();
-}
-
-void playDKick() {
-    playDoubleEnvNote(&gMSynthKick);
-}
-
-void playDSnare() {
-    playDoubleEnvNote(&gMSynthSnare);
-}
-
-void playDHihat() {
-    playSimpleEnvNote(&gMSynthHihat);
-}
-
-void playDHihatO() {
-    playSimpleEnvNote(&gMSynthHihat);
-}
-
-void playDClap() {
-    playSimpleEnvNote(&gMSynthClap);
-}
-
-void playDCrash() {
-    playSimpleEnvNote(&gMSynthCrash);
-}
-
-void playDTomHi() {
-    playDoubleEnvNote(&gMSynthTomHi);
-}
-
-void playDTomLo() {
-    playDoubleEnvNote(&gMSynthTomHi);
 }
 
 void assignTable(struct MDSynth* ptrSynth, const int8_t* table, int num_cells) {
@@ -355,10 +323,14 @@ int updateAudioSeq() {
     gMSynthTomHi.sMEnvValueP = gMSynthTomHi.sMEnvP.next();
 
     return (int)(((gMSynthKick.sMEnvValueA * gMSynthKick.sMDOsc.next()) >> 1) +
-                 ((gMSynthSnare.sMEnvValueA * gMSynthSnare.sMDOsc.next()) >> 2) +
-                 ((gMSynthHihat.sMEnvValueA * gMSynthHihat.sMDOsc.next()) >> 1) +
+                 ((gMSynthSnare.sMEnvValueA * gMSynthSnare.sMDOsc.next()) >>
+                  2) +
+                 ((gMSynthHihat.sMEnvValueA * gMSynthHihat.sMDOsc.next()) >>
+                  1) +
                  ((gMSynthClap.sMEnvValueA * gMSynthClap.sMDOsc.next()) >> 1) +
-                 ((gMSynthTomHi.sMEnvValueA * gMSynthTomHi.sMDOsc.next()) >> 1) +
-                 ((gMSynthCrash.sMEnvValueA * gMSynthCrash.sMDOsc.next()) >> 2)) >>
+                 ((gMSynthTomHi.sMEnvValueA * gMSynthTomHi.sMDOsc.next()) >>
+                  1) +
+                 ((gMSynthCrash.sMEnvValueA * gMSynthCrash.sMDOsc.next()) >>
+                  2)) >>
            8;
 }
