@@ -13,6 +13,7 @@
 // look at Phasemod_Envelope
 
 typedef struct MDSynth {
+    byte key;
     bool isDoubleEnv;
     ADSR<CONTROL_RATE, AUDIO_RATE> sMEnvA;
     ADSR<CONTROL_RATE, AUDIO_RATE> sMEnvP;
@@ -126,13 +127,18 @@ void assignTable(struct MDSynth* ptrSynth, const int8_t* table, int num_cells) {
     ptrSynth->sMDOsc.setTable(ptrSynth->sMDOscTable);
 }
 
+void setupNote(byte key, struct MDSynth* ptrSynth, const int8_t* table, int num_cells) {
+    assignTable(ptrSynth, table, num_cells);
+    ptrSynth->key = key;
+}
+
 void setupNotes() {
-    assignTable(&gMSynthKick, SIN2048_DATA, SIN2048_NUM_CELLS);
-    assignTable(&gMSynthSnare, SIN2048_DATA, SIN2048_NUM_CELLS);
-    assignTable(&gMSynthHihat, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
-    assignTable(&gMSynthClap, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
-    assignTable(&gMSynthCrash, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
-    assignTable(&gMSynthTomHi, TRIANGLE2048_DATA, TRIANGLE2048_NUM_CELLS);
+    setupNote(D_KICK, &gMSynthKick, SIN2048_DATA, SIN2048_NUM_CELLS);
+    setupNote(D_SNARE, &gMSynthSnare, SIN2048_DATA, SIN2048_NUM_CELLS);
+    setupNote(D_HIHAT, &gMSynthHihat, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
+    setupNote(D_CLAP, &gMSynthClap, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
+    setupNote(D_CRASH, &gMSynthCrash, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
+    setupNote(D_TOMHI, &gMSynthTomHi, TRIANGLE2048_DATA, TRIANGLE2048_NUM_CELLS);
 
     gMSynthKick.sMFrequency = 45;  // (setting)
     gMSynthKick.sMAttackTime = 0;

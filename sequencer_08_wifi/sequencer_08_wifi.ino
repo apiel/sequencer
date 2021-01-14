@@ -16,6 +16,7 @@
 
 #define MAX_PATTERNS 3
 #define MAX_NOTES 16  // max # of notes in sequence
+
 #define D_KICK 1
 #define D_SNARE 2
 #define D_HIHAT 4
