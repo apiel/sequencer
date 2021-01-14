@@ -44,14 +44,6 @@ MDSynth gMSynthClap;
 MDSynth gMSynthCrash;
 MDSynth gMSynthTomHi;
 
-// Oscil<SIN2048_NUM_CELLS, AUDIO_RATE> gMDOscKick(SIN2048_DATA);
-// Oscil<SIN2048_NUM_CELLS, AUDIO_RATE> gMDOscSnare(SIN2048_DATA);
-// Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscSnareN(WHITENOISE8192_DATA);
-// Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscHihatN(WHITENOISE8192_DATA);
-// Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscClapN(WHITENOISE8192_DATA);
-// Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscCrashN(WHITENOISE8192_DATA);
-// Oscil<TRIANGLE2048_NUM_CELLS, AUDIO_RATE> gMDOscTomHi(TRIANGLE2048_DATA);
-
 // Controller
 
 unsigned int fnKick1Env(int val, int isInc) {
@@ -108,65 +100,52 @@ void playNote() {
     }
 }
 
-// void playSimpleEnvNote(MDSynth note) {
+void playSimpleEnvNote(struct MDSynth* ptrSynth) {
+    ptrSynth->sMDOsc.setFreq(ptrSynth->sMFrequency);
+    ptrSynth->sMEnvA.setReleaseTime(ptrSynth->sMReleaseTime);
+    ptrSynth->sMEnvA.noteOn();
+    ptrSynth->sMEnvA.noteOff();
+}
 
-// }
+void playDoubleEnvNote(struct MDSynth* ptrSynth) {
+    ptrSynth->sMDOsc.setFreq(ptrSynth->sMFrequency);
+    ptrSynth->sMEnvA.setReleaseTime(ptrSynth->sMReleaseTime);
+    ptrSynth->sMEnvA.noteOn();
+    ptrSynth->sMEnvP.noteOn();
+    ptrSynth->sMEnvA.noteOff();
+    ptrSynth->sMEnvP.noteOff();
+}
 
 void playDKick() {
-    gMSynthKick.sMDOsc.setFreq(gMSynthKick.sMFrequency);
-    gMSynthKick.sMEnvA.noteOn();
-    gMSynthKick.sMEnvP.noteOn();
-    gMSynthKick.sMEnvA.noteOff();
-    gMSynthKick.sMEnvP.noteOff();
+    playDoubleEnvNote(&gMSynthKick);
 }
 
 void playDSnare() {
-    // gMDOscSnare.setFreq(gMSynthSnare.sMFrequency);
-    gMSynthSnare.sMDOsc.setFreq(gMSynthSnare.sMFrequency);
-    gMSynthSnare.sMEnvA.noteOn();
-    gMSynthSnare.sMEnvP.noteOn();
-    gMSynthSnare.sMEnvA.noteOff();
-    gMSynthSnare.sMEnvP.noteOff();
+    playDoubleEnvNote(&gMSynthSnare);
 }
 
 void playDHihat() {
-    gMSynthHihat.sMEnvA.setReleaseTime(gMSynthHihat.sMReleaseTime);
-    gMSynthHihat.sMEnvA.noteOn();
-    gMSynthHihat.sMEnvA.noteOff();
+    playSimpleEnvNote(&gMSynthHihat);
 }
 
 void playDHihatO() {
-    gMSynthHihat.sMEnvA.setReleaseTime(gMSynthHihat.sMReleaseTime >> 1);
-    gMSynthHihat.sMEnvA.noteOn();
-    gMSynthHihat.sMEnvA.noteOff();
+    playSimpleEnvNote(&gMSynthHihat);
 }
 
 void playDClap() {
-    gMSynthClap.sMEnvA.noteOn();
-    gMSynthClap.sMEnvA.noteOff();
+    playSimpleEnvNote(&gMSynthClap);
 }
 
 void playDCrash() {
-    gMSynthCrash.sMEnvA.noteOn();
-    gMSynthCrash.sMEnvA.noteOff();
+    playSimpleEnvNote(&gMSynthCrash);
 }
 
 void playDTomHi() {
-    // gMDOscTomHi.setFreq(gMSynthTomHi.sMFrequency);
-    gMSynthTomHi.sMDOsc.setFreq(gMSynthTomHi.sMFrequency);
-    gMSynthTomHi.sMEnvA.noteOn();
-    gMSynthTomHi.sMEnvP.noteOn();
-    gMSynthTomHi.sMEnvA.noteOff();
-    gMSynthTomHi.sMEnvP.noteOff();
+    playDoubleEnvNote(&gMSynthTomHi);
 }
 
 void playDTomLo() {
-    // gMDOscTomHi.setFreq(gMSynthTomHi.sMFrequency << 1);
-    gMSynthTomHi.sMDOsc.setFreq(gMSynthTomHi.sMFrequency << 1);
-    gMSynthTomHi.sMEnvA.noteOn();
-    gMSynthTomHi.sMEnvP.noteOn();
-    gMSynthTomHi.sMEnvA.noteOff();
-    gMSynthTomHi.sMEnvP.noteOff();
+    playDoubleEnvNote(&gMSynthTomHi);
 }
 
 void assignTable(struct MDSynth* ptrSynth, const int8_t* table, int num_cells) {
@@ -179,18 +158,8 @@ void assignTable(struct MDSynth* ptrSynth, const int8_t* table, int num_cells) {
     ptrSynth->sMDOsc.setTable(ptrSynth->sMDOscTable);
 }
 
-// Oscil<SIN2048_NUM_CELLS, AUDIO_RATE> gMDOscKick(SIN2048_DATA);
-// Oscil<SIN2048_NUM_CELLS, AUDIO_RATE> gMDOscSnare(SIN2048_DATA);
-// Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscSnareN(WHITENOISE8192_DATA);
-// Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscHihatN(WHITENOISE8192_DATA);
-// Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscClapN(WHITENOISE8192_DATA);
-// Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscCrashN(WHITENOISE8192_DATA);
-// Oscil<TRIANGLE2048_NUM_CELLS, AUDIO_RATE> gMDOscTomHi(TRIANGLE2048_DATA);
-
 void setupNotes() {
     assignTable(&gMSynthKick, SIN2048_DATA, SIN2048_NUM_CELLS);
-    // gMSynthKick.sMDOsc.setTable(gMSynthKick.sMDOscTable);
-
     assignTable(&gMSynthSnare, SIN2048_DATA, SIN2048_NUM_CELLS);
     assignTable(&gMSynthHihat, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
     assignTable(&gMSynthClap, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
