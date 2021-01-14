@@ -6,29 +6,40 @@ ws.onmessage = function (event) {
     console.log('ws:', event.data);
 }
 
-function wsSendVal(el, val) {
-    const { key } = el.dataset;
+function wsSendVal(category, key, val, option = '') {
     fnKey = String(key).padStart(2, '0');
     const valStr = String(Math.abs(val)).padStart(4, '0');
     const sign = val < 0 ? '-' : '+';
-    const msg = `#${fnKey}${sign}${valStr}`;
+    const msg = `${category}${fnKey}${sign}${valStr}${option}`;
     console.log('msg:', msg);
     ws.send(msg);
 }
 
 Array.prototype.slice
-    .call(document.querySelectorAll('button'))
+    .call(document.querySelectorAll('button.base-ctrl'))
     .map(el => {
         el.onclick = () => {
-            const { val } = el.dataset;
-            wsSendVal(el, val);
+            const { val, key } = el.dataset;
+            wsSendVal('#', key, val);
         }
     });
 
 Array.prototype.slice
-    .call(document.querySelectorAll('input'))
+    .call(document.querySelectorAll('input.base-ctrl'))
     .map(el => {
         el.onchange = () => {
-            wsSendVal(el, el.value);
+            const { key } = el.dataset;
+            wsSendVal('#', key, el.value);
         }
     });
+
+Array.prototype.slice
+    .call(document.querySelectorAll('input.note-set'))
+    .map(el => {
+        el.onchange = () => {
+            const { option } = el.dataset;
+            const key = document.getElementById('note').value;
+            wsSendVal('$', key, el.value, option);
+        }
+    });
+

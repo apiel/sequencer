@@ -21,11 +21,10 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RST);
 #define PIN_BTN_3 0
 #endif
 
-#define OPTION_COUNT 8
+#define OPTION_COUNT 5
 
 typedef struct {
     const char* name;
-    bool isCategory = false;
     unsigned int (*fn)(int val, int isInc);
     unsigned int val;
     const char* unit = "";
@@ -66,7 +65,6 @@ void controllerSetup() {
     display.print("SEQUENCER");
     display.display();
 
-    gOption[0].isCategory = true;
     gOption[0].name = "Play";
     gOption[0].fn = &fnPlay;
     gOption[1].name = "Mute";
@@ -78,13 +76,6 @@ void controllerSetup() {
     gOption[3].fn = &fnSeqGate;
     gOption[4].name = "Pattern";
     gOption[4].fn = &fnPattern;
-    gOption[5].isCategory = true;
-    gOption[5].name = "Kick1 envelope";
-    gOption[5].fn = &fnKick1Env;
-    gOption[6].name = "Kick1 Freq";
-    gOption[6].fn = &fnKick1Freq;
-    gOption[7].name = "Kick1 R.time";
-    gOption[7].fn = &fnKick1ReleaseTime;
 
     for (int i = 0; i < OPTION_COUNT; i++) {
         gOption[i].val = callFn(i, 0, true);
@@ -138,10 +129,6 @@ void setSelMod(byte selMod) {
 void setSelector() {
     if (isDoubleClick(PIN_BTN_3, 500, LOW)) {
         Serial.println("double click, switch category");
-        do {
-            gSelected = mod(gSelected + 1, OPTION_COUNT);
-        } while (!gOption[gSelected].isCategory);
-        updateDisplay();
     } else if (isPressed(PIN_BTN_3, LOW)) {
         if (isClick(PIN_BTN_1, 200)) {
             gSelected = mod(gSelected + 1, OPTION_COUNT);

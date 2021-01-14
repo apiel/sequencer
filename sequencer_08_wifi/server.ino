@@ -21,20 +21,30 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
         //     Serial.print("|");
         // }
         if (data[0] == '#') {
-            byte key = c2nb(data[1]) * 10 + c2nb(data[2]);
-            int sign = data[3] == '-' ? -1 : 1;
-            int val = sign * (c2nb(data[4]) * 1000 + c2nb(data[5]) * 100 +
-                              c2nb(data[6]) * 10 + c2nb(data[7]));
-
-            Serial.print("ws key: ");
-            Serial.print(key);
-            Serial.print(" val: ");
-            Serial.print(val);
-            Serial.println();
-
+            byte key = getKeyFromData(data);
+            int val = getValFromData(data);
             callFn(key, val, false);
+        } else if (data[0] == '$') {
+            byte key = getKeyFromData(data);
+            byte optionKey = getOptionKeyFromData(data);
+            int val = getValFromData(data);
+            setNoteOption(key, optionKey, val);
         }
     }
+}
+
+byte getKeyFromData(uint8_t *data) {
+    return c2nb(data[1]) * 10 + c2nb(data[2]);
+}
+
+int getValFromData(uint8_t *data) {
+    int sign = data[3] == '-' ? -1 : 1;
+    return sign * (c2nb(data[4]) * 1000 + c2nb(data[5]) * 100 +
+                   c2nb(data[6]) * 10 + c2nb(data[7]));
+}
+
+byte getOptionKeyFromData(uint8_t *data) {
+    return c2nb(data[8]);
 }
 
 void handleIndexHtml(AsyncWebServerRequest *request) {

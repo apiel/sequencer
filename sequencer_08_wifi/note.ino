@@ -52,6 +52,35 @@ unsigned int fnKick1ReleaseTime(int val, int isInc) {
 }
 
 // Controller end
+// WS controller
+
+// unsigned int fnSetEnv(byte key, int val) {
+//     gMSynth[key].sMEnvSlope = between(val, 0, 8);
+//     return gMSynth[key].sMEnvSlope;
+// }
+
+void setNoteOption(byte key, byte optionKey, int val) {
+    // 0 is for set table
+    if (optionKey == 1) {
+        gMSynth[key].sMEnvSlope = between(val, 0, 8);
+    } else if (optionKey == 2) {
+        gMSynth[key].sMFrequency = between(val, -2000, 2000);
+    } else if (optionKey == 3) {
+        gMSynth[key].sMAttackTime = between(val, 0, 2000);
+    } else if (optionKey == 4) {
+        gMSynth[key].sMDecayTime = between(val, 0, 2000);
+    } else if (optionKey == 5) {
+        gMSynth[key].sMSustainTime = between(val, 0, 2000);
+    } else if (optionKey == 6) {
+        gMSynth[key].sMReleaseTime = between(val, 0, 2000);
+    } else if (optionKey == 7) {
+        gMSynth[key].sMReleaseTimeP = between(val, 0, 2000);
+    }
+    if (optionKey > 1) {
+        applySetting(key);
+    }
+}
+// End ws
 
 void playNote() {
     int aNote = gSeqNotes[gSeqPatternIndex][gSeqNoteIndex];
@@ -111,7 +140,10 @@ void setupNote(byte key, const int8_t* table, int num_cells, bool isDoubleEnv,
     //  gMSynth[key].sMFilterFrequency = 0;
     //  gMSynth[key].sMFilterResonance = 0;
     gMSynth[key].sMEnvSlope = envSlope;
+    applySetting(key);
+}
 
+void applySetting(byte key) {
     gMSynth[key].sMEnvA.setLevels(
         gMSynth[key].sMAttackLevel, gMSynth[key].sMDecayLevel,
         gMSynth[key].sMSustainLevel, gMSynth[key].sMReleaseLevel);
