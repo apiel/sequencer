@@ -62,37 +62,47 @@ unsigned int fnKick1ReleaseTime(int val, int isInc) {
 // Controller end
 
 void playNote() {
-    byte aNote = gSeqNotes[gSeqPatternIndex][gSeqNoteIndex];
+    int aNote = gSeqNotes[gSeqPatternIndex][gSeqNoteIndex];
 
-    // 01 - kick
-    if (aNote & D_KICK) {
-        playDoubleEnvNote(&gMSynth[0]);
+    for (int i = 0; i < SYNTH_COUNT; i++) {
+        if (aNote & (int)pow(2, i)) {
+            if (gMSynth[i].isDoubleEnv) {
+                playDoubleEnvNote(&gMSynth[i]);
+            } else {
+                playSimpleEnvNote(&gMSynth[i]);
+            }
+        }
     }
 
-    // 02 - snare
-    if (aNote & D_SNARE) {
-        playDoubleEnvNote(&gMSynth[1]);
-    }
+    // // 01 - kick
+    // if (aNote & D_KICK) {
+    //     playDoubleEnvNote(&gMSynth[0]);
+    // }
 
-    // 04 - hihat
-    if (aNote & D_HIHAT) {
-        playSimpleEnvNote(&gMSynth[2]);
-    }
+    // // 02 - snare
+    // if (aNote & D_SNARE) {
+    //     playDoubleEnvNote(&gMSynth[1]);
+    // }
 
-    // 08 - clap
-    if (aNote & D_CLAP) {
-        playSimpleEnvNote(&gMSynth[3]);
-    }
+    // // 04 - hihat
+    // if (aNote & D_HIHAT) {
+    //     playSimpleEnvNote(&gMSynth[2]);
+    // }
 
-    // 16 - crash
-    if (aNote & D_CRASH) {
-        playSimpleEnvNote(&gMSynth[4]);
-    }
+    // // 08 - clap
+    // if (aNote & D_CLAP) {
+    //     playSimpleEnvNote(&gMSynth[3]);
+    // }
 
-    // 32 - tom hi
-    if (aNote & D_TOMHI) {
-        playDoubleEnvNote(&gMSynth[5]);
-    }
+    // // 16 - crash
+    // if (aNote & D_CRASH) {
+    //     playSimpleEnvNote(&gMSynth[4]);
+    // }
+
+    // // 32 - tom hi
+    // if (aNote & D_TOMHI) {
+    //     playDoubleEnvNote(&gMSynth[5]);
+    // }
 }
 
 void playSimpleEnvNote(struct MDSynth* ptrSynth) {
@@ -111,28 +121,28 @@ void playDoubleEnvNote(struct MDSynth* ptrSynth) {
     ptrSynth->sMEnvP.noteOff();
 }
 
-void assignTable(struct MDSynth* ptrSynth, const int8_t* table, int num_cells) {
+void assignTable(byte key, const int8_t* table, int num_cells) {
     byte multi = MAX_NUM_CELLS / num_cells;
     for (int i = 0; i < num_cells; i++) {
         for (int x = 0; x < multi; x++) {
-            ptrSynth->sMDOscTable[i * multi + x] = table[i];
+            gMSynth[key].sMDOscTable[i * multi + x] = table[i];
         }
     }
-    ptrSynth->sMDOsc.setTable(ptrSynth->sMDOscTable);
+    gMSynth[key].sMDOsc.setTable(gMSynth[key].sMDOscTable);
 }
 
-void setupNote(byte key, struct MDSynth* ptrSynth, const int8_t* table, int num_cells) {
-    assignTable(ptrSynth, table, num_cells);
-    ptrSynth->key = key;
+void setupNote(byte key, const int8_t* table, int num_cells, bool isDoubleEnv) {
+    assignTable(key, table, num_cells);
+    gMSynth[key].isDoubleEnv = isDoubleEnv;
 }
 
 void setupNotes() {
-    setupNote(D_KICK, &gMSynth[0], SIN2048_DATA, SIN2048_NUM_CELLS);
-    setupNote(D_SNARE, &gMSynth[1], SIN2048_DATA, SIN2048_NUM_CELLS);
-    setupNote(D_HIHAT, &gMSynth[2], WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
-    setupNote(D_CLAP, &gMSynth[3], WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
-    setupNote(D_CRASH, &gMSynth[4], WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
-    setupNote(D_TOMHI, &gMSynth[5], TRIANGLE2048_DATA, TRIANGLE2048_NUM_CELLS);
+    setupNote(0, SIN2048_DATA, SIN2048_NUM_CELLS, true);
+    setupNote(1, SIN2048_DATA, SIN2048_NUM_CELLS, true);
+    setupNote(2, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS, false);
+    setupNote(3, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS, false);
+    setupNote(4, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS, false);
+    setupNote(5, TRIANGLE2048_DATA, TRIANGLE2048_NUM_CELLS, true);
 
     gMSynth[0].sMFrequency = 45;  // (setting)
     gMSynth[0].sMAttackTime = 0;
@@ -151,15 +161,15 @@ void setupNotes() {
     gMSynth[0].sMEnvA.setLevels(
         gMSynth[0].sMAttackLevel, gMSynth[0].sMDecayLevel,
         gMSynth[0].sMSustainLevel, gMSynth[0].sMReleaseLevel);
-    gMSynth[0].sMEnvA.setTimes(
-        gMSynth[0].sMAttackTime, gMSynth[0].sMDecayTime,
-        gMSynth[0].sMSustainTime, gMSynth[0].sMReleaseTime);
+    gMSynth[0].sMEnvA.setTimes(gMSynth[0].sMAttackTime, gMSynth[0].sMDecayTime,
+                               gMSynth[0].sMSustainTime,
+                               gMSynth[0].sMReleaseTime);
     gMSynth[0].sMEnvP.setLevels(
         gMSynth[0].sMAttackLevel, gMSynth[0].sMDecayLevel,
         gMSynth[0].sMSustainLevel, gMSynth[0].sMReleaseLevel);
-    gMSynth[0].sMEnvP.setTimes(
-        gMSynth[0].sMAttackTime, gMSynth[0].sMDecayTime,
-        gMSynth[0].sMSustainTime, gMSynth[0].sMReleaseTimeP);
+    gMSynth[0].sMEnvP.setTimes(gMSynth[0].sMAttackTime, gMSynth[0].sMDecayTime,
+                               gMSynth[0].sMSustainTime,
+                               gMSynth[0].sMReleaseTimeP);
 
     gMSynth[1].sMFrequency = 150;  // (setting)
     gMSynth[1].sMAttackTime = 0;
@@ -178,15 +188,15 @@ void setupNotes() {
     gMSynth[1].sMEnvA.setLevels(
         gMSynth[1].sMAttackLevel, gMSynth[1].sMDecayLevel,
         gMSynth[1].sMSustainLevel, gMSynth[1].sMReleaseLevel);
-    gMSynth[1].sMEnvA.setTimes(
-        gMSynth[1].sMAttackTime, gMSynth[1].sMDecayTime,
-        gMSynth[1].sMSustainTime, gMSynth[1].sMReleaseTime);
+    gMSynth[1].sMEnvA.setTimes(gMSynth[1].sMAttackTime, gMSynth[1].sMDecayTime,
+                               gMSynth[1].sMSustainTime,
+                               gMSynth[1].sMReleaseTime);
     gMSynth[1].sMEnvP.setLevels(
         gMSynth[1].sMAttackLevel, gMSynth[1].sMDecayLevel,
         gMSynth[1].sMSustainLevel, gMSynth[1].sMReleaseLevel);
-    gMSynth[1].sMEnvP.setTimes(
-        gMSynth[1].sMAttackTime, gMSynth[1].sMDecayTime,
-        gMSynth[1].sMSustainTime, gMSynth[1].sMReleaseTimeP);
+    gMSynth[1].sMEnvP.setTimes(gMSynth[1].sMAttackTime, gMSynth[1].sMDecayTime,
+                               gMSynth[1].sMSustainTime,
+                               gMSynth[1].sMReleaseTimeP);
 
     // gMDOscSnareN.setFreq(DRUM_NOISE_FREQ);
 
@@ -207,9 +217,9 @@ void setupNotes() {
     gMSynth[3].sMEnvA.setLevels(
         gMSynth[3].sMAttackLevel, gMSynth[3].sMDecayLevel,
         gMSynth[3].sMSustainLevel, gMSynth[3].sMReleaseLevel);
-    gMSynth[3].sMEnvA.setTimes(
-        gMSynth[3].sMAttackTime, gMSynth[3].sMDecayTime,
-        gMSynth[3].sMSustainTime, gMSynth[3].sMReleaseTime);
+    gMSynth[3].sMEnvA.setTimes(gMSynth[3].sMAttackTime, gMSynth[3].sMDecayTime,
+                               gMSynth[3].sMSustainTime,
+                               gMSynth[3].sMReleaseTime);
 
     gMSynth[3].sMDOsc.setFreq(DRUM_NOISE_FREQ);
 
@@ -230,9 +240,9 @@ void setupNotes() {
     gMSynth[2].sMEnvA.setLevels(
         gMSynth[2].sMAttackLevel, gMSynth[2].sMDecayLevel,
         gMSynth[2].sMSustainLevel, gMSynth[2].sMReleaseLevel);
-    gMSynth[2].sMEnvA.setTimes(
-        gMSynth[2].sMAttackTime, gMSynth[2].sMDecayTime,
-        gMSynth[2].sMSustainTime, gMSynth[2].sMReleaseTime);
+    gMSynth[2].sMEnvA.setTimes(gMSynth[2].sMAttackTime, gMSynth[2].sMDecayTime,
+                               gMSynth[2].sMSustainTime,
+                               gMSynth[2].sMReleaseTime);
 
     gMSynth[2].sMDOsc.setFreq(gMSynth[2].sMFrequency);
 
@@ -251,9 +261,9 @@ void setupNotes() {
     gMSynth[4].sMEnvA.setLevels(
         gMSynth[4].sMAttackLevel, gMSynth[4].sMDecayLevel,
         gMSynth[4].sMSustainLevel, gMSynth[4].sMReleaseLevel);
-    gMSynth[4].sMEnvA.setTimes(
-        gMSynth[4].sMAttackTime, gMSynth[4].sMDecayTime,
-        gMSynth[4].sMSustainTime, gMSynth[4].sMReleaseTime);
+    gMSynth[4].sMEnvA.setTimes(gMSynth[4].sMAttackTime, gMSynth[4].sMDecayTime,
+                               gMSynth[4].sMSustainTime,
+                               gMSynth[4].sMReleaseTime);
 
     gMSynth[4].sMDOsc.setFreq(DRUM_NOISE_FREQ);
 
@@ -274,15 +284,15 @@ void setupNotes() {
     gMSynth[5].sMEnvA.setLevels(
         gMSynth[5].sMAttackLevel, gMSynth[5].sMDecayLevel,
         gMSynth[5].sMSustainLevel, gMSynth[5].sMReleaseLevel);
-    gMSynth[5].sMEnvA.setTimes(
-        gMSynth[5].sMAttackTime, gMSynth[5].sMDecayTime,
-        gMSynth[5].sMSustainTime, gMSynth[5].sMReleaseTime);
+    gMSynth[5].sMEnvA.setTimes(gMSynth[5].sMAttackTime, gMSynth[5].sMDecayTime,
+                               gMSynth[5].sMSustainTime,
+                               gMSynth[5].sMReleaseTime);
     gMSynth[5].sMEnvP.setLevels(
         gMSynth[5].sMAttackLevel, gMSynth[5].sMDecayLevel,
         gMSynth[5].sMSustainLevel, gMSynth[5].sMReleaseLevel);
-    gMSynth[5].sMEnvP.setTimes(
-        gMSynth[5].sMAttackTime, gMSynth[5].sMDecayTime,
-        gMSynth[5].sMSustainTime, gMSynth[5].sMReleaseTimeP);
+    gMSynth[5].sMEnvP.setTimes(gMSynth[5].sMAttackTime, gMSynth[5].sMDecayTime,
+                               gMSynth[5].sMSustainTime,
+                               gMSynth[5].sMReleaseTimeP);
 }
 
 void updateEnvelopes() {
@@ -323,14 +333,10 @@ int updateAudioSeq() {
     gMSynth[5].sMEnvValueP = gMSynth[5].sMEnvP.next();
 
     return (int)(((gMSynth[0].sMEnvValueA * gMSynth[0].sMDOsc.next()) >> 1) +
-                 ((gMSynth[1].sMEnvValueA * gMSynth[1].sMDOsc.next()) >>
-                  2) +
-                 ((gMSynth[2].sMEnvValueA * gMSynth[2].sMDOsc.next()) >>
-                  1) +
+                 ((gMSynth[1].sMEnvValueA * gMSynth[1].sMDOsc.next()) >> 2) +
+                 ((gMSynth[2].sMEnvValueA * gMSynth[2].sMDOsc.next()) >> 1) +
                  ((gMSynth[3].sMEnvValueA * gMSynth[3].sMDOsc.next()) >> 1) +
-                 ((gMSynth[5].sMEnvValueA * gMSynth[5].sMDOsc.next()) >>
-                  1) +
-                 ((gMSynth[4].sMEnvValueA * gMSynth[4].sMDOsc.next()) >>
-                  2)) >>
+                 ((gMSynth[5].sMEnvValueA * gMSynth[5].sMDOsc.next()) >> 1) +
+                 ((gMSynth[4].sMEnvValueA * gMSynth[4].sMDOsc.next()) >> 2)) >>
            8;
 }
