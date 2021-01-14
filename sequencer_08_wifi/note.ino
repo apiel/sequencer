@@ -44,14 +44,13 @@ MDSynth gMSynthClap;
 MDSynth gMSynthCrash;
 MDSynth gMSynthTomHi;
 
-// oscillators
 // Oscil<SIN2048_NUM_CELLS, AUDIO_RATE> gMDOscKick(SIN2048_DATA);
-Oscil<SIN2048_NUM_CELLS, AUDIO_RATE> gMDOscSnare(SIN2048_DATA);
-Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscSnareN(WHITENOISE8192_DATA);
-Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscHihatN(WHITENOISE8192_DATA);
-Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscClapN(WHITENOISE8192_DATA);
-Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscCrashN(WHITENOISE8192_DATA);
-Oscil<TRIANGLE2048_NUM_CELLS, AUDIO_RATE> gMDOscTomHi(TRIANGLE2048_DATA);
+// Oscil<SIN2048_NUM_CELLS, AUDIO_RATE> gMDOscSnare(SIN2048_DATA);
+// Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscSnareN(WHITENOISE8192_DATA);
+// Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscHihatN(WHITENOISE8192_DATA);
+// Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscClapN(WHITENOISE8192_DATA);
+// Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscCrashN(WHITENOISE8192_DATA);
+// Oscil<TRIANGLE2048_NUM_CELLS, AUDIO_RATE> gMDOscTomHi(TRIANGLE2048_DATA);
 
 // Controller
 
@@ -122,7 +121,8 @@ void playDKick() {
 }
 
 void playDSnare() {
-    gMDOscSnare.setFreq(gMSynthSnare.sMFrequency);
+    // gMDOscSnare.setFreq(gMSynthSnare.sMFrequency);
+    gMSynthSnare.sMDOsc.setFreq(gMSynthSnare.sMFrequency);
     gMSynthSnare.sMEnvA.noteOn();
     gMSynthSnare.sMEnvP.noteOn();
     gMSynthSnare.sMEnvA.noteOff();
@@ -152,7 +152,8 @@ void playDCrash() {
 }
 
 void playDTomHi() {
-    gMDOscTomHi.setFreq(gMSynthTomHi.sMFrequency);
+    // gMDOscTomHi.setFreq(gMSynthTomHi.sMFrequency);
+    gMSynthTomHi.sMDOsc.setFreq(gMSynthTomHi.sMFrequency);
     gMSynthTomHi.sMEnvA.noteOn();
     gMSynthTomHi.sMEnvP.noteOn();
     gMSynthTomHi.sMEnvA.noteOff();
@@ -160,39 +161,42 @@ void playDTomHi() {
 }
 
 void playDTomLo() {
-    gMDOscTomHi.setFreq(gMSynthTomHi.sMFrequency << 1);
+    // gMDOscTomHi.setFreq(gMSynthTomHi.sMFrequency << 1);
+    gMSynthTomHi.sMDOsc.setFreq(gMSynthTomHi.sMFrequency << 1);
     gMSynthTomHi.sMEnvA.noteOn();
     gMSynthTomHi.sMEnvP.noteOn();
     gMSynthTomHi.sMEnvA.noteOff();
     gMSynthTomHi.sMEnvP.noteOff();
 }
 
-// void assignTable(MDSynth* synth, int8_t* table, int num_cells) {
-// void assignTable(const int8_t* table, int num_cells) {
-// void assignTable(MDSynth synth, const int8_t* table, int num_cells) {
-void assignTable(struct MDSynth * ptrSynth, const int8_t* table, int num_cells) {
-// void assignTable(const int8_t* table, int num_cells) {
+void assignTable(struct MDSynth* ptrSynth, const int8_t* table, int num_cells) {
     byte multi = MAX_NUM_CELLS / num_cells;
     for (int i = 0; i < num_cells; i++) {
         for (int x = 0; x < multi; x++) {
             ptrSynth->sMDOscTable[i * multi + x] = table[i];
-            // gMSynthKick.sMDOscTable[i * multi + x] = table[i];
         }
     }
+    ptrSynth->sMDOsc.setTable(ptrSynth->sMDOscTable);
 }
 
+// Oscil<SIN2048_NUM_CELLS, AUDIO_RATE> gMDOscKick(SIN2048_DATA);
+// Oscil<SIN2048_NUM_CELLS, AUDIO_RATE> gMDOscSnare(SIN2048_DATA);
+// Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscSnareN(WHITENOISE8192_DATA);
+// Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscHihatN(WHITENOISE8192_DATA);
+// Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscClapN(WHITENOISE8192_DATA);
+// Oscil<WHITENOISE8192_NUM_CELLS, AUDIO_RATE> gMDOscCrashN(WHITENOISE8192_DATA);
+// Oscil<TRIANGLE2048_NUM_CELLS, AUDIO_RATE> gMDOscTomHi(TRIANGLE2048_DATA);
+
 void setupNotes() {
-    // gMSynthKick.sMDOscTable // SIN2048_DATA
-    // for (int i = 0; i < SIN2048_NUM_CELLS; i++) {
-    //     gMSynthKick.sMDOscTable[i * 4] = SIN2048_DATA[i];
-    //     gMSynthKick.sMDOscTable[i * 4 + 1] = SIN2048_DATA[i];
-    //     gMSynthKick.sMDOscTable[i * 4 + 2] = SIN2048_DATA[i];
-    //     gMSynthKick.sMDOscTable[i * 4 + 3] = SIN2048_DATA[i];
-    // }
     assignTable(&gMSynthKick, SIN2048_DATA, SIN2048_NUM_CELLS);
-    // assignTable(SIN2048_DATA, SIN2048_NUM_CELLS);
-    // assignTable(SIN2048_DATA);
-    gMSynthKick.sMDOsc.setTable(gMSynthKick.sMDOscTable);
+    // gMSynthKick.sMDOsc.setTable(gMSynthKick.sMDOscTable);
+
+    assignTable(&gMSynthSnare, SIN2048_DATA, SIN2048_NUM_CELLS);
+    assignTable(&gMSynthHihat, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
+    assignTable(&gMSynthClap, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
+    assignTable(&gMSynthCrash, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
+    assignTable(&gMSynthTomHi, TRIANGLE2048_DATA, TRIANGLE2048_NUM_CELLS);
+
     gMSynthKick.sMFrequency = 45;  // (setting)
     gMSynthKick.sMAttackTime = 0;
     gMSynthKick.sMDecayTime = 0;
@@ -247,7 +251,7 @@ void setupNotes() {
         gMSynthSnare.sMAttackTime, gMSynthSnare.sMDecayTime,
         gMSynthSnare.sMSustainTime, gMSynthSnare.sMReleaseTimeP);
 
-    gMDOscSnareN.setFreq(DRUM_NOISE_FREQ);
+    // gMDOscSnareN.setFreq(DRUM_NOISE_FREQ);
 
     gMSynthClap.sMFrequency = 0;  // (only noise)
     gMSynthClap.sMAttackTime = 0;
@@ -270,7 +274,7 @@ void setupNotes() {
         gMSynthClap.sMAttackTime, gMSynthClap.sMDecayTime,
         gMSynthClap.sMSustainTime, gMSynthClap.sMReleaseTime);
 
-    gMDOscClapN.setFreq(DRUM_NOISE_FREQ);
+    gMSynthClap.sMDOsc.setFreq(DRUM_NOISE_FREQ);
 
     gMSynthHihat.sMFrequency = HIHAT_FREQ1;  // (only noise)
     gMSynthHihat.sMAttackTime = 0;
@@ -293,7 +297,7 @@ void setupNotes() {
         gMSynthHihat.sMAttackTime, gMSynthHihat.sMDecayTime,
         gMSynthHihat.sMSustainTime, gMSynthHihat.sMReleaseTime);
 
-    gMDOscHihatN.setFreq(gMSynthHihat.sMFrequency);
+    gMSynthHihat.sMDOsc.setFreq(gMSynthHihat.sMFrequency);
 
     gMSynthCrash.sMFrequency = 0;  // (only noise)
     gMSynthCrash.sMAttackTime = 0;
@@ -314,7 +318,7 @@ void setupNotes() {
         gMSynthCrash.sMAttackTime, gMSynthCrash.sMDecayTime,
         gMSynthCrash.sMSustainTime, gMSynthCrash.sMReleaseTime);
 
-    gMDOscCrashN.setFreq(DRUM_NOISE_FREQ);
+    gMSynthCrash.sMDOsc.setFreq(DRUM_NOISE_FREQ);
 
     gMSynthTomHi.sMFrequency = 100;  // (setting)
     gMSynthTomHi.sMAttackTime = 0;
@@ -353,7 +357,7 @@ void updateEnvelopes() {
 
     gMSynthSnare.sMEnvA.update();
     gMSynthSnare.sMEnvP.update();
-    gMDOscSnare.setFreq(
+    gMSynthSnare.sMDOsc.setFreq(
         gMSynthSnare.sMFrequency +
         (gMSynthSnare.sMEnvValueP >> gMSynthSnare.sMEnvSlope));  // (setting)
 
@@ -365,7 +369,7 @@ void updateEnvelopes() {
 
     gMSynthTomHi.sMEnvA.update();
     gMSynthTomHi.sMEnvP.update();
-    gMDOscTomHi.setFreq(
+    gMSynthTomHi.sMDOsc.setFreq(
         gMSynthTomHi.sMFrequency +
         (gMSynthTomHi.sMEnvValueP >> gMSynthTomHi.sMEnvSlope));  // (setting)
 }
@@ -382,12 +386,10 @@ int updateAudioSeq() {
     gMSynthTomHi.sMEnvValueP = gMSynthTomHi.sMEnvP.next();
 
     return (int)(((gMSynthKick.sMEnvValueA * gMSynthKick.sMDOsc.next()) >> 1) +
-                 ((gMSynthSnare.sMEnvValueA *
-                       (gMDOscSnare.next() + gMDOscSnareN.next()) >>
-                   2)) +
-                 ((gMSynthHihat.sMEnvValueA * gMDOscHihatN.next()) >> 1) +
-                 ((gMSynthClap.sMEnvValueA * gMDOscClapN.next()) >> 1) +
-                 ((gMSynthTomHi.sMEnvValueA * gMDOscTomHi.next()) >> 1) +
-                 ((gMSynthCrash.sMEnvValueA * gMDOscCrashN.next()) >> 2)) >>
+                 ((gMSynthSnare.sMEnvValueA * gMSynthSnare.sMDOsc.next()) >> 2) +
+                 ((gMSynthHihat.sMEnvValueA * gMSynthHihat.sMDOsc.next()) >> 1) +
+                 ((gMSynthClap.sMEnvValueA * gMSynthClap.sMDOsc.next()) >> 1) +
+                 ((gMSynthTomHi.sMEnvValueA * gMSynthTomHi.sMDOsc.next()) >> 1) +
+                 ((gMSynthCrash.sMEnvValueA * gMSynthCrash.sMDOsc.next()) >> 2)) >>
            8;
 }
