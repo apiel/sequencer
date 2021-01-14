@@ -47,12 +47,43 @@
             </div>
             <div class="card-body">
                 <div class="input-group mb-3">
+                    <label class="input-group-text">Table</label>
+                    <select class="form-select note-set" data-option="0">
+                        <option value="0">SIN2048</option>
+                        <option value="1">WHITENOISE8192</option>
+                        <option value="2">TRIANGLE2048</option>
+                        <option value="3">SQUARE_ANALOGUE512</option>
+                        <option value="4">COS256</option>
+                        <option value="5">NOISE_STATIC_1_16384</option>
+                        <option value="6">PHASOR256</option>
+                        <option value="7">PINKNOISE8192</option>
+                        <option value="8">SAW512</option>
+                        <option value="9">BROWNNOISE8192</option>
+                        <option value="10">CHUM78</option>
+                        <option value="11">SAW_ANALOGUE512</option>
+                        <option value="12">SMOOTHSQUARE8192</option>
+                        <option value="13">TRIANGLE1024</option>
+                        <option value="14">TRIANGLE_HERMES_2048</option>
+                        <option value="15">TRIANGLE_DIST_CUBED_2048</option>
+                        <option value="16">TRIANGLE_DIST_SQUARED_2048</option>
+                        <option value="17">TRIANGLE_VALVE_2048</option>
+                        <option value="18">TRIANGLE_VALVE_2_2048</option>
+                        <option value="19">WAVESHAPE1_SOFTCLIP</option>
+                        <option value="20">CHEBYSHEV_3RD_256</option>
+                        <option value="21">WAVESHAPE_SIGMOID</option>
+                        <option value="22">WAVESHAPE_TANH</option>
+                        <option value="23">WHITENOISE8192</option>
+                        <option value="24">SQUARE_NO_ALIAS_2048</option>
+                    </select>
+                </div>
+                <div class="input-group mb-3">
                     <span class="input-group-text">Envelope</span>
                     <input type="number" class="form-control note-set" min="0" max="8" value="1" data-option="1" />
                 </div>
                 <div class="input-group mb-3">
                     <span class="input-group-text">Frequency</span>
-                    <input type="number" class="form-control note-set" min="-2000" max="2000" value="100" data-option="2" />
+                    <input type="number" class="form-control note-set" min="-2000" max="2000" value="100"
+                        data-option="2" />
                 </div>
                 <div class="input-group mb-3">
                     <span class="input-group-text">AttackTime</span>

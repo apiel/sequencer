@@ -43,3 +43,12 @@ Array.prototype.slice
         }
     });
 
+Array.prototype.slice
+    .call(document.querySelectorAll('select.note-set'))
+    .map(el => {
+        el.onchange = () => {
+            const { option } = el.dataset;
+            const key = document.getElementById('note').value;
+            wsSendVal('$', key, el.value, option);
+        }
+    });
