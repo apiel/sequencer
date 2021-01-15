@@ -54,10 +54,19 @@ Array.prototype.slice
     });
 
 Array.prototype.slice
-    .call(document.querySelectorAll('td'))
+    .call(document.querySelectorAll('#set-pattern td'))
     .map(el => {
+        const input = el.querySelector('input');
+        input.onclick = (e) => e.stopPropagation();
         el.onclick = () => {
-            const input = el.querySelector('input');
             input.checked = !input.checked;
+        }
+        input.onchange = () => {
+            const { step } = input.dataset;
+            const val = Array.prototype.slice
+                .call(document.querySelectorAll(`#set-pattern input[data-step="${step}"]`))
+                .map(({ checked }, index) => checked ? Math.pow(2, index) : 0)
+                .reduce((a, b) => a + b);
+            wsSendVal('%', step, val);
         }
     });
