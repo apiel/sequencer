@@ -8,23 +8,8 @@
 #define PIN_SYNC_OUT 27
 
 #define CONTROL_RATE 128  // Hz, powers of 2 are most reliable
-
-#define MAX_PATTERNS 3
 #define MAX_NOTES 16  // max # of notes in sequence
-
-#define D_KICK 1
-#define D_SNARE 2
-#define D_HIHAT 4
-#define D_CLAP 8
-#define D_CRASH 16
-#define D_TOMHI 32
-
-byte gSeqNotes[MAX_PATTERNS][MAX_NOTES] = {
-    {D_KICK, 0, D_HIHAT, 0, D_SNARE, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT, 0,
-     D_SNARE, 0, D_HIHAT, D_KICK},
-    {D_KICK + D_CRASH, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT,
-     0, D_CLAP, 0, D_HIHAT, D_KICK},
-    {D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0}};
+#define MAX_PATTERNS 3
 
 bool gSeqNoteOn = false;
 bool gSeqPlay = true;

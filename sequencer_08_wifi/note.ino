@@ -27,11 +27,27 @@
 
 #define DRUM_LEVEL_B 200
 
+#define D_KICK 1
+#define D_SNARE 2
+#define D_HIHAT 4
+#define D_CLAP 8
+#define D_CRASH 16
+#define D_TOMHI 32
+
 #define MAX_NUM_CELLS 8192
 #define SYNTH_COUNT 6
 
+byte gSeqNotes[MAX_PATTERNS][MAX_NOTES] = {
+    {D_KICK, 0, D_HIHAT, 0, D_SNARE, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT, 0,
+     D_SNARE, 0, D_HIHAT, D_KICK},
+    {D_KICK + D_CRASH, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT,
+     0, D_CLAP, 0, D_HIHAT, D_KICK},
+    {D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0}};
+
+byte gCurrentPattern[MAX_NOTES] = {0, 0, 0, 0, 0, 0, 0, 0,
+                                   0, 0, 0, 0, 0, 0, 0, 0};
+
 typedef struct MDSynth {
-    byte key;
     bool isDoubleEnv;
     ADSR<CONTROL_RATE, AUDIO_RATE> sMEnvA;
     ADSR<CONTROL_RATE, AUDIO_RATE> sMEnvP;
@@ -60,35 +76,35 @@ MDSynth gMSynth[SYNTH_COUNT];
 
 // WS controller
 
-void setNoteOption(byte key, byte optionKey, int val) {
+void setNoteOption(byte note, byte optionKey, int val) {
     // 0 is for set table
     if (optionKey == 0) {
-        setNoteOptionTable(key, (byte)val);
+        setNoteOptionTable(note, (byte)val);
     } else if (optionKey == 1) {
-        gMSynth[key].sMEnvSlope = between(val, 0, 8);
+        gMSynth[note].sMEnvSlope = between(val, 0, 8);
     } else if (optionKey == 2) {
-        gMSynth[key].isDoubleEnv = val == 2;
+        gMSynth[note].isDoubleEnv = val == 2;
     } else if (optionKey == 3) {
-        gMSynth[key].sMFrequency = between(val, -2000, 2000);
+        gMSynth[note].sMFrequency = between(val, -2000, 2000);
     } else if (optionKey == 4) {
-        gMSynth[key].sMAttackTime = between(val, 0, 2000);
+        gMSynth[note].sMAttackTime = between(val, 0, 2000);
     } else if (optionKey == 5) {
-        gMSynth[key].sMDecayTime = between(val, 0, 2000);
+        gMSynth[note].sMDecayTime = between(val, 0, 2000);
     } else if (optionKey == 6) {
-        gMSynth[key].sMSustainTime = between(val, 0, 2000);
+        gMSynth[note].sMSustainTime = between(val, 0, 2000);
     } else if (optionKey == 7) {
-        gMSynth[key].sMReleaseTime = between(val, 0, 2000);
+        gMSynth[note].sMReleaseTime = between(val, 0, 2000);
     } else if (optionKey == 8) {
-        gMSynth[key].sMReleaseTimeP = between(val, 0, 2000);
+        gMSynth[note].sMReleaseTimeP = between(val, 0, 2000);
     }
     if (optionKey > 2) {
-        applySetting(key);
+        applySetting(note);
     }
 }
 // End ws
 
 void playNote() {
-    int aNote = gSeqNotes[gSeqPatternIndex][gSeqNoteIndex];
+    int aNote = gCurrentPattern[gSeqNoteIndex];
 
     for (int i = 0; i < SYNTH_COUNT; i++) {
         if (aNote & (int)pow(2, i)) {
@@ -117,53 +133,61 @@ void playDoubleEnvNote(struct MDSynth* ptrSynth) {
     ptrSynth->sMEnvP.noteOff();
 }
 
-void assignTable(byte key, const int8_t* table, int num_cells) {
+void assignCurrentPattern(byte note) {
+    for (int i = 0; i < MAX_NOTES; i++) {
+        gCurrentPattern[i] = gSeqNotes[note][i];
+    }
+}
+
+void assignTable(byte note, const int8_t* table, int num_cells) {
     byte multi = MAX_NUM_CELLS / num_cells;
     for (int i = 0; i < num_cells; i++) {
         for (int x = 0; x < multi; x++) {
-            gMSynth[key].sMDOscTable[i * multi + x] = table[i];
+            gMSynth[note].sMDOscTable[i * multi + x] = table[i];
         }
     }
-    gMSynth[key].sMDOsc.setTable(gMSynth[key].sMDOscTable);
+    gMSynth[note].sMDOsc.setTable(gMSynth[note].sMDOscTable);
 }
 
-void setupNote(byte key, const int8_t* table, int num_cells, bool isDoubleEnv,
+void setupNote(byte note, const int8_t* table, int num_cells, bool isDoubleEnv,
                int frequency, unsigned int releaseTime,
                unsigned int releaseTimeP, byte envSlope) {
-    assignTable(key, table, num_cells);
-    gMSynth[key].isDoubleEnv = isDoubleEnv;
-    gMSynth[key].sMFrequency = frequency;  // (setting)
-    gMSynth[key].sMAttackTime = 0;
-    gMSynth[key].sMDecayTime = 0;
-    gMSynth[key].sMSustainTime = 0;
-    gMSynth[key].sMReleaseTime = releaseTime;
-    gMSynth[key].sMReleaseTimeP = releaseTimeP;
-    gMSynth[key].sMAttackLevel = DRUM_LEVEL_B;
-    gMSynth[key].sMDecayLevel = DRUM_LEVEL_B;
-    gMSynth[key].sMSustainLevel = DRUM_LEVEL_B;
-    gMSynth[key].sMReleaseLevel = 0;
-    //  gMSynth[key].sMFilterFrequency = 0;
-    //  gMSynth[key].sMFilterResonance = 0;
-    gMSynth[key].sMEnvSlope = envSlope;
-    applySetting(key);
+    assignTable(note, table, num_cells);
+    gMSynth[note].isDoubleEnv = isDoubleEnv;
+    gMSynth[note].sMFrequency = frequency;  // (setting)
+    gMSynth[note].sMAttackTime = 0;
+    gMSynth[note].sMDecayTime = 0;
+    gMSynth[note].sMSustainTime = 0;
+    gMSynth[note].sMReleaseTime = releaseTime;
+    gMSynth[note].sMReleaseTimeP = releaseTimeP;
+    gMSynth[note].sMAttackLevel = DRUM_LEVEL_B;
+    gMSynth[note].sMDecayLevel = DRUM_LEVEL_B;
+    gMSynth[note].sMSustainLevel = DRUM_LEVEL_B;
+    gMSynth[note].sMReleaseLevel = 0;
+    //  gMSynth[note].sMFilterFrequency = 0;
+    //  gMSynth[note].sMFilterResonance = 0;
+    gMSynth[note].sMEnvSlope = envSlope;
+    applySetting(note);
 }
 
-void applySetting(byte key) {
-    gMSynth[key].sMEnvA.setLevels(
-        gMSynth[key].sMAttackLevel, gMSynth[key].sMDecayLevel,
-        gMSynth[key].sMSustainLevel, gMSynth[key].sMReleaseLevel);
-    gMSynth[key].sMEnvA.setTimes(
-        gMSynth[key].sMAttackTime, gMSynth[key].sMDecayTime,
-        gMSynth[key].sMSustainTime, gMSynth[key].sMReleaseTime);
-    gMSynth[key].sMEnvP.setLevels(
-        gMSynth[key].sMAttackLevel, gMSynth[key].sMDecayLevel,
-        gMSynth[key].sMSustainLevel, gMSynth[key].sMReleaseLevel);
-    gMSynth[key].sMEnvP.setTimes(
-        gMSynth[key].sMAttackTime, gMSynth[key].sMDecayTime,
-        gMSynth[key].sMSustainTime, gMSynth[key].sMReleaseTimeP);
+void applySetting(byte note) {
+    gMSynth[note].sMEnvA.setLevels(
+        gMSynth[note].sMAttackLevel, gMSynth[note].sMDecayLevel,
+        gMSynth[note].sMSustainLevel, gMSynth[note].sMReleaseLevel);
+    gMSynth[note].sMEnvA.setTimes(
+        gMSynth[note].sMAttackTime, gMSynth[note].sMDecayTime,
+        gMSynth[note].sMSustainTime, gMSynth[note].sMReleaseTime);
+    gMSynth[note].sMEnvP.setLevels(
+        gMSynth[note].sMAttackLevel, gMSynth[note].sMDecayLevel,
+        gMSynth[note].sMSustainLevel, gMSynth[note].sMReleaseLevel);
+    gMSynth[note].sMEnvP.setTimes(
+        gMSynth[note].sMAttackTime, gMSynth[note].sMDecayTime,
+        gMSynth[note].sMSustainTime, gMSynth[note].sMReleaseTimeP);
 }
 
 void setupNotes() {
+    assignCurrentPattern(0);
+
     setupNote(0, SIN2048_DATA, SIN2048_NUM_CELLS, true, 45, 170, 170, 1);
     setupNote(1, SIN2048_DATA, SIN2048_NUM_CELLS, true, 150, 160, 140, 1);
     setupNote(2, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS, false, 100, 35,
@@ -201,64 +225,64 @@ int updateAudioSeq() {
     return ret >> 8;
 }
 
-void setNoteOptionTable(byte key, byte tableId) {
+void setNoteOptionTable(byte note, byte tableId) {
     if (tableId == 1) {
-        assignTable(key, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
+        assignTable(note, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
     } else if (tableId == 2) {
-        assignTable(key, TRIANGLE2048_DATA, TRIANGLE2048_NUM_CELLS);
+        assignTable(note, TRIANGLE2048_DATA, TRIANGLE2048_NUM_CELLS);
     } else if (tableId == 3) {
-        assignTable(key, SQUARE_ANALOGUE512_DATA, SQUARE_ANALOGUE512_NUM_CELLS);
+        assignTable(note, SQUARE_ANALOGUE512_DATA, SQUARE_ANALOGUE512_NUM_CELLS);
     } else if (tableId == 4) {
-        assignTable(key, COS256_DATA, COS256_NUM_CELLS);
+        assignTable(note, COS256_DATA, COS256_NUM_CELLS);
     } else if (tableId == 5) {
-        assignTable(key, NOISE_STATIC_1_16384_DATA,
+        assignTable(note, NOISE_STATIC_1_16384_DATA,
                     NOISE_STATIC_1_16384_NUM_CELLS);
     } else if (tableId == 6) {
-        assignTable(key, PHASOR256_DATA, PHASOR256_NUM_CELLS);
+        assignTable(note, PHASOR256_DATA, PHASOR256_NUM_CELLS);
     } else if (tableId == 7) {
-        assignTable(key, PINKNOISE8192_DATA, PINKNOISE8192_NUM_CELLS);
+        assignTable(note, PINKNOISE8192_DATA, PINKNOISE8192_NUM_CELLS);
     } else if (tableId == 8) {
-        assignTable(key, SAW512_DATA, SAW512_NUM_CELLS);
+        assignTable(note, SAW512_DATA, SAW512_NUM_CELLS);
     } else if (tableId == 9) {
-        assignTable(key, BROWNNOISE8192_DATA, BROWNNOISE8192_NUM_CELLS);
+        assignTable(note, BROWNNOISE8192_DATA, BROWNNOISE8192_NUM_CELLS);
     } else if (tableId == 10) {
-        assignTable(key, CHUM78_DATA, CHUM78_NUM_CELLS);
+        assignTable(note, CHUM78_DATA, CHUM78_NUM_CELLS);
     } else if (tableId == 11) {
-        assignTable(key, SAW_ANALOGUE512_DATA, SAW_ANALOGUE512_NUM_CELLS);
+        assignTable(note, SAW_ANALOGUE512_DATA, SAW_ANALOGUE512_NUM_CELLS);
     } else if (tableId == 12) {
-        assignTable(key, SMOOTHSQUARE8192_DATA, SMOOTHSQUARE8192_NUM_CELLS);
+        assignTable(note, SMOOTHSQUARE8192_DATA, SMOOTHSQUARE8192_NUM_CELLS);
     } else if (tableId == 13) {
-        assignTable(key, TRIANGLE1024_DATA, TRIANGLE1024_NUM_CELLS);
+        assignTable(note, TRIANGLE1024_DATA, TRIANGLE1024_NUM_CELLS);
     } else if (tableId == 14) {
-        assignTable(key, TRIANGLE_HERMES_2048_DATA,
+        assignTable(note, TRIANGLE_HERMES_2048_DATA,
                     TRIANGLE_HERMES_2048_NUM_CELLS);
     } else if (tableId == 15) {
-        assignTable(key, TRIANGLE_DIST_CUBED_2048_DATA,
+        assignTable(note, TRIANGLE_DIST_CUBED_2048_DATA,
                     TRIANGLE_DIST_CUBED_2048_NUM_CELLS);
     } else if (tableId == 16) {
-        assignTable(key, TRIANGLE_DIST_SQUARED_2048_DATA,
+        assignTable(note, TRIANGLE_DIST_SQUARED_2048_DATA,
                     TRIANGLE_DIST_SQUARED_2048_NUM_CELLS);
     } else if (tableId == 17) {
-        assignTable(key, TRIANGLE_VALVE_2048_DATA,
+        assignTable(note, TRIANGLE_VALVE_2048_DATA,
                     TRIANGLE_VALVE_2048_NUM_CELLS);
     } else if (tableId == 18) {
-        assignTable(key, TRIANGLE_VALVE_2_2048_DATA,
+        assignTable(note, TRIANGLE_VALVE_2_2048_DATA,
                     TRIANGLE_VALVE_2_2048_NUM_CELLS);
     } else if (tableId == 19) {
-        assignTable(key, WAVESHAPE1_SOFTCLIP_DATA,
+        assignTable(note, WAVESHAPE1_SOFTCLIP_DATA,
                     WAVESHAPE1_SOFTCLIP_NUM_CELLS);
     } else if (tableId == 20) {
-        assignTable(key, CHEBYSHEV_3RD_256_DATA, CHEBYSHEV_3RD_256_NUM_CELLS);
+        assignTable(note, CHEBYSHEV_3RD_256_DATA, CHEBYSHEV_3RD_256_NUM_CELLS);
     } else if (tableId == 21) {
-        assignTable(key, WAVESHAPE_SIGMOID_DATA, WAVESHAPE_SIGMOID_NUM_CELLS);
+        assignTable(note, WAVESHAPE_SIGMOID_DATA, WAVESHAPE_SIGMOID_NUM_CELLS);
     } else if (tableId == 22) {
-        assignTable(key, WAVESHAPE_TANH_DATA, WAVESHAPE_TANH_NUM_CELLS);
+        assignTable(note, WAVESHAPE_TANH_DATA, WAVESHAPE_TANH_NUM_CELLS);
     } else if (tableId == 23) {
-        assignTable(key, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
+        assignTable(note, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
     } else if (tableId == 24) {
-        assignTable(key, SQUARE_NO_ALIAS_2048_DATA,
+        assignTable(note, SQUARE_NO_ALIAS_2048_DATA,
                     SQUARE_NO_ALIAS_2048_NUM_CELLS);
     } else {
-        assignTable(key, SIN2048_DATA, SIN2048_NUM_CELLS);
+        assignTable(note, SIN2048_DATA, SIN2048_NUM_CELLS);
     }
 }

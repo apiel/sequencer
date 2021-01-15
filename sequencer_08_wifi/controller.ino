@@ -204,5 +204,6 @@ unsigned int fnSeqGate(int val, int isInc) {
 
 unsigned int fnPattern(int val, int isInc) {
     gSeqPatternIndex = getVal(gSeqPatternIndex, val, isInc) % MAX_PATTERNS;
+    assignCurrentPattern(gSeqPatternIndex);
     return gSeqPatternIndex;
 }

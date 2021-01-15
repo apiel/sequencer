@@ -38,8 +38,8 @@ Array.prototype.slice
     .map(el => {
         el.onchange = () => {
             const { option } = el.dataset;
-            const key = document.getElementById('note').value;
-            wsSendVal('$', key, el.value, option);
+            const note = document.getElementById('note').value;
+            wsSendVal('$', option, el.value, note);
         }
     });
 
@@ -48,7 +48,7 @@ Array.prototype.slice
     .map(el => {
         el.onchange = () => {
             const { option } = el.dataset;
-            const key = document.getElementById('note').value;
-            wsSendVal('$', key, el.value, option);
+            const note = document.getElementById('note').value;
+            wsSendVal('$', option, el.value, note);
         }
     });
