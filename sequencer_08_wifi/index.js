@@ -63,7 +63,9 @@ Array.prototype.slice
         }
         input.onchange = () => {
             const { step } = input.dataset;
-            sendStepPattern(step);
+            if (document.getElementById('auto-send').checked) {
+                sendStepPattern(step);
+            }
         }
     });
 
