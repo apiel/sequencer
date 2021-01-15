@@ -133,6 +133,10 @@ void playDoubleEnvNote(struct MDSynth* ptrSynth) {
     ptrSynth->sMEnvP.noteOff();
 }
 
+void setStepPattern(byte step, int val) {
+    gCurrentPattern[step] = val;
+}
+
 void assignCurrentPattern(byte note) {
     for (int i = 0; i < MAX_NOTES; i++) {
         gCurrentPattern[i] = gSeqNotes[note][i];

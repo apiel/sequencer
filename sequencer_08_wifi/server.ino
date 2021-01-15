@@ -29,8 +29,11 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
             byte optionKey = getKeyFromData(data);
             byte note = getNoteFromData(data);
             int val = getValFromData(data);
-
             setNoteOption(note, optionKey, val);
+        } else if (data[0] == '%') {
+            byte step = getKeyFromData(data);
+            int val = getValFromData(data);
+            setStepPattern(step, val);
         }
     }
 }
