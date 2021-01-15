@@ -63,10 +63,20 @@ Array.prototype.slice
         }
         input.onchange = () => {
             const { step } = input.dataset;
-            const val = Array.prototype.slice
-                .call(document.querySelectorAll(`#set-pattern input[data-step="${step}"]`))
-                .map(({ checked }, index) => checked ? Math.pow(2, index) : 0)
-                .reduce((a, b) => a + b);
-            wsSendVal('%', step, val);
+            sendStepPattern(step);
         }
     });
+
+document.getElementById('send-pattern').onclick = () => {
+    for (let step = 0; step < 16; step++) {
+        sendStepPattern(step);
+    }
+};
+
+function sendStepPattern(step) {
+    const val = Array.prototype.slice
+        .call(document.querySelectorAll(`#set-pattern input[data-step="${step}"]`))
+        .map(({ checked }, index) => checked ? Math.pow(2, index) : 0)
+        .reduce((a, b) => a + b);
+    wsSendVal('%', step, val);
+}
