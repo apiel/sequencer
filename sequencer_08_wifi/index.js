@@ -52,3 +52,12 @@ Array.prototype.slice
             wsSendVal('$', option, el.value, note);
         }
     });
+
+Array.prototype.slice
+    .call(document.querySelectorAll('td'))
+    .map(el => {
+        el.onclick = () => {
+            const input = el.querySelector('input');
+            input.checked = !input.checked;
+        }
+    });
