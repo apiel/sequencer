@@ -96,6 +96,14 @@ void setNoteOption(byte note, byte optionKey, int val) {
         gMSynth[note].sMReleaseTime = between(val, 0, 2000);
     } else if (optionKey == 8) {
         gMSynth[note].sMReleaseTimeP = between(val, 0, 2000);
+    } else if (optionKey == 9) {
+        gMSynth[note].sMAttackLevel = between(val, 0, 255);
+    } else if (optionKey == 10) {
+        gMSynth[note].sMDecayLevel = between(val, 0, 255);
+    } else if (optionKey == 11) {
+        gMSynth[note].sMSustainLevel = between(val, 0, 255);
+    } else if (optionKey == 12) {
+        gMSynth[note].sMReleaseLevel = between(val, 0, 255);
     }
     if (optionKey > 2) {
         applySetting(note);
