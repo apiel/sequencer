@@ -34,6 +34,13 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
             byte step = getKeyFromData(data);
             int val = getValFromData(data);
             setStepPattern(step, val);
+        } else if (data[0] == ':') {
+            Serial.print("midi msg: ");
+            Serial.print(data[2]);
+            Serial.print(',');
+            Serial.print(data[3]);
+            Serial.print(',');
+            Serial.println(data[4]);
         }
     }
 }
@@ -48,9 +55,7 @@ int getValFromData(uint8_t *data) {
                    b2nb(data[6]) * 10 + b2nb(data[7]));
 }
 
-byte getNoteFromData(uint8_t *data) {
-    return c2nb(data[8]);
-}
+byte getNoteFromData(uint8_t *data) { return c2nb(data[8]); }
 
 void handleIndexHtml(AsyncWebServerRequest *request) {
     request->send_P(200, "text/html", (const uint8_t *)index_html,
