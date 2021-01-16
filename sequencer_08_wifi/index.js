@@ -145,36 +145,72 @@ console.log('yo midi');
 // }
 
 
-var midi = null;  // global MIDIAccess object
-var output = null;
+// var midi = null;  // global MIDIAccess object
+// var output = null;
 
-function echoMIDIMessage(event) {
-    console.log('midi', event);
-    if (output) {
-        output.send(event.data, event.timestamp);
+// function echoMIDIMessage(event) {
+//     console.log('midi', event);
+//     if (output) {
+//         output.send(event.data, event.timestamp);
+//     }
+// }
+
+// function onMIDISuccess(midiAccess) {
+//     console.log("MIDI ready!", midiAccess);
+//     midiAccess.inputs.forEach((midiInput) => {
+//         console.log('midiInput', midiInput);
+//         midiInput.onmidimessage = echoMIDIMessage;
+//     });
+//     midiAccess.outputs.forEach(async (midiOutput) => {
+//         setTimeout(() => {
+//             midiOutput.send('hello').then(() => console.log('sent'))
+//             .catch(console.warn);
+//         }, 2000);
+
+//         console.log('midiOutput', midiOutput);
+//     });
+// }
+
+// function onMIDIFailure(msg) {
+//     console.log("Failed to get MIDI access - " + msg);
+// }
+
+// navigator.requestMIDIAccess({
+//     sysex: true // this defaults to 'false' and we won't be covering sysex in this article. 
+// }).then(onMIDISuccess, onMIDIFailure);
+
+
+
+var midi, data;
+// request MIDI access
+if (navigator.requestMIDIAccess) {
+    navigator.requestMIDIAccess({
+        sysex: true
+    }).then(onMIDISuccess, onMIDIFailure);
+} else {
+    alert("No MIDI support in your browser.");
+}
+
+// midi functions
+function onMIDISuccess(midiAccess) {
+    // when we get a succesful response, run this code
+    midi = midiAccess; // this is our raw MIDI data, inputs, outputs, and sysex status
+
+    var inputs = midi.inputs.values();
+    // loop over all available inputs and listen for any MIDI input
+    for (var input = inputs.next(); input && !input.done; input = inputs.next()) {
+        console.log('input', input);
+        // each time there is a midi message call the onMIDIMessage function
+        input.value.onmidimessage = onMIDIMessage;
     }
 }
 
-function onMIDISuccess(midiAccess) {
-    console.log("MIDI ready!", midiAccess);
-    midiAccess.inputs.forEach((midiInput) => {
-        console.log('midiInput', midiInput);
-        midiInput.onmidimessage = echoMIDIMessage;
-    });
-    midiAccess.outputs.forEach(async (midiOutput) => {
-        setTimeout(() => {
-            midiOutput.send('hello').then(() => console.log('sent'))
-            .catch(console.warn);
-        }, 2000);
-
-        console.log('midiOutput', midiOutput);
-    });
+function onMIDIFailure(error) {
+    // when we get a failed response, run this code
+    console.log("No access to MIDI devices or your browser doesn't support WebMIDI API. Please use WebMIDIAPIShim " + error);
 }
 
-function onMIDIFailure(msg) {
-    console.log("Failed to get MIDI access - " + msg);
+function onMIDIMessage(message) {
+    data = message.data; // this gives us our [command/channel, note, velocity] data.
+    console.log('MIDI data', data); // MIDI data [144, 63, 73]
 }
-
-navigator.requestMIDIAccess({
-    sysex: true // this defaults to 'false' and we won't be covering sysex in this article. 
-}).then(onMIDISuccess, onMIDIFailure);
