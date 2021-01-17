@@ -7,8 +7,8 @@
     "emeraldwalk.runonsave": {
         "commands": [
             {
-                "match": "\\.(html|js|css)$",
-                "cmd": "xxd -i ${relativeFile} > ${relativeFile}.h"
+                // "match": "\\.(html|js|css)$",
+                // "cmd": "xxd -i ${relativeFile} > ${relativeFile}.h"
             }
         ]
     }
