@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <title>Sequencer</title>
+</head>
+
+<body>
+    <div class="container-fluid" style="margin: 10px 0;">
+        <div class="mb-3">
+            <button type="button" class="btn btn-primary base-ctrl" data-key="0" data-val="1">Play</button>
+            <button type="button" class="btn btn-danger base-ctrl" data-key="0" data-val="-1">Stop</button>
+            <button type="button" class="btn btn-secondary base-ctrl" data-key="1" data-val="1">Mute</button>
+            <button type="button" class="btn btn-secondary base-ctrl" data-key="1" data-val="-1">Unmute</button>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text">BPM</span>
+            <input type="number" class="form-control base-ctrl" min="50" max="250" value="100" data-key="2" />
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text">Sequence gate</span>
+            <input type="number" class="form-control base-ctrl" min="0" max="100" value="50" data-key="3" />
+            <span class="input-group-text">%</span>
+        </div>
+        <div class="btn-group mb-3" role="group">
+            <button type="button" class="btn btn-secondary base-ctrl" data-key="4" data-val="1">Pattern 1</button>
+            <button type="button" class="btn btn-secondary base-ctrl" data-key="4" data-val="2">Pattern 2</button>
+            <button type="button" class="btn btn-secondary base-ctrl" data-key="4" data-val="3">Pattern 3</button>
+        </div>
+        <table class="table" id="set-pattern">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">01</th>
+                    <th scope="col">02</th>
+                    <th scope="col">03</th>
+                    <th scope="col">04</th>
+                    <th scope="col">05</th>
+                    <th scope="col">06</th>
+                    <th scope="col">07</th>
+                    <th scope="col">08</th>
+                    <th scope="col">09</th>
+                    <th scope="col">10</th>
+                    <th scope="col">11</th>
+                    <th scope="col">12</th>
+                    <th scope="col">13</th>
+                    <th scope="col">14</th>
+                    <th scope="col">15</th>
+                    <th scope="col">16</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">a</th>
+                    <td><input data-step="0" type="checkbox" /></td>
+                    <td><input data-step="1" type="checkbox" /></td>
+                    <td><input data-step="2" type="checkbox" /></td>
+                    <td><input data-step="3" type="checkbox" /></td>
+                    <td><input data-step="4" type="checkbox" /></td>
+                    <td><input data-step="5" type="checkbox" /></td>
+                    <td><input data-step="6" type="checkbox" /></td>
+                    <td><input data-step="7" type="checkbox" /></td>
+                    <td><input data-step="8" type="checkbox" /></td>
+                    <td><input data-step="9" type="checkbox" /></td>
+                    <td><input data-step="10" type="checkbox" /></td>
+                    <td><input data-step="11" type="checkbox" /></td>
+                    <td><input data-step="12" type="checkbox" /></td>
+                    <td><input data-step="13" type="checkbox" /></td>
+                    <td><input data-step="14" type="checkbox" /></td>
+                    <td><input data-step="15" type="checkbox" /></td>
+                </tr>
+                <tr>
+                    <th scope="row">b</th>
+                    <td><input data-step="0" type="checkbox" /></td>
+                    <td><input data-step="1" type="checkbox" /></td>
+                    <td><input data-step="2" type="checkbox" /></td>
+                    <td><input data-step="3" type="checkbox" /></td>
+                    <td><input data-step="4" type="checkbox" /></td>
+                    <td><input data-step="5" type="checkbox" /></td>
+                    <td><input data-step="6" type="checkbox" /></td>
+                    <td><input data-step="7" type="checkbox" /></td>
+                    <td><input data-step="8" type="checkbox" /></td>
+                    <td><input data-step="9" type="checkbox" /></td>
+                    <td><input data-step="10" type="checkbox" /></td>
+                    <td><input data-step="11" type="checkbox" /></td>
+                    <td><input data-step="12" type="checkbox" /></td>
+                    <td><input data-step="13" type="checkbox" /></td>
+                    <td><input data-step="14" type="checkbox" /></td>
+                    <td><input data-step="15" type="checkbox" /></td>
+                </tr>
+                <tr>
+                    <th scope="row">c</th>
+                    <td><input data-step="0" type="checkbox" /></td>
+                    <td><input data-step="1" type="checkbox" /></td>
+                    <td><input data-step="2" type="checkbox" /></td>
+                    <td><input data-step="3" type="checkbox" /></td>
+                    <td><input data-step="4" type="checkbox" /></td>
+                    <td><input data-step="5" type="checkbox" /></td>
+                    <td><input data-step="6" type="checkbox" /></td>
+                    <td><input data-step="7" type="checkbox" /></td>
+                    <td><input data-step="8" type="checkbox" /></td>
+                    <td><input data-step="9" type="checkbox" /></td>
+                    <td><input data-step="10" type="checkbox" /></td>
+                    <td><input data-step="11" type="checkbox" /></td>
+                    <td><input data-step="12" type="checkbox" /></td>
+                    <td><input data-step="13" type="checkbox" /></td>
+                    <td><input data-step="14" type="checkbox" /></td>
+                    <td><input data-step="15" type="checkbox" /></td>
+                </tr>
+                <tr>
+                    <th scope="row">d</th>
+                    <td><input data-step="0" type="checkbox" /></td>
+                    <td><input data-step="1" type="checkbox" /></td>
+                    <td><input data-step="2" type="checkbox" /></td>
+                    <td><input data-step="3" type="checkbox" /></td>
+                    <td><input data-step="4" type="checkbox" /></td>
+                    <td><input data-step="5" type="checkbox" /></td>
+                    <td><input data-step="6" type="checkbox" /></td>
+                    <td><input data-step="7" type="checkbox" /></td>
+                    <td><input data-step="8" type="checkbox" /></td>
+                    <td><input data-step="9" type="checkbox" /></td>
+                    <td><input data-step="10" type="checkbox" /></td>
+                    <td><input data-step="11" type="checkbox" /></td>
+                    <td><input data-step="12" type="checkbox" /></td>
+                    <td><input data-step="13" type="checkbox" /></td>
+                    <td><input data-step="14" type="checkbox" /></td>
+                    <td><input data-step="15" type="checkbox" /></td>
+                </tr>
+                <tr>
+                    <th scope="row">e</th>
+                    <td><input data-step="0" type="checkbox" /></td>
+                    <td><input data-step="1" type="checkbox" /></td>
+                    <td><input data-step="2" type="checkbox" /></td>
+                    <td><input data-step="3" type="checkbox" /></td>
+                    <td><input data-step="4" type="checkbox" /></td>
+                    <td><input data-step="5" type="checkbox" /></td>
+                    <td><input data-step="6" type="checkbox" /></td>
+                    <td><input data-step="7" type="checkbox" /></td>
+                    <td><input data-step="8" type="checkbox" /></td>
+                    <td><input data-step="9" type="checkbox" /></td>
+                    <td><input data-step="10" type="checkbox" /></td>
+                    <td><input data-step="11" type="checkbox" /></td>
+                    <td><input data-step="12" type="checkbox" /></td>
+                    <td><input data-step="13" type="checkbox" /></td>
+                    <td><input data-step="14" type="checkbox" /></td>
+                    <td><input data-step="15" type="checkbox" /></td>
+                </tr>
+                <tr>
+                    <th scope="row">f</th>
+                    <td><input data-step="0" type="checkbox" /></td>
+                    <td><input data-step="1" type="checkbox" /></td>
+                    <td><input data-step="2" type="checkbox" /></td>
+                    <td><input data-step="3" type="checkbox" /></td>
+                    <td><input data-step="4" type="checkbox" /></td>
+                    <td><input data-step="5" type="checkbox" /></td>
+                    <td><input data-step="6" type="checkbox" /></td>
+                    <td><input data-step="7" type="checkbox" /></td>
+                    <td><input data-step="8" type="checkbox" /></td>
+                    <td><input data-step="9" type="checkbox" /></td>
+                    <td><input data-step="10" type="checkbox" /></td>
+                    <td><input data-step="11" type="checkbox" /></td>
+                    <td><input data-step="12" type="checkbox" /></td>
+                    <td><input data-step="13" type="checkbox" /></td>
+                    <td><input data-step="14" type="checkbox" /></td>
+                    <td><input data-step="15" type="checkbox" /></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="mb-3">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="auto-send">
+                <label class="form-check-label" for="auto-send">Auto send</label>
+              </div>
+            <button type="button" class="btn btn-secondary" id="send-pattern">Send pattern</button>
+        </div>
+        <div class="card">
+            <div class="card-title">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="note">Note</label>
+                    <select class="form-select" id="note">
+                        <option value="a">a</option>
+                        <option value="b">b</option>
+                        <option value="c">c</option>
+                        <option value="d">d</option>
+                        <option value="e">e</option>
+                        <option value="f">f</option>
+                    </select>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="input-group mb-3">
+                    <label class="input-group-text">Table</label>
+                    <select class="form-select note-set" data-option="0">
+                        <option value="0">SIN2048</option>
+                        <option value="1">WHITENOISE8192</option>
+                        <option value="2">TRIANGLE2048</option>
+                        <option value="3">SQUARE_ANALOGUE512</option>
+                        <option value="4">COS256</option>
+                        <option value="5">NOISE_STATIC_1_16384</option>
+                        <option value="6">PHASOR256</option>
+                        <option value="7">PINKNOISE8192</option>
+                        <option value="8">SAW512</option>
+                        <option value="9">BROWNNOISE8192</option>
+                        <option value="10">CHUM78</option>
+                        <option value="11">SAW_ANALOGUE512</option>
+                        <option value="12">SMOOTHSQUARE8192</option>
+                        <option value="13">TRIANGLE1024</option>
+                        <option value="14">TRIANGLE_HERMES_2048</option>
+                        <option value="15">TRIANGLE_DIST_CUBED_2048</option>
+                        <option value="16">TRIANGLE_DIST_SQUARED_2048</option>
+                        <option value="17">TRIANGLE_VALVE_2048</option>
+                        <option value="18">TRIANGLE_VALVE_2_2048</option>
+                        <option value="19">WAVESHAPE1_SOFTCLIP</option>
+                        <option value="20">CHEBYSHEV_3RD_256</option>
+                        <option value="21">WAVESHAPE_SIGMOID</option>
+                        <option value="22">WAVESHAPE_TANH</option>
+                        <option value="23">WHITENOISE8192</option>
+                        <option value="24">SQUARE_NO_ALIAS_2048</option>
+                    </select>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Envelope</span>
+                    <input type="number" class="form-control note-set" min="0" max="8" value="1" data-option="1" />
+                </div>
+                <div class="input-group mb-3">
+                    <label class="input-group-text">Envelope type</label>
+                    <select class="form-select note-set" data-option="2">
+                        <option value="1">Simple envelope</option>
+                        <option value="2">Double envelope</option>
+                    </select>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Frequency</span>
+                    <input type="number" class="form-control note-set" min="-2000" max="2000" value="100"
+                        data-option="3" />
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">AttackTime</span>
+                    <input type="number" class="form-control note-set" min="0" max="2000" value="100" data-option="4" />
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">DecayTime</span>
+                    <input type="number" class="form-control note-set" min="0" max="2000" value="100" data-option="5" />
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">SustainTime</span>
+                    <input type="number" class="form-control note-set" min="0" max="2000" value="100" data-option="6" />
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">ReleaseTime</span>
+                    <input type="number" class="form-control note-set" min="0" max="2000" value="100" data-option="7" />
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">ReleaseTimeP</span>
+                    <input type="number" class="form-control note-set" min="0" max="2000" value="100" data-option="8" />
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">AttackLevel</span>
+                    <input type="number" class="form-control note-set" min="0" max="255" value="200" data-option="9" />
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">DecayLevel</span>
+                    <input type="number" class="form-control note-set" min="0" max="255" value="200" data-option="10" />
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">SustainLevel</span>
+                    <input type="number" class="form-control note-set" min="0" max="255" value="200" data-option="11" />
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">ReleaseLevel</span>
+                    <input type="number" class="form-control note-set" min="0" max="255" value="0" data-option="12" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script>
+    <script src="./index.js"></script>
+</body>
+
+</html>
