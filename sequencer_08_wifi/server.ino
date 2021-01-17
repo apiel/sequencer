@@ -34,8 +34,6 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
             byte step = getKeyFromData(data);
             int val = getValFromData(data);
             setStepPattern(step, val);
-        } else if (data[0] == ':') {
-            handleMidi(data[2], data[3], data[4]);
         }
     }
 }

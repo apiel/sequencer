@@ -15,13 +15,6 @@ function wsSendVal(category, key, val, option = '') {
     ws.send(msg);
 }
 
-function wsSendMidi(data) {
-    data = [...data].map((c) => String.fromCharCode(c));
-    const msg = `:${data.join('')}`;
-    console.log('msg:', msg);
-    ws.send(msg);
-}
-
 Array.prototype.slice
     .call(document.querySelectorAll('button.base-ctrl'))
     .map((el) => {
@@ -92,34 +85,4 @@ function sendStepPattern(step) {
         .map(({ checked }, index) => (checked ? Math.pow(2, index) : 0))
         .reduce((a, b) => a + b);
     wsSendVal('%', step, val);
-}
-
-// request MIDI access
-if (navigator.requestMIDIAccess) {
-    navigator
-        .requestMIDIAccess({
-            //   sysex: true,
-        })
-        .then(onMIDISuccess, onMIDIFailure);
-} else {
-    alert('No MIDI support in your browser.');
-}
-
-function onMIDISuccess(midiAccess) {
-    midiAccess.inputs.forEach((midiInput) => {
-        console.log('midiInput', midiInput);
-        midiInput.onmidimessage = onMIDIMessage;
-    });
-}
-
-function onMIDIFailure(error) {
-    console.error(
-        "No access to MIDI devices or your browser doesn't support WebMIDI API. Please use WebMIDIAPIShim ",
-        error,
-    );
-}
-
-function onMIDIMessage({ data }) {
-    console.log('MIDI data', data);
-    wsSendMidi(data);
 }
