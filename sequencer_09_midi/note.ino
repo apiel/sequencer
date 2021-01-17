@@ -75,44 +75,6 @@ typedef struct MDSynth {
 
 MDSynth gMSynth[NOTES_COUNT];
 
-// WS controller
-
-void setNoteOption(byte note, byte optionKey, int val) {
-    // 0 is for set table
-    if (optionKey == 0) {
-        currentTableId = (byte)val;
-        setNoteOptionTable(note);
-    } else if (optionKey == 1) {
-        gMSynth[note].sMEnvSlope = between(val, 0, 8);
-    } else if (optionKey == 2) {
-        gMSynth[note].isDoubleEnv = val == 2;
-    } else if (optionKey == 3) {
-        gMSynth[note].sMFrequency = between(val, -2000, 2000);
-    } else if (optionKey == 4) {
-        gMSynth[note].sMAttackTime = between(val, 0, 2000);
-    } else if (optionKey == 5) {
-        gMSynth[note].sMDecayTime = between(val, 0, 2000);
-    } else if (optionKey == 6) {
-        gMSynth[note].sMSustainTime = between(val, 0, 2000);
-    } else if (optionKey == 7) {
-        gMSynth[note].sMReleaseTime = between(val, 0, 2000);
-    } else if (optionKey == 8) {
-        gMSynth[note].sMReleaseTimeP = between(val, 0, 2000);
-    } else if (optionKey == 9) {
-        gMSynth[note].sMAttackLevel = between(val, 0, 255);
-    } else if (optionKey == 10) {
-        gMSynth[note].sMDecayLevel = between(val, 0, 255);
-    } else if (optionKey == 11) {
-        gMSynth[note].sMSustainLevel = between(val, 0, 255);
-    } else if (optionKey == 12) {
-        gMSynth[note].sMReleaseLevel = between(val, 0, 255);
-    }
-    if (optionKey > 2) {
-        applySetting(note);
-    }
-}
-// End ws
-
 void setNoteFromMidi(byte note, byte optionKey, int direction) {
     Serial.print("setNoteFromMidi: ");
     Serial.print(note);

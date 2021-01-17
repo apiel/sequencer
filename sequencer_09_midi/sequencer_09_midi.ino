@@ -82,7 +82,6 @@ void handleStepSequencer() {
 
 void updateControl() {
     wifiCheck();
-    controllerHandler();
     handleStepSequencer();
 }
 
@@ -95,12 +94,6 @@ int updateAudio() {
 
 void setup() {
     Serial.begin(115200);
-
-    // Serial.print("pow 3: ");
-    // Serial.println(pow(2, 3));
-    // Serial.print("exp 8: ");
-    // Serial.println(log(8)/log(2));
-
     pinMode(PIN_SYNC_OUT, OUTPUT);
 
     wifiBegin();
@@ -115,8 +108,7 @@ void setup() {
 
     setupNotes();
 
-    // should be at the end to get default values
-    controllerSetup();
+    displaySetup();
     setupServer();
 
     startMozzi(CONTROL_RATE);
