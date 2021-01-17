@@ -58,7 +58,7 @@ void handleDefaultButton(byte key) {
     }
 }
 
-bool isNoteMenu() { return currentMenu >= 0 && NOTES_COUNT; }
+bool isNoteMenu() { return currentMenu >= 0 && currentMenu < NOTES_COUNT; }
 
 void handleKnob(byte key, byte val) {
     byte knob = key % KNOB_COUNT;
@@ -80,6 +80,10 @@ void handleKnob(byte key, byte val) {
         Serial.println(currentMenu);
     } else if (isNoteMenu()) {
         setNoteFromMidi(currentMenu, key, direction);
+    } else if (currentMenu == MAIN_MENU) {
+        if (knob == 2 || knob == 12) {
+            setBPM(direction);
+        }
     }
 }
 

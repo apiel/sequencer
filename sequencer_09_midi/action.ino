@@ -9,12 +9,12 @@ void play() {
 
 void stop() { gSeqPlay = false; }
 
-// unsigned int fnBPM(int val, int isInc) {
-//     int bpm = getVal(gSeqBase.gSeqBPM, val, isInc);
-//     gSeqBase.gSeqBPM = between(bpm, 10, 250);
-//     setTempo();
-//     return gSeqBase.gSeqBPM;
-// }
+void setBPM(int direction) {
+    gSeqBase.gSeqBPM = between(gSeqBase.gSeqBPM + direction, 10, 250);
+    Serial.print("Set new bpm");
+    Serial.println(gSeqBase.gSeqBPM);
+    setTempo();
+}
 
 // unsigned int fnSeqGate(int val, int isInc) {
 //     int pct = getVal(gSeqBase.gSeqGatePercent, val, isInc);
