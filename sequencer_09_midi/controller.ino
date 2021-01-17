@@ -89,8 +89,6 @@ void controllerHandler() {
     setValue();
 }
 
-int mod(int n, int m) { return ((n % m) + m) % m; }
-
 void updateDisplay() {
     display.clearDisplay();
     display.setCursor(0, 0);
@@ -166,16 +164,22 @@ unsigned int fnPlay(int val, int isInc) {
     // val can be 0 for default initialization
     // if we to have the player off by default then put || val == 0
     if (val == -1) {
-        gSeqPlay = false;
+        stop();
         return 0;
     }
+    play();
+    return 1;
+}
+
+void play() {
     gSeqPlay = true;
     gSeqNoteIndex = 0;
     gSeqTimeCurrent = millis();
     gSeqTimeLast = gSeqTimeCurrent;
     gSeqNoteOn = false;
-    return 1;
 }
+
+void stop() { gSeqPlay = false; }
 
 unsigned int fnMute(int val, int isInc) {
     // val can be 0 for default initialization

@@ -9,3 +9,5 @@ int getVal(int baseVal, int val, int isInc, unsigned int multi) {
 int getVal(int baseVal, int val, int isInc) {
     return getVal(baseVal, val, isInc, 1);
 }
+
+int mod(int n, int m) { return ((n % m) + m) % m; }

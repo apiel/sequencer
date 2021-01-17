@@ -8,8 +8,11 @@
 #define PIN_SYNC_OUT 27
 
 #define CONTROL_RATE 128  // Hz, powers of 2 are most reliable
-#define MAX_NOTES 16  // max # of notes in sequence
+#define MAX_NOTES 16  // max # of notes in pattern
 #define MAX_PATTERNS 3
+
+#define NOTES_COUNT 6 // number of existing notes
+#define MENU_SIZE (NOTES_COUNT + 1)
 
 bool gSeqNoteOn = false;
 bool gSeqPlay = true;

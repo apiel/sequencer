@@ -35,7 +35,8 @@
 #define D_TOMHI 32
 
 #define MAX_NUM_CELLS 8192
-#define SYNTH_COUNT 6
+
+byte currentTableId = 0;
 
 byte gSeqNotes[MAX_PATTERNS][MAX_NOTES] = {
     {D_KICK, 0, D_HIHAT, 0, D_SNARE, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT, 0,
@@ -72,14 +73,15 @@ typedef struct MDSynth {
     byte sMEnvValueP;
 };
 
-MDSynth gMSynth[SYNTH_COUNT];
+MDSynth gMSynth[NOTES_COUNT];
 
 // WS controller
 
 void setNoteOption(byte note, byte optionKey, int val) {
     // 0 is for set table
     if (optionKey == 0) {
-        setNoteOptionTable(note, (byte)val);
+        currentTableId = (byte)val;
+        setNoteOptionTable(note);
     } else if (optionKey == 1) {
         gMSynth[note].sMEnvSlope = between(val, 0, 8);
     } else if (optionKey == 2) {
@@ -111,10 +113,62 @@ void setNoteOption(byte note, byte optionKey, int val) {
 }
 // End ws
 
+void setNoteFromMidi(byte note, byte optionKey, int direction) {
+    Serial.print("setNoteFromMidi: ");
+    Serial.print(note);
+    Serial.print(" key: ");
+    Serial.print(optionKey);
+    Serial.print(" dir: ");
+    Serial.println(direction);
+
+    if (optionKey == 0) {
+        gMSynth[note].isDoubleEnv = direction == 2;
+    } else if (optionKey == 2) {
+        currentTableId = mod(currentTableId + direction, 24);
+        setNoteOptionTable(note);
+    } else if (optionKey == 3) {
+        gMSynth[note].sMEnvSlope =
+            between(gMSynth[note].sMEnvSlope + direction, 0, 8);
+    } else if (optionKey == 4) {
+        gMSynth[note].sMFrequency =
+            between(gMSynth[note].sMFrequency + direction, -2000, 2000);
+    } else if (optionKey == 5) {
+        gMSynth[note].sMAttackTime =
+            between(gMSynth[note].sMAttackTime + direction, 0, 2000);
+    } else if (optionKey == 6) {
+        gMSynth[note].sMDecayTime =
+            between(gMSynth[note].sMDecayTime + direction, 0, 2000);
+    } else if (optionKey == 7) {
+        gMSynth[note].sMSustainTime =
+            between(gMSynth[note].sMSustainTime + direction, 0, 2000);
+    } else if (optionKey == 8) {
+        gMSynth[note].sMReleaseTime =
+            between(gMSynth[note].sMReleaseTime + direction, 0, 2000);
+    } else if (optionKey == 12) {
+        gMSynth[note].sMReleaseTimeP =
+            between(gMSynth[note].sMReleaseTimeP + direction, 0, 2000);
+    } else if (optionKey == 13) {
+        gMSynth[note].sMAttackLevel =
+            between(gMSynth[note].sMAttackLevel + direction, 0, 255);
+    } else if (optionKey == 14) {
+        gMSynth[note].sMDecayLevel =
+            between(gMSynth[note].sMDecayLevel + direction, 0, 255);
+    } else if (optionKey == 15) {
+        gMSynth[note].sMSustainLevel =
+            between(gMSynth[note].sMSustainLevel + direction, 0, 255);
+    } else if (optionKey == 16) {
+        gMSynth[note].sMReleaseLevel =
+            between(gMSynth[note].sMReleaseLevel + direction, 0, 255);
+    }
+    if (optionKey > 2) {
+        applySetting(note);
+    }
+}
+
 void playNote() {
     int aNote = gCurrentPattern[gSeqNoteIndex];
 
-    for (int i = 0; i < SYNTH_COUNT; i++) {
+    for (int i = 0; i < NOTES_COUNT; i++) {
         if (aNote & (int)pow(2, i)) {
             if (gMSynth[i].isDoubleEnv) {
                 playDoubleEnvNote(&gMSynth[i]);
@@ -141,9 +195,7 @@ void playDoubleEnvNote(struct MDSynth* ptrSynth) {
     ptrSynth->sMEnvP.noteOff();
 }
 
-void setStepPattern(byte step, int val) {
-    gCurrentPattern[step] = val;
-}
+void setStepPattern(byte step, int val) { gCurrentPattern[step] = val; }
 
 void assignCurrentPattern(byte note) {
     for (int i = 0; i < MAX_NOTES; i++) {
@@ -213,7 +265,7 @@ void setupNotes() {
 }
 
 void updateEnvelopes() {
-    for (int i = 0; i < SYNTH_COUNT; i++) {
+    for (int i = 0; i < NOTES_COUNT; i++) {
         if (gMSynth[i].isDoubleEnv) {
             gMSynth[i].sMEnvA.update();
             gMSynth[i].sMEnvP.update();
@@ -228,7 +280,7 @@ void updateEnvelopes() {
 
 int updateAudioSeq() {
     int ret = 0;
-    for (int i = 0; i < SYNTH_COUNT; i++) {
+    for (int i = 0; i < NOTES_COUNT; i++) {
         gMSynth[i].sMEnvValueA = gMSynth[i].sMEnvA.next();
         gMSynth[i].sMEnvValueP = gMSynth[i].sMEnvP.next();
         ret += (int)((gMSynth[i].sMEnvValueA * gMSynth[i].sMDOsc.next()) >> 1);
@@ -237,61 +289,62 @@ int updateAudioSeq() {
     return ret >> 8;
 }
 
-void setNoteOptionTable(byte note, byte tableId) {
-    if (tableId == 1) {
+void setNoteOptionTable(byte note) {
+    if (currentTableId == 1) {
         assignTable(note, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
-    } else if (tableId == 2) {
+    } else if (currentTableId == 2) {
         assignTable(note, TRIANGLE2048_DATA, TRIANGLE2048_NUM_CELLS);
-    } else if (tableId == 3) {
-        assignTable(note, SQUARE_ANALOGUE512_DATA, SQUARE_ANALOGUE512_NUM_CELLS);
-    } else if (tableId == 4) {
+    } else if (currentTableId == 3) {
+        assignTable(note, SQUARE_ANALOGUE512_DATA,
+                    SQUARE_ANALOGUE512_NUM_CELLS);
+    } else if (currentTableId == 4) {
         assignTable(note, COS256_DATA, COS256_NUM_CELLS);
-    } else if (tableId == 5) {
+    } else if (currentTableId == 5) {
         assignTable(note, NOISE_STATIC_1_16384_DATA,
                     NOISE_STATIC_1_16384_NUM_CELLS);
-    } else if (tableId == 6) {
+    } else if (currentTableId == 6) {
         assignTable(note, PHASOR256_DATA, PHASOR256_NUM_CELLS);
-    } else if (tableId == 7) {
+    } else if (currentTableId == 7) {
         assignTable(note, PINKNOISE8192_DATA, PINKNOISE8192_NUM_CELLS);
-    } else if (tableId == 8) {
+    } else if (currentTableId == 8) {
         assignTable(note, SAW512_DATA, SAW512_NUM_CELLS);
-    } else if (tableId == 9) {
+    } else if (currentTableId == 9) {
         assignTable(note, BROWNNOISE8192_DATA, BROWNNOISE8192_NUM_CELLS);
-    } else if (tableId == 10) {
+    } else if (currentTableId == 10) {
         assignTable(note, CHUM78_DATA, CHUM78_NUM_CELLS);
-    } else if (tableId == 11) {
+    } else if (currentTableId == 11) {
         assignTable(note, SAW_ANALOGUE512_DATA, SAW_ANALOGUE512_NUM_CELLS);
-    } else if (tableId == 12) {
+    } else if (currentTableId == 12) {
         assignTable(note, SMOOTHSQUARE8192_DATA, SMOOTHSQUARE8192_NUM_CELLS);
-    } else if (tableId == 13) {
+    } else if (currentTableId == 13) {
         assignTable(note, TRIANGLE1024_DATA, TRIANGLE1024_NUM_CELLS);
-    } else if (tableId == 14) {
+    } else if (currentTableId == 14) {
         assignTable(note, TRIANGLE_HERMES_2048_DATA,
                     TRIANGLE_HERMES_2048_NUM_CELLS);
-    } else if (tableId == 15) {
+    } else if (currentTableId == 15) {
         assignTable(note, TRIANGLE_DIST_CUBED_2048_DATA,
                     TRIANGLE_DIST_CUBED_2048_NUM_CELLS);
-    } else if (tableId == 16) {
+    } else if (currentTableId == 16) {
         assignTable(note, TRIANGLE_DIST_SQUARED_2048_DATA,
                     TRIANGLE_DIST_SQUARED_2048_NUM_CELLS);
-    } else if (tableId == 17) {
+    } else if (currentTableId == 17) {
         assignTable(note, TRIANGLE_VALVE_2048_DATA,
                     TRIANGLE_VALVE_2048_NUM_CELLS);
-    } else if (tableId == 18) {
+    } else if (currentTableId == 18) {
         assignTable(note, TRIANGLE_VALVE_2_2048_DATA,
                     TRIANGLE_VALVE_2_2048_NUM_CELLS);
-    } else if (tableId == 19) {
+    } else if (currentTableId == 19) {
         assignTable(note, WAVESHAPE1_SOFTCLIP_DATA,
                     WAVESHAPE1_SOFTCLIP_NUM_CELLS);
-    } else if (tableId == 20) {
+    } else if (currentTableId == 20) {
         assignTable(note, CHEBYSHEV_3RD_256_DATA, CHEBYSHEV_3RD_256_NUM_CELLS);
-    } else if (tableId == 21) {
+    } else if (currentTableId == 21) {
         assignTable(note, WAVESHAPE_SIGMOID_DATA, WAVESHAPE_SIGMOID_NUM_CELLS);
-    } else if (tableId == 22) {
+    } else if (currentTableId == 22) {
         assignTable(note, WAVESHAPE_TANH_DATA, WAVESHAPE_TANH_NUM_CELLS);
-    } else if (tableId == 23) {
+    } else if (currentTableId == 23) {
         assignTable(note, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
-    } else if (tableId == 24) {
+    } else if (currentTableId == 24) {
         assignTable(note, SQUARE_NO_ALIAS_2048_DATA,
                     SQUARE_NO_ALIAS_2048_NUM_CELLS);
     } else {
