@@ -55,7 +55,7 @@ typedef struct MDSynth {
     Oscil<MAX_NUM_CELLS, AUDIO_RATE> sMDOsc;
     int8_t sMDOscTable[MAX_NUM_CELLS];
     // settings
-    int sMFrequency;
+    unsigned int sMFrequency;
     unsigned int sMAttackTime;
     unsigned int sMDecayTime;
     unsigned int sMSustainTime;
@@ -93,7 +93,7 @@ void setNoteFromMidi(byte note, byte optionKey, int direction) {
             between(gMSynth[note].sMEnvSlope + direction, 0, 8);
     } else if (optionKey == 4) {
         gMSynth[note].sMFrequency =
-            between(gMSynth[note].sMFrequency + direction, -2000, 2000);
+            between(gMSynth[note].sMFrequency + direction, 0, 2000);
     } else if (optionKey == 5) {
         gMSynth[note].sMAttackTime =
             between(gMSynth[note].sMAttackTime + direction, 0, 2000);
@@ -142,14 +142,14 @@ void playNote() {
 }
 
 void playSimpleEnvNote(struct MDSynth* ptrSynth) {
-    ptrSynth->sMDOsc.setFreq(ptrSynth->sMFrequency);
+    ptrSynth->sMDOsc.setFreq((int)ptrSynth->sMFrequency);
     ptrSynth->sMEnvA.setReleaseTime(ptrSynth->sMReleaseTime);
     ptrSynth->sMEnvA.noteOn();
     ptrSynth->sMEnvA.noteOff();
 }
 
 void playDoubleEnvNote(struct MDSynth* ptrSynth) {
-    ptrSynth->sMDOsc.setFreq(ptrSynth->sMFrequency);
+    ptrSynth->sMDOsc.setFreq((int)ptrSynth->sMFrequency);
     ptrSynth->sMEnvA.setReleaseTime(ptrSynth->sMReleaseTime);
     ptrSynth->sMEnvA.noteOn();
     ptrSynth->sMEnvP.noteOn();
@@ -232,7 +232,7 @@ void updateEnvelopes() {
             gMSynth[i].sMEnvA.update();
             gMSynth[i].sMEnvP.update();
             gMSynth[i].sMDOsc.setFreq(
-                gMSynth[i].sMFrequency +
+                (int)gMSynth[i].sMFrequency +
                 (gMSynth[i].sMEnvValueP >> gMSynth[i].sMEnvSlope));
         } else {
             gMSynth[i].sMEnvA.update();
