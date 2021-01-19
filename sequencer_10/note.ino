@@ -161,7 +161,7 @@ void playSimpleEnvNote(struct MDSynth* ptrSynth) {
     ptrSynth->sMDOsc.setFreq((int)ptrSynth->sMFrequency);
     // ptrSynth->sMEnvA.setReleaseTime(ptrSynth->sMReleaseTime);
     ptrSynth->sMEnvA.noteOn();
-    ptrSynth->sMEnvA.noteOff();
+    // ptrSynth->sMEnvA.noteOff();
 }
 
 void playDoubleEnvNote(struct MDSynth* ptrSynth) {
@@ -169,8 +169,8 @@ void playDoubleEnvNote(struct MDSynth* ptrSynth) {
     // ptrSynth->sMEnvA.setReleaseTime(ptrSynth->sMReleaseTime);
     ptrSynth->sMEnvA.noteOn();
     ptrSynth->sMEnvP.noteOn();
-    ptrSynth->sMEnvA.noteOff();
-    ptrSynth->sMEnvP.noteOff();
+    // ptrSynth->sMEnvA.noteOff();
+    // ptrSynth->sMEnvP.noteOff();
 }
 
 void setStepPattern(byte step, int val) { gCurrentPattern[step] = val; }
@@ -195,12 +195,12 @@ void setupNote(byte note, const int8_t* table, int num_cells, bool isDoubleEnv,
                int frequency, unsigned int releaseTime,
                unsigned int releaseTimeP, byte envSlope) {
     assignTable(note, table, num_cells);
-    gMSynth[note].isDoubleEnv = isDoubleEnv;
+    gMSynth[note].isDoubleEnv = true; // isDoubleEnv;
     gMSynth[note].sMFrequency = frequency;  // (setting)
-    gMSynth[note].sMAttackTime = 0;
-    gMSynth[note].sMDecayTime = 0;
-    gMSynth[note].sMSustainTime = 0;
-    gMSynth[note].sMReleaseTime = releaseTime;
+    gMSynth[note].sMAttackTime = 0; // 0;
+    gMSynth[note].sMDecayTime = 10;// 0;
+    gMSynth[note].sMSustainTime = 100; // 0;
+    gMSynth[note].sMReleaseTime = 100; // releaseTime;
     gMSynth[note].sMReleaseTimeP = releaseTimeP;
     gMSynth[note].sMAttackLevel = DRUM_LEVEL_B;
     gMSynth[note].sMDecayLevel = DRUM_LEVEL_B;
