@@ -14,10 +14,8 @@ unsigned int DTime = gTempo * 0 / 100;
 unsigned int STime = gTempo * 0 / 100;
 unsigned int RTime = gTempo * 100 / 100;
 
-byte ALevel = 200;
-byte DLevel = 150;
-byte SLevel = 150;
-byte RLevel = 0;
+byte PeakLevel = 200;
+byte SubstainLevel = 150;
 
 byte envelopeValue2;
 
@@ -29,19 +27,13 @@ Oscil<TRIANGLE_DIST_SQUARED_2048_NUM_CELLS, AUDIO_RATE> aOscil(
 ADSR<CONTROL_RATE, AUDIO_RATE> envelope1;
 ADSR<CONTROL_RATE, AUDIO_RATE> envelope2;
 
-byte count = 0;
-void playNote() {
-    if (count < 50) {
-        Serial.print("count: ");
-        Serial.println(count);
-        count++;
-        byte aNote = gSeqNotes[gSeqNoteIndex];
-        // 01 - kick
-        if (aNote & D_KICK) {
-            Serial.println("play kick");
-            playDKick();
-        }
-    }
+void setupNotes() {
+    envelope1.setLevels(PeakLevel, SubstainLevel, SubstainLevel, 0);
+    envelope1.setTimes(ATime, DTime, STime, RTime);
+
+    envelope2.setLevels(PeakLevel, SubstainLevel, SubstainLevel, 0);
+    envelope2.setTimes(gTempo * 10 / 100, gTempo * 10 / 100, gTempo * 10 / 100,
+                       gTempo * 70 / 100);
 }
 
 void playDKick() {
@@ -50,15 +42,6 @@ void playDKick() {
     envelope2.noteOn();
 
     envelope1.noteOff();
-    envelope2.noteOff();
-}
-
-void setupNotes() {
-    envelope1.setLevels(ALevel, DLevel, SLevel, RLevel);
-    envelope1.setTimes(ATime, DTime, STime, RTime);
-
-    envelope2.setLevels(ALevel, DLevel, SLevel, RLevel);
-    envelope2.setTimes(ATime, DTime, STime, RTime);
 }
 
 void updateEnvelopes() {
@@ -74,4 +57,19 @@ int updateAudioSeq() {
     int kickSnd = (int)kickA >> 8;
 
     return kickSnd;
+}
+
+byte count = 0;
+void playNote() {
+    if (count < 50) {
+        Serial.print("count: ");
+        Serial.println(count);
+        count++;
+        byte aNote = gSeqNotes[gSeqNoteIndex];
+        // 01 - kick
+        if (aNote & D_KICK) {
+            Serial.println("play kick");
+            playDKick();
+        }
+    }
 }
