@@ -1,0 +1,38 @@
+play kick
+2 [1,0] Set next phase 1
+2 [1,0] Set next phase 2
+2 [1,0] Set next phase 3
+1 [7,7] Set next phase 4
+2 [5,5] Set next phase 4
+count: 36
+count: 37
+count: 38
+count: 39
+play kick
+2 [1,0] Set next phase 1
+2 [1,0] Set next phase 2
+2 [1,0] Set next phase 3
+1 [7,7] Set next phase 4
+2 [5,5] Set next phase 4
+count: 40
+count: 41
+count: 42
+count: 43
+play kick
+2 [1,0] Set next phase 1
+2 [1,0] Set next phase 2
+2 [1,0] Set next phase 3
+1 [7,7] Set next phase 4
+2 [5,5] Set next phase 4
+count: 44
+count: 45
+count: 46
+count: 47
+play kick
+2 [1,0] Set next phase 1
+2 [1,0] Set next phase 2
+2 [1,0] Set next phase 3
+1 [7,7] Set next phase 4
+2 [5,5] Set next phase 4
+count: 48
+count: 49
