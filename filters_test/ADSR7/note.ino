@@ -28,19 +28,23 @@ byte SubstainLevel = 150;
 // unsigned int STime = gTempo * 0 / 100;
 // unsigned int RTime = gTempo * 100 / 100;
 
-unsigned int ATime = gTempo * 0 / 100;
+unsigned int ATime = gTempo * 100 / 100;
 unsigned int DTime = gTempo * 0 / 100;
 unsigned int STime = gTempo * 0 / 100;
-unsigned int RTime = gTempo * 100 / 100;
+unsigned int RTime = gTempo * 0 / 100;
 
+// unsigned int ATime = gTempo * 50 / 100;
+// unsigned int DTime = gTempo * 0 / 100;
+// unsigned int STime = gTempo * 0 / 100;
+// unsigned int RTime = gTempo * 50 / 100;
 
 void setupNotes() {
     envelope1.setLevels(PeakLevel, SubstainLevel, SubstainLevel, 0);
     envelope1.setTimes(ATime, DTime, STime, RTime);
 
-    envelope2.setLevels(PeakLevel, SubstainLevel, SubstainLevel, 0);
-    envelope2.setTimes(gTempo * 10 / 100, gTempo * 10 / 100, gTempo * 10 / 100,
-                       gTempo * 70 / 100);
+    envelope2.setLevels(200, 200, 200, 0);
+    envelope2.setTimes(gTempo * 30 / 100, gTempo * 0 / 100, gTempo * 40 / 100,
+                       gTempo * 30 / 100);
 }
 
 void playDKick() {
@@ -49,7 +53,6 @@ void playDKick() {
     // envelope1.noteOff();
 
     envelope2.noteOn();
-
 }
 
 void updateEnvelopes() {
@@ -61,11 +64,7 @@ int updateAudioSeq() {
     int freq = frequency + (envelope2.next() >> 1);
     aOscil.setFreq(freq);
 
-    int kickA = (int)(
-        envelope1.next() *
-        // 200 *
-        aOscil.next()
-    ) >> 1;
+    int kickA = (int)(envelope1.next() * aOscil.next()) >> 1;
     int kickSnd = (int)kickA >> 8;
 
     return kickSnd;
