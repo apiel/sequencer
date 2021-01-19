@@ -32,16 +32,18 @@ byte gSyncTempo = HIGH;
 
 void handleStepSequencer() {
     // we might need rethink the way to play stop and sync with other device
-    if (gSeqPlay && noteDelay.ready()) {
-        gSeqNoteIndex = (gSeqNoteIndex + 1) % MAX_NOTES;
-        gSyncTempo = (gSyncTempo + 1) % 2;
-        digitalWrite(PIN_SYNC_OUT, gSyncTempo);
+    if (gSeqPlay) {
+        if (noteDelay.ready()) {
+            gSeqNoteIndex = (gSeqNoteIndex + 1) % MAX_NOTES;
+            gSyncTempo = (gSyncTempo + 1) % 2;
+            digitalWrite(PIN_SYNC_OUT, gSyncTempo);
 
-        if (!gSeqMute) {
-            playNote();
+            if (!gSeqMute) {
+                playNote();
+            }
+            noteDelay.start(gTempo);
         }
         updateEnvelopes();
-        noteDelay.start(gTempo);
     }
 }
 
