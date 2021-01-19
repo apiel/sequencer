@@ -16,10 +16,8 @@
 #define NOTES_COUNT 6  // number of existing notes
 #define MENU_SIZE (NOTES_COUNT + 1)
 
-bool gSeqNoteOn = false;
 bool gSeqPlay = true;
 bool gSeqMute = false;
-bool gSyncNoteOn = false;
 
 byte gSeqNoteIndex = 0;
 byte gSeqPatternIndex = 0;
