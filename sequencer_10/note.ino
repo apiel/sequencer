@@ -80,12 +80,26 @@ typedef struct Drum {
     byte AFreqLevel;
     byte SFreqLevel;
     byte RFreqLevel;
-    byte freqSlope;
+    byte freqShift;
 };
 
 Drum gDrum[NOTES_COUNT];
 
-void setNoteFromMidi(byte note, byte optionKey, int direction) {
+void setNoteFromMidiBtn(byte note, byte optionKey) {
+    if (optionKey == 0) {
+        gDrum[note].useFreqEnvelope = !gDrum[note].useFreqEnvelope;
+    } else if (optionKey == 1) {
+        if (gDrum[note].freqShift > 0) {
+            gDrum[note].freqShift--;
+        }
+    } else if (optionKey == 2) {
+        if (gDrum[note].freqShift < 16) {
+            gDrum[note].freqShift++;
+        }
+    }
+}
+
+void setNoteFromMidiKnob(byte note, byte optionKey, int direction) {
     Serial.print("setNoteFromMidi: ");
     Serial.print(note);
     Serial.print(" key: ");
@@ -93,9 +107,7 @@ void setNoteFromMidi(byte note, byte optionKey, int direction) {
     Serial.print(" dir: ");
     Serial.println(direction);
 
-    if (optionKey == 0) {
-        gDrum[note].useFreqEnvelope = direction == 2;
-    } else if (optionKey == 2) {
+    if (optionKey == 2) {
         currentTableId = mod(currentTableId + direction, 24);
         setNoteOptionTable(note);
     } else if (optionKey == 3) {
@@ -202,7 +214,7 @@ void setupNote(byte note, const int8_t* table, int num_cells,
     gDrum[note].AFreqLevel = 200;
     gDrum[note].SFreqLevel = 200;
     gDrum[note].RFreqLevel = 0;
-    gDrum[note].freqSlope = 1;
+    gDrum[note].freqShift = 1;
 
     applySetting(note);
 }
@@ -249,7 +261,7 @@ int updateAudioSeq() {
     for (int i = 0; i < NOTES_COUNT; i++) {
         if (gDrum[i].useFreqEnvelope) {
             int freq = gDrum[i].frequency +
-                       (gDrum[i].envelopeFreq.next() >> gDrum[i].freqSlope);
+                       (gDrum[i].envelopeFreq.next() >> gDrum[i].freqShift);
             gDrum[i].oscil.setFreq(freq);
         }
         ret += (int)((gDrum[i].envelope.next() * gDrum[i].oscil.next()) >> 1);

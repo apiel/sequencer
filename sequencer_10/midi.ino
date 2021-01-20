@@ -34,12 +34,15 @@ void handlePress(byte key) {
     if (currentMenu == MAIN_MENU) {
         handleDefaultButton(key);
     } else if (isNoteMenu()) {
-        if (key == 33 || key == 9) {
-            Serial.println("Set double envelop");
-            setNoteFromMidi(currentMenu, 0, 2);
-        } else if (key == 32 || key == 8) {
-            Serial.println("Set simple envelop");
-            setNoteFromMidi(currentMenu, 0, 1);
+        if (key == 32 || key == 8) {
+            Serial.println("Toggle use freq envelope");
+            setNoteFromMidiBtn(currentMenu, 0);
+        } else if (key == 33 || key == 9) {
+            Serial.println("Decrease freqShift");
+            setNoteFromMidiBtn(currentMenu, 1);
+        } else if (key == 34 || key == 10) {
+            Serial.println("Increase freqShift");
+            setNoteFromMidiBtn(currentMenu, 2);
         } else {
             handleDefaultButton(key);
         }
@@ -75,7 +78,7 @@ void handleKnob(byte key, byte val) {
         // Serial.print(" - cur: ");
         Serial.println(currentMenu);
     } else if (isNoteMenu()) {
-        setNoteFromMidi(currentMenu, key, direction);
+        setNoteFromMidiKnob(currentMenu, key, direction);
     } else if (currentMenu == MAIN_MENU) {
         if (knob == 2 || knob == 12) {
             increaseBPM(direction);
