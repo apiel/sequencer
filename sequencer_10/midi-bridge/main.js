@@ -22,12 +22,15 @@ input.on('message', ({ controller, value, _type, note }) => {
 });
 
 let ws;
+let wsIsConnected = false;
 
 function wsSend(data) {
-    data = data.map((c) => String.fromCharCode(c));
-    const msg = `:${data.join('')}`;
-    console.log(`knob ${JSON.stringify(data)}:`, msg);
-    ws.send(msg);
+    if (wsIsConnected) {
+        data = data.map((c) => String.fromCharCode(c));
+        const msg = `:${data.join('')}`;
+        console.log(`msg ${JSON.stringify(data)}:`, msg);
+        ws.send(msg);
+    }
 }
 
 function wsConnect() {
@@ -38,6 +41,7 @@ function wsConnect() {
 
     ws.on('open', function open() {
         console.log('WS connection open');
+        wsIsConnected = true;
     });
 
     ws.on('message', function incoming(data) {
@@ -46,7 +50,7 @@ function wsConnect() {
 
     ws.on('close', function() {
         console.log('socket close');
-        // setInterval(connect, reconnectInterval);
+        wsIsConnected = false;
         setTimeout(wsConnect, 1000);
     });
 }

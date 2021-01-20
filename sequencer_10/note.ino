@@ -1,14 +1,5 @@
 /*
-For ADSR
-only need peak level and substain level
-Need ADSR time in pct
-- noteOn beeing able to reset
-
-Need to use EventDelay for sequencing
-
 think about using math cos sin tan to create table
-
-is double envelop really necessary?
 
 Look at PDResonant it seem awesome :p
 Look at synth in general

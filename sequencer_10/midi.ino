@@ -48,13 +48,9 @@ void handlePress(byte key) {
 
 void handleDefaultButton(byte key) {
     if (key == 46 || key == 22) {
-        play();
+        togglePlay();
     } else if (key == 45 || key == 21) {
-        stop();
-    } else if (key == 38 || key == 14) {
-        gSeqMute = true;
-    } else if (key == 37 || key == 13) {
-        gSeqMute = false;
+        toggleMute();
     }
 }
 
