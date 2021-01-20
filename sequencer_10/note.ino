@@ -14,7 +14,6 @@ Look at PDResonant it seem awesome :p
 Look at synth in general
 */
 
-// #include <ADSR.h>
 #include <Oscil.h>  // oscillator template
 #include <tables/brownnoise8192_int8.h>
 #include <tables/chum78_int8.h>
@@ -41,6 +40,7 @@ Look at synth in general
 #include <tables/waveshape_tanh_int8.h>
 #include <tables/whitenoise8192_int8.h>
 
+// #include <ADSR.h>
 #include "ADSR_FIX.h"
 
 #define DRUM_LEVEL_B 200
@@ -125,23 +125,23 @@ void setNoteFromMidi(byte note, byte optionKey, int direction) {
         gDrum[note].frequency =
             between(gDrum[note].frequency + direction, 0, 2000);
     } else if (optionKey == 13) {
-        gDrum[note].AFreqTime =
-            between(gDrum[note].AFreqTime + direction, 0, 100);
-    } else if (optionKey == 14) {
-        gDrum[note].SFreqTime =
-            between(gDrum[note].SFreqTime + direction, 0, 100);
-    } else if (optionKey == 15) {
-        gDrum[note].RFreqTime =
-            between(gDrum[note].RFreqTime + direction, 0, 100);
-    } else if (optionKey == 16) {
         gDrum[note].AFreqLevel =
             between(gDrum[note].AFreqLevel + direction, 0, 255);
-    } else if (optionKey == 17) {
+    } else if (optionKey == 14) {
         gDrum[note].SFreqLevel =
             between(gDrum[note].SFreqLevel + direction, 0, 255);
-    } else if (optionKey == 18) {
+    } else if (optionKey == 15) {
         gDrum[note].RFreqLevel =
             between(gDrum[note].RFreqLevel + direction, 0, 255);
+    } else if (optionKey == 16) {
+        gDrum[note].AFreqTime =
+            between(gDrum[note].AFreqTime + direction, 0, 100);
+    } else if (optionKey == 17) {
+        gDrum[note].SFreqTime =
+            between(gDrum[note].SFreqTime + direction, 0, 100);
+    } else if (optionKey == 18) {
+        gDrum[note].RFreqTime =
+            between(gDrum[note].RFreqTime + direction, 0, 100);
     }
 
     if (optionKey != 2 && optionKey != 12) {
@@ -233,8 +233,8 @@ void applySetting(byte note) {
 }
 
 void setupNotes() {
-    // assignCurrentPattern(0);
-    assignCurrentPattern(2);
+    assignCurrentPattern(0);
+    // assignCurrentPattern(2);
 
     setupNote(0, SIN2048_DATA, SIN2048_NUM_CELLS, true, 45);
     setupNote(1, SIN2048_DATA, SIN2048_NUM_CELLS, true, 150);
