@@ -14,7 +14,7 @@ Look at PDResonant it seem awesome :p
 Look at synth in general
 */
 
-#include <ADSR.h>
+// #include <ADSR.h>
 #include <Oscil.h>  // oscillator template
 #include <tables/brownnoise8192_int8.h>
 #include <tables/chum78_int8.h>
@@ -41,6 +41,8 @@ Look at synth in general
 #include <tables/waveshape_tanh_int8.h>
 #include <tables/whitenoise8192_int8.h>
 
+#include "ADSR_FIX.h"
+
 #define DRUM_LEVEL_B 200
 
 #define D_KICK 1
@@ -64,32 +66,33 @@ byte gSeqNotes[MAX_PATTERNS][MAX_NOTES] = {
 byte gCurrentPattern[MAX_NOTES] = {0, 0, 0, 0, 0, 0, 0, 0,
                                    0, 0, 0, 0, 0, 0, 0, 0};
 
-typedef struct MDSynth {
-    bool isDoubleEnv;
-    ADSR<CONTROL_RATE, AUDIO_RATE> sMEnvA;
-    ADSR<CONTROL_RATE, AUDIO_RATE> sMEnvP;
-    Oscil<MAX_NUM_CELLS, AUDIO_RATE> sMDOsc;
-    int8_t sMDOscTable[MAX_NUM_CELLS];
-    // settings
-    unsigned int sMFrequency;
-    unsigned int sMAttackTime;
-    unsigned int sMDecayTime;
-    unsigned int sMSustainTime;
-    unsigned int sMReleaseTime;
-    unsigned int sMReleaseTimeP;
-    byte sMAttackLevel;
-    byte sMDecayLevel;
-    byte sMSustainLevel;
-    byte sMReleaseLevel;
-    //  unsigned int sMFilterFrequency;
-    //  Q0n8 sMFilterResonance;
-    byte sMEnvSlope;
-    // state
-    byte sMEnvValueA;
-    byte sMEnvValueP;
+typedef struct Drum {
+    bool useFreqEnvelope;
+    ADSR<CONTROL_RATE, AUDIO_RATE> envelope;
+    ADSR<CONTROL_RATE, AUDIO_RATE> envelopeFreq;
+    Oscil<MAX_NUM_CELLS, AUDIO_RATE> oscil;
+    int8_t oscilTable[MAX_NUM_CELLS];
+    unsigned int frequency;
+
+    // ADSR
+    byte ATime;
+    byte DTime;
+    byte STime;
+    byte RTime;
+    byte PeakLevel;
+    byte SustainLevel;
+
+    // Frequency envelope
+    byte AFreqTime;
+    byte SFreqTime;
+    byte RFreqTime;
+    byte AFreqLevel;
+    byte SFreqLevel;
+    byte RFreqLevel;
+    byte freqSlope;
 };
 
-MDSynth gMSynth[NOTES_COUNT];
+Drum gDrum[NOTES_COUNT];
 
 void setNoteFromMidi(byte note, byte optionKey, int direction) {
     Serial.print("setNoteFromMidi: ");
@@ -100,45 +103,48 @@ void setNoteFromMidi(byte note, byte optionKey, int direction) {
     Serial.println(direction);
 
     if (optionKey == 0) {
-        gMSynth[note].isDoubleEnv = direction == 2;
+        gDrum[note].useFreqEnvelope = direction == 2;
     } else if (optionKey == 2) {
         currentTableId = mod(currentTableId + direction, 24);
         setNoteOptionTable(note);
     } else if (optionKey == 3) {
-        gMSynth[note].sMEnvSlope =
-            between(gMSynth[note].sMEnvSlope + direction, 0, 8);
+        gDrum[note].PeakLevel =
+            between(gDrum[note].PeakLevel + direction, 0, 250);
     } else if (optionKey == 4) {
-        gMSynth[note].sMFrequency =
-            between(gMSynth[note].sMFrequency + direction, 0, 2000);
+        gDrum[note].SustainLevel =
+            between(gDrum[note].SustainLevel + direction, 0, 250);
     } else if (optionKey == 5) {
-        gMSynth[note].sMAttackTime =
-            between(gMSynth[note].sMAttackTime + direction, 0, 2000);
+        gDrum[note].ATime = between(gDrum[note].ATime + direction, 0, 100);
     } else if (optionKey == 6) {
-        gMSynth[note].sMDecayTime =
-            between(gMSynth[note].sMDecayTime + direction, 0, 2000);
+        gDrum[note].DTime = between(gDrum[note].DTime + direction, 0, 100);
     } else if (optionKey == 7) {
-        gMSynth[note].sMSustainTime =
-            between(gMSynth[note].sMSustainTime + direction, 0, 2000);
+        gDrum[note].STime = between(gDrum[note].STime + direction, 0, 100);
     } else if (optionKey == 8) {
-        gMSynth[note].sMReleaseTime =
-            between(gMSynth[note].sMReleaseTime + direction, 0, 2000);
+        gDrum[note].RTime = between(gDrum[note].RTime + direction, 0, 100);
     } else if (optionKey == 12) {
-        gMSynth[note].sMReleaseTimeP =
-            between(gMSynth[note].sMReleaseTimeP + direction, 0, 2000);
+        gDrum[note].frequency =
+            between(gDrum[note].frequency + direction, 0, 2000);
     } else if (optionKey == 13) {
-        gMSynth[note].sMAttackLevel =
-            between(gMSynth[note].sMAttackLevel + direction, 0, 255);
+        gDrum[note].AFreqTime =
+            between(gDrum[note].AFreqTime + direction, 0, 100);
     } else if (optionKey == 14) {
-        gMSynth[note].sMDecayLevel =
-            between(gMSynth[note].sMDecayLevel + direction, 0, 255);
+        gDrum[note].SFreqTime =
+            between(gDrum[note].SFreqTime + direction, 0, 100);
     } else if (optionKey == 15) {
-        gMSynth[note].sMSustainLevel =
-            between(gMSynth[note].sMSustainLevel + direction, 0, 255);
+        gDrum[note].RFreqTime =
+            between(gDrum[note].RFreqTime + direction, 0, 100);
     } else if (optionKey == 16) {
-        gMSynth[note].sMReleaseLevel =
-            between(gMSynth[note].sMReleaseLevel + direction, 0, 255);
+        gDrum[note].AFreqLevel =
+            between(gDrum[note].AFreqLevel + direction, 0, 255);
+    } else if (optionKey == 17) {
+        gDrum[note].SFreqLevel =
+            between(gDrum[note].SFreqLevel + direction, 0, 255);
+    } else if (optionKey == 18) {
+        gDrum[note].RFreqLevel =
+            between(gDrum[note].RFreqLevel + direction, 0, 255);
     }
-    if (optionKey > 2) {
+
+    if (optionKey != 2 && optionKey != 12) {
         applySetting(note);
     }
 }
@@ -148,29 +154,24 @@ void playNote() {
 
     for (int i = 0; i < NOTES_COUNT; i++) {
         if (aNote & (int)pow(2, i)) {
-            if (gMSynth[i].isDoubleEnv) {
-                playDoubleEnvNote(&gMSynth[i]);
+            if (gDrum[i].useFreqEnvelope) {
+                playDoubleEnvNote(&gDrum[i]);
             } else {
-                playSimpleEnvNote(&gMSynth[i]);
+                playSimpleEnvNote(&gDrum[i]);
             }
         }
     }
 }
 
-void playSimpleEnvNote(struct MDSynth* ptrSynth) {
-    ptrSynth->sMDOsc.setFreq((int)ptrSynth->sMFrequency);
-    // ptrSynth->sMEnvA.setReleaseTime(ptrSynth->sMReleaseTime);
-    ptrSynth->sMEnvA.noteOn();
-    // ptrSynth->sMEnvA.noteOff();
+void playSimpleEnvNote(struct Drum* ptrDrum) {
+    ptrDrum->oscil.setFreq((int)ptrDrum->frequency);
+    ptrDrum->envelope.noteOn();
 }
 
-void playDoubleEnvNote(struct MDSynth* ptrSynth) {
-    ptrSynth->sMDOsc.setFreq((int)ptrSynth->sMFrequency);
-    // ptrSynth->sMEnvA.setReleaseTime(ptrSynth->sMReleaseTime);
-    ptrSynth->sMEnvA.noteOn();
-    ptrSynth->sMEnvP.noteOn();
-    // ptrSynth->sMEnvA.noteOff();
-    // ptrSynth->sMEnvP.noteOff();
+void playDoubleEnvNote(struct Drum* ptrDrum) {
+    ptrDrum->oscil.setFreq((int)ptrDrum->frequency);
+    ptrDrum->envelope.noteOn();
+    ptrDrum->envelopeFreq.noteOn();
 }
 
 void setStepPattern(byte step, int val) { gCurrentPattern[step] = val; }
@@ -185,84 +186,82 @@ void assignTable(byte note, const int8_t* table, int num_cells) {
     byte multi = MAX_NUM_CELLS / num_cells;
     for (int i = 0; i < num_cells; i++) {
         for (int x = 0; x < multi; x++) {
-            gMSynth[note].sMDOscTable[i * multi + x] = table[i];
+            gDrum[note].oscilTable[i * multi + x] = table[i];
         }
     }
-    gMSynth[note].sMDOsc.setTable(gMSynth[note].sMDOscTable);
+    gDrum[note].oscil.setTable(gDrum[note].oscilTable);
 }
 
-void setupNote(byte note, const int8_t* table, int num_cells, bool isDoubleEnv,
-               int frequency, unsigned int releaseTime,
-               unsigned int releaseTimeP, byte envSlope) {
+void setupNote(byte note, const int8_t* table, int num_cells,
+               bool useFreqEnvelope, int frequency) {
     assignTable(note, table, num_cells);
-    gMSynth[note].isDoubleEnv = true; // isDoubleEnv;
-    gMSynth[note].sMFrequency = frequency;  // (setting)
-    gMSynth[note].sMAttackTime = 0; // 0;
-    gMSynth[note].sMDecayTime = 10;// 0;
-    gMSynth[note].sMSustainTime = 100; // 0;
-    gMSynth[note].sMReleaseTime = 100; // releaseTime;
-    gMSynth[note].sMReleaseTimeP = releaseTimeP;
-    gMSynth[note].sMAttackLevel = DRUM_LEVEL_B;
-    gMSynth[note].sMDecayLevel = DRUM_LEVEL_B;
-    gMSynth[note].sMSustainLevel = DRUM_LEVEL_B;
-    gMSynth[note].sMReleaseLevel = 0;
-    //  gMSynth[note].sMFilterFrequency = 0;
-    //  gMSynth[note].sMFilterResonance = 0;
-    gMSynth[note].sMEnvSlope = envSlope;
+    gDrum[note].useFreqEnvelope = useFreqEnvelope;
+    gDrum[note].frequency = frequency;
+
+    gDrum[note].ATime = 0;
+    gDrum[note].DTime = 0;
+    gDrum[note].STime = 0;
+    gDrum[note].RTime = 100;
+    gDrum[note].PeakLevel = 250;
+    gDrum[note].SustainLevel = 200;
+
+    gDrum[note].AFreqTime = 0;
+    gDrum[note].SFreqTime = 0;
+    gDrum[note].RFreqTime = 100;
+    gDrum[note].AFreqLevel = 200;
+    gDrum[note].SFreqLevel = 200;
+    gDrum[note].RFreqLevel = 0;
+    gDrum[note].freqSlope = 1;
+
     applySetting(note);
 }
 
 void applySetting(byte note) {
-    gMSynth[note].sMEnvA.setLevels(
-        gMSynth[note].sMAttackLevel, gMSynth[note].sMDecayLevel,
-        gMSynth[note].sMSustainLevel, gMSynth[note].sMReleaseLevel);
-    gMSynth[note].sMEnvA.setTimes(
-        gMSynth[note].sMAttackTime, gMSynth[note].sMDecayTime,
-        gMSynth[note].sMSustainTime, gMSynth[note].sMReleaseTime);
-    gMSynth[note].sMEnvP.setLevels(
-        gMSynth[note].sMAttackLevel, gMSynth[note].sMDecayLevel,
-        gMSynth[note].sMSustainLevel, gMSynth[note].sMReleaseLevel);
-    gMSynth[note].sMEnvP.setTimes(
-        gMSynth[note].sMAttackTime, gMSynth[note].sMDecayTime,
-        gMSynth[note].sMSustainTime, gMSynth[note].sMReleaseTimeP);
+    gDrum[note].envelope.setLevels(gDrum[note].PeakLevel,
+                                   gDrum[note].SustainLevel,
+                                   gDrum[note].SustainLevel, 0);
+    gDrum[note].envelope.setTimes(
+        gTempo / 100 * gDrum[note].ATime, gTempo / 100 * gDrum[note].DTime,
+        gTempo / 100 * gDrum[note].STime, gTempo / 100 * gDrum[note].RTime);
+
+    gDrum[note].envelopeFreq.setLevels(
+        gDrum[note].AFreqLevel, gDrum[note].AFreqLevel, gDrum[note].SFreqLevel,
+        gDrum[note].RFreqLevel);
+    gDrum[note].envelopeFreq.setTimes(gTempo / 100 * gDrum[note].AFreqTime, 0,
+                                      gTempo / 100 * gDrum[note].SFreqTime,
+                                      gTempo / 100 * gDrum[note].RFreqTime);
 }
 
 void setupNotes() {
     // assignCurrentPattern(0);
     assignCurrentPattern(2);
 
-    setupNote(0, SIN2048_DATA, SIN2048_NUM_CELLS, true, 45, 170, 170, 1);
-    setupNote(1, SIN2048_DATA, SIN2048_NUM_CELLS, true, 150, 160, 140, 1);
-    setupNote(2, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS, false, 100, 35,
-              0, 0);
-    setupNote(3, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS, false, 0, 110,
-              0, 0);
-    setupNote(4, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS, false, 0, 500,
-              0, 0);
-    setupNote(5, TRIANGLE2048_DATA, TRIANGLE2048_NUM_CELLS, true, 100, 200, 200,
-              1);
+    setupNote(0, SIN2048_DATA, SIN2048_NUM_CELLS, true, 45);
+    setupNote(1, SIN2048_DATA, SIN2048_NUM_CELLS, true, 150);
+    setupNote(2, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS, false, 100);
+    setupNote(3, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS, false, 0);
+    setupNote(4, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS, false, 0);
+    setupNote(5, TRIANGLE2048_DATA, TRIANGLE2048_NUM_CELLS, true, 100);
 }
 
 void updateEnvelopes() {
     for (int i = 0; i < NOTES_COUNT; i++) {
-        if (gMSynth[i].isDoubleEnv) {
-            gMSynth[i].sMEnvA.update();
-            gMSynth[i].sMEnvP.update();
-            gMSynth[i].sMDOsc.setFreq(
-                (int)gMSynth[i].sMFrequency +
-                (gMSynth[i].sMEnvValueP >> gMSynth[i].sMEnvSlope));
-        } else {
-            gMSynth[i].sMEnvA.update();
+        if (gDrum[i].useFreqEnvelope) {
+            gDrum[i].envelopeFreq.update();
         }
+        gDrum[i].envelope.update();
     }
 }
 
 int updateAudioSeq() {
     int ret = 0;
     for (int i = 0; i < NOTES_COUNT; i++) {
-        gMSynth[i].sMEnvValueA = gMSynth[i].sMEnvA.next();
-        gMSynth[i].sMEnvValueP = gMSynth[i].sMEnvP.next();
-        ret += (int)((gMSynth[i].sMEnvValueA * gMSynth[i].sMDOsc.next()) >> 1);
+        if (gDrum[i].useFreqEnvelope) {
+            int freq = gDrum[i].frequency +
+                       (gDrum[i].envelopeFreq.next() >> gDrum[i].freqSlope);
+            gDrum[i].oscil.setFreq(freq);
+        }
+        ret += (int)((gDrum[i].envelope.next() * gDrum[i].oscil.next()) >> 1);
     }
 
     return ret >> 8;

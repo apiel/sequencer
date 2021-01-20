@@ -31,12 +31,12 @@ void displaySetup() {
     display.setTextColor(WHITE);
     display.setTextSize(1);
     display.setCursor(0, 0);
-    display.print("SEQUENCER");
+    display.println("SEQUENCER");
     // display.println("Time% 100 100 100 100");
     // display.println("Level 255 255 255 255");
     // or
-    // display.println("     A    D    S    R");
-    // display.println("T 1400 1200 1300 1300");
-    // display.println("L  255  255  255  255");
-    // display.display();
+    display.println("     A    D    S    R");
+    display.println("T 1400 1200 1300 1300");
+    display.println("L  255  255  255  255");
+    display.display();
 }
