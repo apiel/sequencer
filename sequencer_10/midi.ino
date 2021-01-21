@@ -26,6 +26,7 @@ void handleMidi(byte type, byte key, byte val) {
         Serial.print(',');
         Serial.println(val);
     }
+    // displayUpdate();
 }
 
 void handlePress(byte key) {
@@ -58,6 +59,15 @@ void handleDefaultButton(byte key) {
 }
 
 bool isNoteMenu() { return currentMenu >= 0 && currentMenu < NOTES_COUNT; }
+
+char getCurrentNoteChar() {
+    // 65 is 'A' position in ascii table
+    return currentMenu + 65;
+}
+
+byte getCurrentNote() {
+    return currentMenu;
+}
 
 void handleKnob(byte key, byte val) {
     byte knob = key % KNOB_COUNT;

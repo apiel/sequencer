@@ -40,6 +40,7 @@ void handleStepSequencer() {
                 playNote();
             }
             noteDelay.start(gTempo);
+            // displayUpdate();
         }
         updateEnvelopes();
     }
@@ -48,6 +49,7 @@ void handleStepSequencer() {
 void updateControl() {
     wifiCheck();
     handleStepSequencer();
+    displayUpdate();
 }
 
 int updateAudio() {

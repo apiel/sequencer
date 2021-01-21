@@ -85,6 +85,23 @@ typedef struct Drum {
 
 Drum gDrum[NOTES_COUNT];
 
+void displayNote() {
+    display.clearDisplay();
+    display.setCursor(0, 0);
+    dprintln("Note %c", getCurrentNoteChar());
+    byte note = getCurrentNote();
+    dprintln("A %d", gDrum[note].ATime);
+    dprintln("D %d", gDrum[note].DTime);
+    dprintln("S %d", gDrum[note].STime);
+    dprintln("R %d", gDrum[note].RTime);
+    dprintln("P");
+    dprintln("S");
+
+    // display.print("Note ");
+    // display.println(getCurrentNoteChar());
+    display.display();
+}
+
 void setNoteFromMidiBtn(byte note, byte optionKey) {
     if (optionKey == 0) {
         gDrum[note].useFreqEnvelope = !gDrum[note].useFreqEnvelope;

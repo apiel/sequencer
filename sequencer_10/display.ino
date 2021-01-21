@@ -6,10 +6,14 @@
 #define OLED_SDA 4
 #define OLED_SCL 15
 #define OLED_RST 16
-#define SCREEN_WIDTH 128  // OLED display width, in pixels
-#define SCREEN_HEIGHT 64  // OLED display height, in pixels
+#define SCREEN_W 128  // OLED display width, in pixels
+#define SCREEN_H 64   // OLED display height, in pixels
 
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RST);
+Adafruit_SSD1306 display(SCREEN_W, SCREEN_H, &Wire, OLED_RST);
+
+char buf[SCREEN_W];
+
+EventDelay displayDelay;
 
 void displaySetup() {
     // reset OLED display via software
@@ -32,11 +36,41 @@ void displaySetup() {
     display.setTextSize(1);
     display.setCursor(0, 0);
     display.println("SEQUENCER");
-    // display.println("Time% 100 100 100 100");
-    // display.println("Level 255 255 255 255");
-    // or
-    display.println("     A    D    S    R");
-    display.println("T 1400 1200 1300 1300");
-    display.println("L  255  255  255  255");
     display.display();
+
+    displayUpdate();
+}
+
+void displayUpdate() {
+    if (displayDelay.ready()) {
+        if (isNoteMenu()) {
+            displayNote();
+        } else {
+            displayMainMenu();
+        }
+        displayDelay.start(150);
+    }
+}
+
+void displayMainMenu() {
+    display.clearDisplay();
+    display.setCursor(0, 0);
+    display.println("Main menu");
+    display.display();
+}
+
+void dprint(const char *str, ...) {
+    va_list argptr;
+    va_start(argptr, str);
+    vsnprintf(buf, SCREEN_W, str, argptr);
+    va_end(argptr);
+    display.print(buf);
+}
+
+void dprintln(const char *str, ...) {
+    va_list argptr;
+    va_start(argptr, str);
+    vsnprintf(buf, SCREEN_W, str, argptr);
+    va_end(argptr);
+    display.println(buf);
 }

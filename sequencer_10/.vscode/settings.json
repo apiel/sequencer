@@ -3,7 +3,8 @@
         "cstddef": "cpp",
         "array": "cpp",
         "string": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "cstdio": "cpp"
     },
     "emeraldwalk.runonsave": {
         "commands": [
