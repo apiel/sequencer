@@ -62,7 +62,12 @@ void displayStatus() {
     }
     // dprintxy(18, 0, "%d", gSeqNoteIndex+1);
     for(byte i = 0; i < gSeqNoteIndex+1; i++) {
-        display.fillRect(90 + (i%8) * 4, i >= 8 ? 0 : 5, 2, 2, WHITE);
+        // display.fillRect(90 + (i%8) * 4, i >= 8 ? 0 : 5, 2, 2, WHITE);
+        byte y = 0;
+        if (i > 11) y = 6;
+        else if (i > 7) y = 4;
+        else if (i > 3) y = 2;
+        display.fillRect(104 + (i%4) * 4, y, 2, 1, WHITE);
     }
 }
 
