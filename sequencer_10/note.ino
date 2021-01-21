@@ -94,12 +94,17 @@ void displayNote() {
     dprintln("D %d", gDrum[note].DTime);
     dprintln("S %d", gDrum[note].STime);
     dprintln("R %d", gDrum[note].RTime);
-    dprintln("P");
-    dprintln("S");
+    dprintln("P %d", gDrum[note].PeakLevel);
+    dprintln("S %d", gDrum[note].SustainLevel);
 
-    // display.print("Note ");
-    // display.println(getCurrentNoteChar());
-    display.display();
+    if (gDrum[note].useFreqEnvelope) {
+        dprintxy(6, 1, "A %d", gDrum[note].AFreqTime);
+        dprintxy(6, 2, "S %d", gDrum[note].SFreqTime);
+        dprintxy(6, 3, "R %d", gDrum[note].RFreqTime);
+        dprintxy(6, 4, "A %d", gDrum[note].AFreqLevel);
+        dprintxy(6, 5, "S %d", gDrum[note].RFreqLevel);
+        dprintxy(6, 6, "R %d", gDrum[note].RFreqLevel);
+    }
 }
 
 void setNoteFromMidiBtn(byte note, byte optionKey) {

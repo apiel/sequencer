@@ -36,7 +36,6 @@ void displaySetup() {
     display.setTextSize(1);
     display.setCursor(0, 0);
     display.println("SEQUENCER");
-    display.display();
 
     displayUpdate();
 }
@@ -48,15 +47,34 @@ void displayUpdate() {
         } else {
             displayMainMenu();
         }
+        displayStatus();
+        display.display();
         displayDelay.start(150);
     }
+}
+
+void displayStatus() {
+    if (gSeqPlay) {
+        display.fillTriangle(122, 0, 128, 3, 122, 7, WHITE);
+    } else {
+        display.fillRect(122, 1, 6, 6, WHITE);
+    }
+    dprintxy(18, 0, "%d", gSeqNoteIndex+1);
 }
 
 void displayMainMenu() {
     display.clearDisplay();
     display.setCursor(0, 0);
     display.println("Main menu");
-    display.display();
+}
+
+void dprintxy(byte x, byte y, const char *str, ...) {
+    display.setCursor(6 * x, 8 * y);
+    va_list argptr;
+    va_start(argptr, str);
+    vsnprintf(buf, SCREEN_W, str, argptr);
+    va_end(argptr);
+    display.print(buf);
 }
 
 void dprint(const char *str, ...) {
