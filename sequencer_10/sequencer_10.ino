@@ -17,7 +17,6 @@
 #define MENU_SIZE (NOTES_COUNT + 1)
 
 bool gSeqPlay = true;
-bool gSeqMute = false;
 
 byte gSeqNoteIndex = 0;
 byte gSeqPatternIndex = 0;
@@ -35,12 +34,8 @@ void handleStepSequencer() {
             gSeqNoteIndex = (gSeqNoteIndex + 1) % MAX_NOTES;
             gSyncTempo = (gSyncTempo + 1) % 2;
             digitalWrite(PIN_SYNC_OUT, gSyncTempo);
-
-            if (!gSeqMute) {
-                playNote();
-            }
+            playNote();
             noteDelay.start(gTempo);
-            // displayUpdate();
         }
         updateEnvelopes();
     }
@@ -53,7 +48,7 @@ void updateControl() {
 }
 
 int updateAudio() {
-    if (gSeqPlay && !gSeqMute) {
+    if (gSeqPlay) {
         return updateAudioSeq();
     }
     return 0;

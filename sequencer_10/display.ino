@@ -49,7 +49,8 @@ void displayUpdate() {
         }
         displayStatus();
         display.display();
-        displayDelay.start(150);
+        // displayDelay.start(150);
+        displayDelay.start(gTempo/2);
     }
 }
 
@@ -59,7 +60,10 @@ void displayStatus() {
     } else {
         display.fillRect(122, 1, 6, 6, WHITE);
     }
-    dprintxy(18, 0, "%d", gSeqNoteIndex+1);
+    // dprintxy(18, 0, "%d", gSeqNoteIndex+1);
+    for(byte i = 0; i < gSeqNoteIndex+1; i++) {
+        display.fillRect(90 + (i%8) * 4, i >= 8 ? 0 : 5, 2, 2, WHITE);
+    }
 }
 
 void displayMainMenu() {

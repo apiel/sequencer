@@ -1,8 +1,4 @@
 
-void toggleMute() {
-    gSeqMute = !gSeqMute;
-}
-
 void togglePlay() {
     if (gSeqPlay) {
         stop();
