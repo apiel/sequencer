@@ -50,25 +50,32 @@ void displayUpdate() {
         displayStatus();
         display.display();
         // displayDelay.start(150);
-        displayDelay.start(gTempo/2);
+        displayDelay.start(gTempo / 2);
     }
 }
 
 void displayStatus() {
     if (gSeqPlay) {
-        display.fillTriangle(122, 0, 128, 3, 122, 7, WHITE);
+        display.fillTriangle(100, 0, 106, 3, 100, 7, WHITE);
     } else {
-        display.fillRect(122, 1, 6, 6, WHITE);
+        display.fillRect(100, 1, 6, 6, WHITE);
     }
     // dprintxy(18, 0, "%d", gSeqNoteIndex+1);
-    for(byte i = 0; i < gSeqNoteIndex+1; i++) {
-        // display.fillRect(90 + (i%8) * 4, i >= 8 ? 0 : 5, 2, 2, WHITE);
+    for (byte i = 0; i < gSeqNoteIndex + 1; i++) {
+        // display.fillRect(68 + (i%8) * 4, i >= 8 ? 0 : 5, 2, 2, WHITE);
         byte y = 0;
-        if (i > 11) y = 6;
-        else if (i > 7) y = 4;
-        else if (i > 3) y = 2;
-        display.fillRect(104 + (i%4) * 4, y, 2, 1, WHITE);
+        if (i > 11)
+            y = 6;
+        else if (i > 7)
+            y = 4;
+        else if (i > 3)
+            y = 2;
+        display.fillRect(82 + (i % 4) * 4, y, 2, 1, WHITE);
     }
+    display.drawTriangle(110, 7, 127, 7, 127, 0, WHITE);
+    display.fillTriangle(110, 7, 110 + (17 * gVolume / MAX_VOLUME), 7,
+                         110 + (17 * gVolume / MAX_VOLUME),
+                         7 - (7 * gVolume / MAX_VOLUME), WHITE);
 }
 
 void displayMainMenu() {
