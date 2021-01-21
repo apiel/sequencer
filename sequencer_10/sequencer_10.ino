@@ -16,7 +16,10 @@
 #define NOTES_COUNT 6  // number of existing notes
 #define MENU_SIZE (NOTES_COUNT + 1)
 
+#define MAX_VOLUME 127
+
 bool gSeqPlay = true;
+byte gVolume = 127;
 
 byte gSeqNoteIndex = 0;
 byte gSeqPatternIndex = 0;

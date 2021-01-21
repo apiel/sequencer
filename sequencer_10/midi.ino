@@ -63,9 +63,7 @@ char getCurrentNoteChar() {
     return currentMenu + 65;
 }
 
-byte getCurrentNote() {
-    return currentMenu;
-}
+byte getCurrentNote() { return currentMenu; }
 
 void handleKnob(byte key, byte val) {
     byte knob = key % KNOB_COUNT;
@@ -77,7 +75,9 @@ void handleKnob(byte key, byte val) {
     // Serial.print(" new value: ");
     // Serial.println(knobValues[knob]);
 
-    if (knob == 1 || knob == 11) {
+    if (knob == 9 || knob == 10) {
+        gVolume = val;
+    } else if (knob == 1 || knob == 11) {
         currentMenu = mod(currentMenu + direction, MENU_SIZE);
         Serial.print("Select menu: ");
         // Serial.print(MENU_SIZE);

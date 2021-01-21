@@ -289,7 +289,8 @@ int updateAudioSeq() {
         ret += (int)((gDrum[i].envelope.next() * gDrum[i].oscil.next()) >> 1);
     }
 
-    return ret >> 8;
+    // return ret >> 8;
+    return (int)(ret * gVolume / MAX_VOLUME) >> 8;
 }
 
 void setNoteOptionTable(byte note) {
