@@ -116,6 +116,9 @@ void displayNotePattern(byte note) {
         } else {
             display.drawRect(i * 8, 57, 6, 6, WHITE);
         }
+        if (i == gSeqNoteIndex) {
+            display.drawLine(i * 8 + 1, 63, i * 8 + 4, 63, WHITE);
+        }
     }
 }
 
