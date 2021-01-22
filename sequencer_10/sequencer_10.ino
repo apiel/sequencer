@@ -10,21 +10,21 @@
 
 #define PIN_SYNC_OUT 27
 
-#define MAX_NOTES 16  // max # of notes in pattern
+#define MAX_DRUMS 16  // max # of drums in pattern
 #define MAX_PATTERNS 3
 
-#define NOTES_COUNT 6  // number of existing notes
-#define MENU_SIZE (NOTES_COUNT + 1)
+#define DRUMS_COUNT 6  // number of existing drums
+#define MENU_SIZE (DRUMS_COUNT + 1)
 
 #define MAX_VOLUME 127
 
 bool gSeqPlay = true;
 byte gVolume = 127;
 
-byte gSeqNoteIndex = 0;
+byte gSeqDrumIndex = 0;
 byte gSeqPatternIndex = 0;
 
-EventDelay noteDelay;
+EventDelay drumDelay;
 byte gBPM = 100;
 unsigned int gTempo = 150;
 
@@ -33,12 +33,12 @@ byte gSyncTempo = HIGH;
 void handleStepSequencer() {
     // we might need rethink the way to play stop and sync with other device
     if (gSeqPlay) {
-        if (noteDelay.ready()) {
-            gSeqNoteIndex = (gSeqNoteIndex + 1) % MAX_NOTES;
+        if (drumDelay.ready()) {
+            gSeqDrumIndex = (gSeqDrumIndex + 1) % MAX_DRUMS;
             gSyncTempo = (gSyncTempo + 1) % 2;
             digitalWrite(PIN_SYNC_OUT, gSyncTempo);
-            playNote();
-            noteDelay.start(gTempo);
+            playDrum();
+            drumDelay.start(gTempo);
         }
         updateEnvelopes();
     }
@@ -65,7 +65,7 @@ void setup() {
 
     setTempo(gBPM);
 
-    setupNotes();
+    setupDrums();
     displaySetup();
     setupServer();
 

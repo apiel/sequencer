@@ -42,8 +42,8 @@ void displaySetup() {
 
 void displayUpdate() {
     if (displayDelay.ready()) {
-        if (isNoteMenu()) {
-            displayNote();
+        if (isDrumMenu()) {
+            displayDrum();
         } else {
             displayMainMenu();
         }
@@ -60,8 +60,8 @@ void displayStatus() {
     } else {
         display.fillRect(100, 1, 6, 6, WHITE);
     }
-    // dprintxy(18, 0, "%d", gSeqNoteIndex+1);
-    for (byte i = 0; i < gSeqNoteIndex + 1; i++) {
+    // dprintxy(18, 0, "%d", gSeqDrumIndex+1);
+    for (byte i = 0; i < gSeqDrumIndex + 1; i++) {
         // display.fillRect(68 + (i%8) * 4, i >= 8 ? 0 : 5, 2, 2, WHITE);
         byte y = 0;
         if (i > 11)
@@ -83,7 +83,9 @@ void displayMainMenu() {
     display.setCursor(0, 0);
     display.println("Main menu");
     display.println("");
+    dprintln("BPM: %d", gBPM);
     dprintln("Pattern: %d", getCurrentPatternId());
+    displayLpf();
 }
 
 void dprintxy(byte x, byte y, const char *str, ...) {

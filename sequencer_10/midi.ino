@@ -39,20 +39,20 @@ void handlePress(byte key) {
             assignCurrentPattern(key - 8);
         }
         handleDefaultButton(key);
-    } else if (isNoteMenu()) {
+    } else if (isDrumMenu()) {
         if (key == 40 || key == 16) {
             Serial.println("Toggle use freq envelope");
-            setNoteFromMidiBtn(currentMenu, 0);
+            setDrumFromMidiBtn(currentMenu, 0);
         } else if (key == 18 || key == 42) {
             Serial.println("Decrease freqShift");
-            setNoteFromMidiBtn(currentMenu, 1);
+            setDrumFromMidiBtn(currentMenu, 1);
         } else if (key == 19 || key == 43) {
             Serial.println("Increase freqShift");
-            setNoteFromMidiBtn(currentMenu, 2);
+            setDrumFromMidiBtn(currentMenu, 2);
         } else if (key > 31 && key < 40) {
-            toggleNote(currentMenu, key - 32 + 8);
+            toggleDrum(currentMenu, key - 32 + 8);
         } else if (key > 7 && key < 16) {
-            toggleNote(currentMenu, key - 8);
+            toggleDrum(currentMenu, key - 8);
         } else {
             handleDefaultButton(key);
         }
@@ -65,14 +65,14 @@ void handleDefaultButton(byte key) {
     }
 }
 
-bool isNoteMenu() { return currentMenu >= 0 && currentMenu < NOTES_COUNT; }
+bool isDrumMenu() { return currentMenu >= 0 && currentMenu < DRUMS_COUNT; }
 
-char getCurrentNoteChar() {
+char getCurrentDrumChar() {
     // 65 is 'A' position in ascii table
     return currentMenu + 65;
 }
 
-byte getCurrentNote() { return currentMenu; }
+byte getCurrentDrum() { return currentMenu; }
 
 void handleKnob(byte key, byte val) {
     byte knob = key % KNOB_COUNT;
@@ -94,11 +94,15 @@ void handleKnob(byte key, byte val) {
         // Serial.print(direction);
         // Serial.print(" - cur: ");
         Serial.println(currentMenu);
-    } else if (isNoteMenu()) {
-        setNoteFromMidiKnob(currentMenu, key, direction);
+    } else if (isDrumMenu()) {
+        setDrumFromMidiKnob(currentMenu, key, direction);
     } else if (currentMenu == MAIN_MENU) {
         if (knob == 2 || knob == 12) {
             increaseBPM(direction);
+        } else if (knob == 3 || knob == 13) {
+            increaseCutoff(direction);
+        } else if (knob == 4 || knob == 14) {
+            increaseResonance(direction);
         }
     }
 }
