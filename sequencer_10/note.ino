@@ -124,15 +124,16 @@ void toggleNote(byte note, byte pos) {
 }
 
 void displayNotePattern(byte note) {
-    for (byte i = 0; i < MAX_NOTES; i++) {
+    for (byte i = 0, s = 0; i < MAX_NOTES; i++) {
+        if (i % 4 == 0) s += 3;
         int aNote = gCurrentPattern[i];
         if (aNote & (int)pow(2, note)) {
-            display.fillRect(i * 8, 57, 6, 6, WHITE);
+            display.fillRect(i * 7 + s, 57, 6, 6, WHITE);
         } else {
-            display.drawRect(i * 8, 57, 6, 6, WHITE);
+            display.drawRect(i * 7 + s, 57, 6, 6, WHITE);
         }
         if (i == gSeqNoteIndex) {
-            display.drawLine(i * 8 + 1, 63, i * 8 + 4, 63, WHITE);
+            display.drawLine(i * 7 + 1 + s, 63, i * 7 + 4 + s, 63, WHITE);
         }
     }
 }
