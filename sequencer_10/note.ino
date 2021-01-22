@@ -232,9 +232,10 @@ void playDoubleEnvNote(struct Drum* ptrDrum) {
 
 void setStepPattern(byte step, int val) { gCurrentPattern[step] = val; }
 
-void assignCurrentPattern(byte note) {
+void assignCurrentPattern(byte index) {
+    byte pattern = index % MAX_PATTERNS;
     for (int i = 0; i < MAX_NOTES; i++) {
-        gCurrentPattern[i] = gSeqNotes[note][i];
+        gCurrentPattern[i] = gSeqNotes[pattern][i];
     }
 }
 
@@ -290,8 +291,8 @@ void applySetting(byte note) {
 }
 
 void setupNotes() {
-    // assignCurrentPattern(0);
-    assignCurrentPattern(2);
+    assignCurrentPattern(0);
+    // assignCurrentPattern(2);
 
     setupNote(0, 20, true, 45);
     setupNote(1, 20, true, 150);

@@ -33,6 +33,11 @@ void handlePress(byte key) {
     // Serial.print("midi btn press: ");
     // Serial.println(key);
     if (currentMenu == MAIN_MENU) {
+        if (key > 31 && key < 40) {
+            assignCurrentPattern(key - 32 + 8);
+        } else if (key > 7 && key < 16) {
+            assignCurrentPattern(key - 8);
+        }
         handleDefaultButton(key);
     } else if (isNoteMenu()) {
         if (key == 40 || key == 16) {
