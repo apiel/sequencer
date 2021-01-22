@@ -57,6 +57,8 @@ byte gSeqNotes[MAX_PATTERNS][MAX_NOTES] = {
 byte gCurrentPattern[MAX_NOTES] = {0, 0, 0, 0, 0, 0, 0, 0,
                                    0, 0, 0, 0, 0, 0, 0, 0};
 
+byte gCurrentPatternId = 0;
+
 typedef struct Drum {
     const char* name;
     bool useFreqEnvelope;
@@ -233,11 +235,13 @@ void playDoubleEnvNote(struct Drum* ptrDrum) {
 void setStepPattern(byte step, int val) { gCurrentPattern[step] = val; }
 
 void assignCurrentPattern(byte index) {
-    byte pattern = index % MAX_PATTERNS;
+    gCurrentPatternId = index % MAX_PATTERNS;
     for (int i = 0; i < MAX_NOTES; i++) {
-        gCurrentPattern[i] = gSeqNotes[pattern][i];
+        gCurrentPattern[i] = gSeqNotes[gCurrentPatternId][i];
     }
 }
+
+byte getCurrentPatternId() { return gCurrentPatternId; }
 
 void assignTable(byte note, const char* name, const int8_t* table,
                  int num_cells) {
@@ -291,8 +295,7 @@ void applySetting(byte note) {
 }
 
 void setupNotes() {
-    assignCurrentPattern(0);
-    // assignCurrentPattern(2);
+    assignCurrentPattern(gCurrentPatternId);
 
     setupNote(0, 20, true, 45);
     setupNote(1, 20, true, 150);

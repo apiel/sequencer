@@ -82,6 +82,8 @@ void displayMainMenu() {
     display.clearDisplay();
     display.setCursor(0, 0);
     display.println("Main menu");
+    display.println("");
+    dprintln("Pattern: %d", getCurrentPatternId());
 }
 
 void dprintxy(byte x, byte y, const char *str, ...) {
