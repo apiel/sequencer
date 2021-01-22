@@ -72,10 +72,10 @@ void displayStatus() {
             y = 2;
         display.fillRect(82 + (i % 4) * 4, y, 2, 1, WHITE);
     }
-    display.drawTriangle(110, 7, 127, 7, 127, 0, WHITE);
-    display.fillTriangle(110, 7, 110 + (17 * gVolume / MAX_VOLUME), 7,
+    display.drawTriangle(110, 6, 127, 6, 127, 0, WHITE);
+    display.fillTriangle(110, 6, 110 + (17 * gVolume / MAX_VOLUME), 6,
                          110 + (17 * gVolume / MAX_VOLUME),
-                         7 - (7 * gVolume / MAX_VOLUME), WHITE);
+                         6 - (6 * gVolume / MAX_VOLUME), WHITE);
 }
 
 void displayMainMenu() {

@@ -58,6 +58,7 @@ byte gCurrentPattern[MAX_NOTES] = {0, 0, 0, 0, 0, 0, 0, 0,
                                    0, 0, 0, 0, 0, 0, 0, 0};
 
 typedef struct Drum {
+    const char* name;
     bool useFreqEnvelope;
     ADSR<CONTROL_RATE, AUDIO_RATE> envelope;
     ADSR<CONTROL_RATE, AUDIO_RATE> envelopeFreq;
@@ -105,6 +106,8 @@ void displayNote() {
         dprintxy(6, 5, "S %d", gDrum[note].RFreqLevel);
         dprintxy(6, 6, "R %d", gDrum[note].RFreqLevel);
     }
+
+    dprintxy(12, 1, "%s", gDrum[note].name);
     displayNotePattern(note);
 }
 
@@ -146,7 +149,7 @@ void setNoteFromMidiKnob(byte note, byte optionKey, int direction) {
 
     if (optionKey == 2) {
         currentTableId = mod(currentTableId + direction, 24);
-        setNoteOptionTable(note);
+        setNoteOptionTable(note, currentTableId);
     } else if (optionKey == 3) {
         gDrum[note].PeakLevel =
             between(gDrum[note].PeakLevel + direction, 0, 250);
@@ -222,7 +225,8 @@ void assignCurrentPattern(byte note) {
     }
 }
 
-void assignTable(byte note, const int8_t* table, int num_cells) {
+void assignTable(byte note, const char* name, const int8_t* table,
+                 int num_cells) {
     byte multi = MAX_NUM_CELLS / num_cells;
     for (int i = 0; i < num_cells; i++) {
         for (int x = 0; x < multi; x++) {
@@ -230,11 +234,11 @@ void assignTable(byte note, const int8_t* table, int num_cells) {
         }
     }
     gDrum[note].oscil.setTable(gDrum[note].oscilTable);
+    gDrum[note].name = name;
 }
 
-void setupNote(byte note, const int8_t* table, int num_cells,
-               bool useFreqEnvelope, int frequency) {
-    assignTable(note, table, num_cells);
+void setupNote(byte note, byte tableId, bool useFreqEnvelope, int frequency) {
+    setNoteOptionTable(note, tableId);
     gDrum[note].useFreqEnvelope = useFreqEnvelope;
     gDrum[note].frequency = frequency;
 
@@ -276,12 +280,12 @@ void setupNotes() {
     assignCurrentPattern(0);
     // assignCurrentPattern(2);
 
-    setupNote(0, SIN2048_DATA, SIN2048_NUM_CELLS, true, 45);
-    setupNote(1, SIN2048_DATA, SIN2048_NUM_CELLS, true, 150);
-    setupNote(2, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS, false, 100);
-    setupNote(3, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS, false, 0);
-    setupNote(4, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS, false, 0);
-    setupNote(5, TRIANGLE2048_DATA, TRIANGLE2048_NUM_CELLS, true, 100);
+    setupNote(0, 24, true, 45);
+    setupNote(1, 24, true, 150);
+    setupNote(2, 12, false, 100);
+    setupNote(3, 12, false, 0);
+    setupNote(4, 12, false, 0);
+    setupNote(5, 2, true, 100);
 }
 
 void updateEnvelopes() {
@@ -308,65 +312,71 @@ int updateAudioSeq() {
     return (int)(ret * gVolume / MAX_VOLUME) >> 8;
 }
 
-void setNoteOptionTable(byte note) {
-    if (currentTableId == 1) {
-        assignTable(note, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
-    } else if (currentTableId == 2) {
-        assignTable(note, TRIANGLE2048_DATA, TRIANGLE2048_NUM_CELLS);
-    } else if (currentTableId == 3) {
-        assignTable(note, SQUARE_ANALOGUE512_DATA,
-                    SQUARE_ANALOGUE512_NUM_CELLS);
-    } else if (currentTableId == 4) {
-        assignTable(note, COS256_DATA, COS256_NUM_CELLS);
-    } else if (currentTableId == 5) {
-        assignTable(note, NOISE_STATIC_1_16384_DATA,
-                    NOISE_STATIC_1_16384_NUM_CELLS);
-    } else if (currentTableId == 6) {
-        assignTable(note, PHASOR256_DATA, PHASOR256_NUM_CELLS);
-    } else if (currentTableId == 7) {
-        assignTable(note, PINKNOISE8192_DATA, PINKNOISE8192_NUM_CELLS);
-    } else if (currentTableId == 8) {
-        assignTable(note, SAW512_DATA, SAW512_NUM_CELLS);
-    } else if (currentTableId == 9) {
-        assignTable(note, BROWNNOISE8192_DATA, BROWNNOISE8192_NUM_CELLS);
-    } else if (currentTableId == 10) {
-        assignTable(note, CHUM78_DATA, CHUM78_NUM_CELLS);
-    } else if (currentTableId == 11) {
-        assignTable(note, SAW_ANALOGUE512_DATA, SAW_ANALOGUE512_NUM_CELLS);
-    } else if (currentTableId == 12) {
-        assignTable(note, SMOOTHSQUARE8192_DATA, SMOOTHSQUARE8192_NUM_CELLS);
-    } else if (currentTableId == 13) {
-        assignTable(note, TRIANGLE1024_DATA, TRIANGLE1024_NUM_CELLS);
-    } else if (currentTableId == 14) {
-        assignTable(note, TRIANGLE_HERMES_2048_DATA,
+void setNoteOptionTable(byte note, byte tableId) {
+    if (tableId == 1) {
+        assignTable(note, "phasor", PHASOR256_DATA, PHASOR256_NUM_CELLS);
+    } else if (tableId == 2) {
+        assignTable(note, "tri2048", TRIANGLE2048_DATA, TRIANGLE2048_NUM_CELLS);
+    } else if (tableId == 3) {
+        assignTable(note, "tri1024", TRIANGLE1024_DATA, TRIANGLE1024_NUM_CELLS);
+    } else if (tableId == 4) {
+        assignTable(note, "triHermes", TRIANGLE_HERMES_2048_DATA,
                     TRIANGLE_HERMES_2048_NUM_CELLS);
-    } else if (currentTableId == 15) {
-        assignTable(note, TRIANGLE_DIST_CUBED_2048_DATA,
+    } else if (tableId == 5) {
+        assignTable(note, "triCubeb", TRIANGLE_DIST_CUBED_2048_DATA,
                     TRIANGLE_DIST_CUBED_2048_NUM_CELLS);
-    } else if (currentTableId == 16) {
-        assignTable(note, TRIANGLE_DIST_SQUARED_2048_DATA,
+    } else if (tableId == 6) {
+        assignTable(note, "triSquar", TRIANGLE_DIST_SQUARED_2048_DATA,
                     TRIANGLE_DIST_SQUARED_2048_NUM_CELLS);
-    } else if (currentTableId == 17) {
-        assignTable(note, TRIANGLE_VALVE_2048_DATA,
+    } else if (tableId == 7) {
+        assignTable(note, "triValve", TRIANGLE_VALVE_2048_DATA,
                     TRIANGLE_VALVE_2048_NUM_CELLS);
-    } else if (currentTableId == 18) {
-        assignTable(note, TRIANGLE_VALVE_2_2048_DATA,
+    } else if (tableId == 8) {
+        assignTable(note, "triValve2", TRIANGLE_VALVE_2_2048_DATA,
                     TRIANGLE_VALVE_2_2048_NUM_CELLS);
-    } else if (currentTableId == 19) {
-        assignTable(note, WAVESHAPE1_SOFTCLIP_DATA,
+    } else if (tableId == 9) {
+        assignTable(note, "cos", COS256_DATA, COS256_NUM_CELLS);
+    } else if (tableId == 10) {
+        assignTable(note, "analogSquar", SQUARE_ANALOGUE512_DATA,
+                    SQUARE_ANALOGUE512_NUM_CELLS);
+    } else if (tableId == 11) {
+        assignTable(note, "noise_s", NOISE_STATIC_1_16384_DATA,
+                    NOISE_STATIC_1_16384_NUM_CELLS);
+    } else if (tableId == 12) {
+        assignTable(note, "noise_w", WHITENOISE8192_DATA,
+                    WHITENOISE8192_NUM_CELLS);
+    } else if (tableId == 13) {
+        assignTable(note, "noise_p", PINKNOISE8192_DATA,
+                    PINKNOISE8192_NUM_CELLS);
+    } else if (tableId == 14) {
+        assignTable(note, "noise_b", BROWNNOISE8192_DATA,
+                    BROWNNOISE8192_NUM_CELLS);
+    } else if (tableId == 15) {
+        assignTable(note, "saw", SAW512_DATA, SAW512_NUM_CELLS);
+    } else if (tableId == 16) {
+        assignTable(note, "sawAnalog", SAW_ANALOGUE512_DATA,
+                    SAW_ANALOGUE512_NUM_CELLS);
+    } else if (tableId == 17) {
+        assignTable(note, "chum", CHUM78_DATA, CHUM78_NUM_CELLS);
+    } else if (tableId == 18) {
+        assignTable(note, "smoothSquar", SMOOTHSQUARE8192_DATA,
+                    SMOOTHSQUARE8192_NUM_CELLS);
+    } else if (tableId == 19) {
+        assignTable(note, "chebyshev", CHEBYSHEV_3RD_256_DATA,
+                    CHEBYSHEV_3RD_256_NUM_CELLS);
+    } else if (tableId == 20) {
+        assignTable(note, "waveSoft", WAVESHAPE1_SOFTCLIP_DATA,
                     WAVESHAPE1_SOFTCLIP_NUM_CELLS);
-    } else if (currentTableId == 20) {
-        assignTable(note, CHEBYSHEV_3RD_256_DATA, CHEBYSHEV_3RD_256_NUM_CELLS);
-    } else if (currentTableId == 21) {
-        assignTable(note, WAVESHAPE_SIGMOID_DATA, WAVESHAPE_SIGMOID_NUM_CELLS);
-    } else if (currentTableId == 22) {
-        assignTable(note, WAVESHAPE_TANH_DATA, WAVESHAPE_TANH_NUM_CELLS);
-    } else if (currentTableId == 23) {
-        assignTable(note, WHITENOISE8192_DATA, WHITENOISE8192_NUM_CELLS);
-    } else if (currentTableId == 24) {
-        assignTable(note, SQUARE_NO_ALIAS_2048_DATA,
+    } else if (tableId == 21) {
+        assignTable(note, "waveSig", WAVESHAPE_SIGMOID_DATA,
+                    WAVESHAPE_SIGMOID_NUM_CELLS);
+    } else if (tableId == 22) {
+        assignTable(note, "waveTanH", WAVESHAPE_TANH_DATA,
+                    WAVESHAPE_TANH_NUM_CELLS);
+    } else if (tableId == 23) {
+        assignTable(note, "noAlias", SQUARE_NO_ALIAS_2048_DATA,
                     SQUARE_NO_ALIAS_2048_NUM_CELLS);
     } else {
-        assignTable(note, SIN2048_DATA, SIN2048_NUM_CELLS);
+        assignTable(note, "sin", SIN2048_DATA, SIN2048_NUM_CELLS);
     }
 }
