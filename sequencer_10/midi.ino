@@ -35,15 +35,19 @@ void handlePress(byte key) {
     if (currentMenu == MAIN_MENU) {
         handleDefaultButton(key);
     } else if (isNoteMenu()) {
-        if (key == 32 || key == 8) {
+        if (key == 40 || key == 16) {
             Serial.println("Toggle use freq envelope");
             setNoteFromMidiBtn(currentMenu, 0);
-        } else if (key == 33 || key == 9) {
+        } else if (key == 18 || key == 42) {
             Serial.println("Decrease freqShift");
             setNoteFromMidiBtn(currentMenu, 1);
-        } else if (key == 34 || key == 10) {
+        } else if (key == 19 || key == 43) {
             Serial.println("Increase freqShift");
             setNoteFromMidiBtn(currentMenu, 2);
+        } else if (key > 31 && key < 40) {
+            toggleNote(currentMenu, key - 32 + 8);
+        } else if (key > 7 && key < 16) {
+            toggleNote(currentMenu, key - 8);
         } else {
             handleDefaultButton(key);
         }

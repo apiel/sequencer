@@ -105,10 +105,22 @@ void displayNote() {
         dprintxy(6, 4, "A %d", gDrum[note].AFreqLevel);
         dprintxy(6, 5, "S %d", gDrum[note].RFreqLevel);
         dprintxy(6, 6, "R %d", gDrum[note].RFreqLevel);
+        dprintxy(12, 3, "Shift %d", gDrum[note].freqShift);
     }
 
     dprintxy(12, 1, "%s", gDrum[note].name);
+    dprintxy(12, 2, "Freq %d", gDrum[note].frequency);
     displayNotePattern(note);
+}
+
+void toggleNote(byte note, byte pos) {
+    int aNote = gCurrentPattern[pos];
+    int powNote = pow(2, note);
+    if (aNote & powNote) {
+        gCurrentPattern[pos] -= powNote;
+    } else {
+        gCurrentPattern[pos] += powNote;
+    }
 }
 
 void displayNotePattern(byte note) {
@@ -324,7 +336,7 @@ void setNoteOptionTable(byte note, byte tableId) {
         assignTable(note, "triCubeb", TRIANGLE_DIST_CUBED_2048_DATA,
                     TRIANGLE_DIST_CUBED_2048_NUM_CELLS);
     } else if (tableId == 5) {
-        assignTable(note, "triSquar", TRIANGLE_DIST_SQUARED_2048_DATA,
+        assignTable(note, "triSquare", TRIANGLE_DIST_SQUARED_2048_DATA,
                     TRIANGLE_DIST_SQUARED_2048_NUM_CELLS);
     } else if (tableId == 6) {
         assignTable(note, "triValve", TRIANGLE_VALVE_2048_DATA,
