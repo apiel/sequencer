@@ -105,6 +105,18 @@ void displayNote() {
         dprintxy(6, 5, "S %d", gDrum[note].RFreqLevel);
         dprintxy(6, 6, "R %d", gDrum[note].RFreqLevel);
     }
+    displayNotePattern(note);
+}
+
+void displayNotePattern(byte note) {
+    for (byte i = 0; i < MAX_NOTES; i++) {
+        int aNote = gCurrentPattern[i];
+        if (aNote & (int)pow(2, note)) {
+            display.fillRect(i * 8, 57, 6, 6, WHITE);
+        } else {
+            display.drawRect(i * 8, 57, 6, 6, WHITE);
+        }
+    }
 }
 
 void setNoteFromMidiBtn(byte note, byte optionKey) {
