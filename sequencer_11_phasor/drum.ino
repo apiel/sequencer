@@ -12,7 +12,7 @@ Look at synth in general:
 
 // #include <AudioDelay.h>
 #include <LowPassFilter.h>
-#include <Oscil.h>  // oscillator template
+// #include <Oscil.h>  // oscillator template
 // #include <tables/brownnoise8192_int8.h>
 // #include <tables/chum78_int8.h>
 // #include <tables/cos256_int8.h>
@@ -76,7 +76,7 @@ byte gCurrentPattern[MAX_DRUMS] = {0, 0, 0, 0, 0, 0, 0, 0,
 
 byte gCurrentPatternId = 0;
 
-Phase<MAX_PATTERNS> phases[DRUMS_COUNT];
+Phase<MAX_NUM_CELLS> phases[DRUMS_COUNT];
 
 void displayDrum() {
     display.clearDisplay();
@@ -226,7 +226,9 @@ void setupDrum(byte drum, byte tableId, bool useFreqEnvelope, int frequency) {
 
     lpf.setCutoffFreqAndResonance(gCutoff, gResonance);
 
+    // phases[drum].type = PHASOR;  // todo configurable
     phases[drum].type = FREQ_ENV;  // todo configurable
+    // phases[drum].type = SIMPLE; // todo configurable
     phases[drum].frequency = frequency;
 
     phases[drum].adsr.setTimes(0, 0, 0, gTempo);

@@ -2,6 +2,7 @@
 #define PHASE_H_
 
 #include <Phasor.h>
+#include <Oscil.h>
 
 #include "ADSR_FIX.h"
 
@@ -18,7 +19,10 @@ class Phase {
     ADSR<CONTROL_RATE, AUDIO_RATE> adsrFreq;
     byte freqShift;
 
-    Phase() : PDM_SCALE(0.05) { freqAdd = 0; }
+    Phase() : PDM_SCALE(0.05) {
+        freqAdd = 0;
+        type = SIMPLE;
+    }
 
     void noteOn() {
         if (type == FREQ_ENV) {
@@ -56,6 +60,7 @@ class Phase {
             int freq = frequency + (adsrFreq.next() >> freqShift);
             oscil.setFreq(freq);
         }
+
         return (int)((adsr.next() * oscil.next()) >> 1);
     }
 
