@@ -59,6 +59,8 @@ class Phase {
         return (int)((adsr.next() * oscil.next()) >> 1);
     }
 
+    void setTable(const int8_t* TABLE_NAME) { oscil.setTable(TABLE_NAME); }
+
    private:
     const float PDM_SCALE;
 
