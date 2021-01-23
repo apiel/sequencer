@@ -27,7 +27,8 @@ Look at synth in general:
 #include <tables/square_no_alias_2048_int8.h>
 #include <tables/triangle1024_int8.h>
 #include <tables/triangle2048_int8.h>
-#include <tables/triangle_dist_cubed_2048_int8.h>
+// #include <tables/triangle_dist_cubed_2048_int8.h>
+#include "tables/triangle_dist_cubed.h"
 #include <tables/triangle_dist_squared_2048_int8.h>
 #include <tables/triangle_hermes_2048_int8.h>
 #include <tables/triangle_valve_2048_int8.h>
@@ -358,8 +359,8 @@ void setDrumOptionTable(byte drum, byte tableId) {
         assignTable(drum, "triHermes", TRIANGLE_HERMES_2048_DATA,
                     TRIANGLE_HERMES_2048_NUM_CELLS);
     } else if (tableId == 4) {
-        assignTable(drum, "triCubeb", TRIANGLE_DIST_CUBED_2048_DATA,
-                    TRIANGLE_DIST_CUBED_2048_NUM_CELLS);
+        assignTable(drum, "triCubed", TRIANGLE_DIST_CUBED_DATA,
+                    TRIANGLE_DIST_CUBED_NUM_CELLS);
     } else if (tableId == 5) {
         assignTable(drum, "triSquare", TRIANGLE_DIST_SQUARED_2048_DATA,
                     TRIANGLE_DIST_SQUARED_2048_NUM_CELLS);
