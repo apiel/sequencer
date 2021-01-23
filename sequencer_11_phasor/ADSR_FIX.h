@@ -9,6 +9,8 @@
 #include "Line.h"
 #include "mozzi_fixmath.h"
 
+enum { ATTACK, DECAY, SUSTAIN, RELEASE, IDLE };
+
 template <unsigned int CONTROL_UPDATE_RATE, unsigned int LERP_RATE,
           typename T = unsigned int>
 class ADSR {
@@ -18,9 +20,8 @@ class ADSR {
     T update_step_counter;
     T num_update_steps;
 
-    enum { ATTACK, DECAY, SUSTAIN, RELEASE, IDLE };
-
     struct phase {
+        unsigned int ms;
         byte phase_type;
         T update_steps;
         long lerp_steps;  // signed, to match params to transition (line) type
@@ -55,6 +56,7 @@ class ADSR {
     }
 
     inline void setTime(phase* p, unsigned int msec) {
+        p->ms = msec;
         p->update_steps = convertMsecToControlUpdateSteps(msec);
         p->lerp_steps = (long)p->update_steps * LERPS_PER_CONTROL;
     }
@@ -204,6 +206,13 @@ class ADSR {
         setIdleLevel(0);
     }
 
+    inline byte getLevel(byte phase_key) {
+        if (phase_key == ATTACK) return attack.level;
+        if (phase_key == DECAY) return decay.level;
+        if (phase_key == SUSTAIN) return sustain.level;
+        return release.level;
+    }
+
     /** Set the attack time of the ADSR in milliseconds.
     The actual time taken will be resolved within the resolution of
     CONTROL_RATE.
@@ -264,6 +273,13 @@ class ADSR {
         setSustainTime(sustain_ms);
         setReleaseTime(release_ms);
         setIdleTime(65535);  // guarantee step size of line will be 0
+    }
+
+    inline unsigned int getTime(byte phase_key) {
+        if (phase_key == ATTACK) return attack.ms;
+        if (phase_key == DECAY) return decay.ms;
+        if (phase_key == SUSTAIN) return sustain.ms;
+        return release.ms;
     }
 
     /** Set the attack time of the ADSR, expressed as the number of update steps

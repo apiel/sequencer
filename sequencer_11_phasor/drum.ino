@@ -1,6 +1,6 @@
 /*
-Make the frequency envelope table independent from the main envelope
-So the frequency envelope doesnt have to be the same...
+Make the frequency adsr table independent from the main adsr
+So the frequency adsr doesnt have to be the same...
 
 when pressing loop the pattern button become synth
 
@@ -40,6 +40,7 @@ Look at synth in general:
 
 // #include <ADSR.h>
 #include "ADSR_FIX.h"
+#include "Phase.h"
 
 #define D_KICK 1
 #define D_SNARE 2
@@ -75,9 +76,10 @@ byte gCurrentPatternId = 0;
 typedef struct Drum {
     const char* name;
     bool useFreqEnvelope;
-    ADSR<CONTROL_RATE, AUDIO_RATE> envelope;
-    ADSR<CONTROL_RATE, AUDIO_RATE> envelopeFreq;
+    ADSR<CONTROL_RATE, AUDIO_RATE> adsr;
+    ADSR<CONTROL_RATE, AUDIO_RATE> adsrFreq;
     Oscil<MAX_NUM_CELLS, AUDIO_RATE> oscil;
+    // Need to be there due to cells convertion
     int8_t oscilTable[MAX_NUM_CELLS];
     unsigned int frequency;
 
@@ -89,7 +91,7 @@ typedef struct Drum {
     byte PeakLevel;
     byte SustainLevel;
 
-    // Frequency envelope
+    // Frequency adsr
     byte AFreqTime;
     byte SFreqTime;
     byte RFreqTime;
@@ -106,20 +108,20 @@ void displayDrum() {
     display.setCursor(0, 0);
     dprintln("Drum %c", getCurrentDrumChar());
     byte drum = getCurrentDrum();
-    dprintln("A %d", gDrum[drum].ATime);
-    dprintln("D %d", gDrum[drum].DTime);
-    dprintln("S %d", gDrum[drum].STime);
-    dprintln("R %d", gDrum[drum].RTime);
-    dprintln("P %d", gDrum[drum].PeakLevel);
-    dprintln("S %d", gDrum[drum].SustainLevel);
+    dprintln("A %.1f", (float)gDrum[drum].adsr.getTime(ATTACK) / gTempo);
+    dprintln("D %.1f", (float)gDrum[drum].adsr.getTime(DECAY) / gTempo);
+    dprintln("S %.1f", (float)gDrum[drum].adsr.getTime(SUSTAIN) / gTempo);
+    dprintln("R %.1f", (float)gDrum[drum].adsr.getTime(RELEASE) / gTempo);
+    dprintln("P %d", gDrum[drum].adsr.getLevel(ATTACK));
+    dprintln("S %d", gDrum[drum].adsr.getLevel(SUSTAIN));
 
     if (gDrum[drum].useFreqEnvelope) {
         dprintxy(6, 1, "A %d", gDrum[drum].AFreqTime);
         dprintxy(6, 2, "S %d", gDrum[drum].SFreqTime);
         dprintxy(6, 3, "R %d", gDrum[drum].RFreqTime);
-        dprintxy(6, 4, "A %d", gDrum[drum].AFreqLevel);
-        dprintxy(6, 5, "S %d", gDrum[drum].RFreqLevel);
-        dprintxy(6, 6, "R %d", gDrum[drum].RFreqLevel);
+        dprintxy(6, 4, "A %d", gDrum[drum].adsrFreq.getLevel(ATTACK));
+        dprintxy(6, 5, "S %d", gDrum[drum].adsrFreq.getLevel(SUSTAIN));
+        dprintxy(6, 6, "R %d", gDrum[drum].adsrFreq.getLevel(RELEASE));
         dprintxy(12, 3, "Shift %d", gDrum[drum].freqShift);
     }
 
@@ -236,13 +238,13 @@ void playDrum() {
 
 void playSimpleEnvDrum(struct Drum* ptrDrum) {
     ptrDrum->oscil.setFreq((int)ptrDrum->frequency);
-    ptrDrum->envelope.noteOn();
+    ptrDrum->adsr.noteOn();
 }
 
 void playDoubleEnvDrum(struct Drum* ptrDrum) {
     ptrDrum->oscil.setFreq((int)ptrDrum->frequency);
-    ptrDrum->envelope.noteOn();
-    ptrDrum->envelopeFreq.noteOn();
+    ptrDrum->adsr.noteOn();
+    ptrDrum->adsrFreq.noteOn();
 }
 
 void setStepPattern(byte step, int val) { gCurrentPattern[step] = val; }
@@ -295,19 +297,18 @@ void setupDrum(byte drum, byte tableId, bool useFreqEnvelope, int frequency) {
 }
 
 void applySetting(byte drum) {
-    gDrum[drum].envelope.setLevels(gDrum[drum].PeakLevel,
-                                   gDrum[drum].SustainLevel,
-                                   gDrum[drum].SustainLevel, 0);
-    gDrum[drum].envelope.setTimes(
+    gDrum[drum].adsr.setLevels(gDrum[drum].PeakLevel, gDrum[drum].SustainLevel,
+                               gDrum[drum].SustainLevel, 0);
+    gDrum[drum].adsr.setTimes(
         gTempo / 100 * gDrum[drum].ATime, gTempo / 100 * gDrum[drum].DTime,
         gTempo / 100 * gDrum[drum].STime, gTempo / 100 * gDrum[drum].RTime);
 
-    gDrum[drum].envelopeFreq.setLevels(
+    gDrum[drum].adsrFreq.setLevels(
         gDrum[drum].AFreqLevel, gDrum[drum].AFreqLevel, gDrum[drum].SFreqLevel,
         gDrum[drum].RFreqLevel);
-    gDrum[drum].envelopeFreq.setTimes(gTempo / 100 * gDrum[drum].AFreqTime, 0,
-                                      gTempo / 100 * gDrum[drum].SFreqTime,
-                                      gTempo / 100 * gDrum[drum].RFreqTime);
+    gDrum[drum].adsrFreq.setTimes(gTempo / 100 * gDrum[drum].AFreqTime, 0,
+                                  gTempo / 100 * gDrum[drum].SFreqTime,
+                                  gTempo / 100 * gDrum[drum].RFreqTime);
 }
 
 void setupDrums() {
@@ -324,9 +325,9 @@ void setupDrums() {
 void updateEnvelopes() {
     for (int i = 0; i < DRUMS_COUNT; i++) {
         if (gDrum[i].useFreqEnvelope) {
-            gDrum[i].envelopeFreq.update();
+            gDrum[i].adsrFreq.update();
         }
-        gDrum[i].envelope.update();
+        gDrum[i].adsr.update();
     }
 }
 
@@ -335,16 +336,16 @@ int updateAudioSeq() {
     for (int i = 0; i < DRUMS_COUNT; i++) {
         if (gDrum[i].useFreqEnvelope) {
             int freq = gDrum[i].frequency +
-                       (gDrum[i].envelopeFreq.next() >> gDrum[i].freqShift);
+                       (gDrum[i].adsrFreq.next() >> gDrum[i].freqShift);
             gDrum[i].oscil.setFreq(freq);
         }
-        ret += (int)((gDrum[i].envelope.next() * gDrum[i].oscil.next()) >> 1);
+        ret += (int)((gDrum[i].adsr.next() * gDrum[i].oscil.next()) >> 1);
     }
 
     // return ret >> 8;
     return lpf.next((int)(ret * gVolume / MAX_VOLUME)) >> 8;
     // return audioDelay.next(lpf.next((int)(ret * gVolume / MAX_VOLUME)),
-    // gDelayValue) >> 8; 
+    // gDelayValue) >> 8;
     // return (int)(ret * gVolume / MAX_VOLUME) >> 8;
 }
 
