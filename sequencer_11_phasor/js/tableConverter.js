@@ -29,12 +29,19 @@ if (!data) {
 const json = data.replace('{', '[').replace(/([\s\,]+)\}/gs, ']');
 const table = JSON.parse(json);
 console.log(`Found ${table.length} cells`);
-
-const multi = NUM_CELLS / table.length;
 const newTable = [];
-for (i = 0; i < table.length; i++) {
-    for (x = 0; x < multi; x++) {
-        newTable[i * multi + x] = table[i];
+if (table.length < NUM_CELLS) {
+    const multi = NUM_CELLS / table.length;
+    for (i = 0; i < table.length; i++) {
+        for (x = 0; x < multi; x++) {
+            newTable[i * multi + x] = table[i];
+        }
+    }
+} else {
+    const inc = table.length / NUM_CELLS;
+    console.log(`Increment value ${inc}.`);
+    for (i = 0, x = 0; i < NUM_CELLS; i++, x += inc) {
+            newTable[i] = table[Math.round(x)];
     }
 }
 
@@ -57,7 +64,7 @@ const output = `#ifndef ${name}_H_
 
 CONSTTABLE_STORAGE(int8_t) ${name}_DATA []  =
         {${newTable.join(',')}};
-#endif`
+#endif`;
 
 // console.log('output', output);
 fs.writeFileSync(dist, output);
