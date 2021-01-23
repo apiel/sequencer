@@ -48,6 +48,17 @@ class Phase {
         }
     }
 
+    int next() {
+        if (type == PHASOR) {
+            return nextPhasor();
+        }
+        if (type == FREQ_ENV) {
+            int freq = frequency + (adsrFreq.next() >> freqShift);
+            oscil.setFreq(freq);
+        }
+        return (int)((adsr.next() * oscil.next()) >> 1);
+    }
+
    private:
     const float PDM_SCALE;
 
@@ -56,6 +67,18 @@ class Phase {
 
     Phasor<AUDIO_RATE> phasor;
     Phasor<AUDIO_RATE> phasorFreq;
+
+    int nextPhasor() {
+        static byte previous_counter;
+        byte counter = phasor.next() >> 24;
+
+        if (counter < previous_counter) phasorFreq.set(0);
+        previous_counter = counter;
+
+        unsigned int index = phasorFreq.next() >> 21;  // >>10 is really cool
+
+        return (adsr.next() * (255 - counter) * oscil.atIndex(index)) >> 16;
+    }
 
     void noteOnSimple() {
         oscil.setFreq((int)(frequency + freqAdd));
