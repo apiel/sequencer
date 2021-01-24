@@ -44,18 +44,23 @@ byte incLevel(byte level, int direction) {
 }
 
 void setPhaseFromMidiKnob(byte phaseIdx, byte optionKey, int direction) {
-    Serial.print("setPhaseFromMidi: ");
-    Serial.print(phaseIdx);
-    Serial.print(" key: ");
-    Serial.print(optionKey);
-    Serial.print(" dir: ");
-    Serial.println(direction);
+    // Serial.print("setPhaseFromMidi: ");
+    // Serial.print(phaseIdx);
+    // Serial.print(" key: ");
+    // Serial.print(optionKey);
+    // Serial.print(" dir: ");
+    // Serial.println(direction);
 
     Phase<MAX_NUM_CELLS> *phase = &phases[phaseIdx];
 
     if (optionKey == 2) {
         currentTableId = mod(currentTableId + direction, 20);
         setTable(phaseIdx, currentTableId);
+    } else if (optionKey == 3 || optionKey == 13) {
+        phase->frequency = between(phase->frequency + direction, 0, 5000);
+    } else if (optionKey == 4 || optionKey == 14) {
+        // this could be only with gAdsrFreqSetMode
+        phase->freqShift = between(phase->freqShift + direction, 0, 16);
     } else if (optionKey == 5) {
         if (gAdsrFreqSetMode) {
             phase->adsrFreq.setAttackTime(
