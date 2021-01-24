@@ -10,7 +10,8 @@ byte knobValues[KNOB_COUNT] = {
     KNOB_INIT_VALUE, KNOB_INIT_VALUE};
 
 const byte MAIN_MENU = mod(-1, MENU_SIZE);
-byte currentMenu = MAIN_MENU;
+// byte currentMenu = MAIN_MENU;
+byte currentMenu = 0;
 
 void handleMidi(byte type, byte key, byte val) {
     // knob

@@ -51,10 +51,7 @@ void updateControl() {
 }
 
 int updateAudio() {
-    if (gSeqPlay) {
-        return updateAudioSeq();
-    }
-    return 0;
+    return gSeqPlay ? updateAudioSeq() : 0;
 }
 
 void setup() {
