@@ -25,6 +25,8 @@ bool setPhaseFromMidiBtn(byte phaseIdx, byte key) {
         //  if (phases[phaseIdx].freqShift < 16) {
         //     phases[phaseIdx].freqShift++;
         // }
+    } else if (key == 20 || key == 44) {
+        // Loop
     } else if (key > 31 && key < 40) {
         togglePhase(phaseIdx, key - 32 + 8);
     } else if (key > 7 && key < 16) {
