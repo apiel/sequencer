@@ -24,34 +24,59 @@ void setPhaseFromMidiBtn(byte phase, byte optionKey) {
     }
 }
 
-void setPhaseFromMidiKnob(byte phase, byte optionKey, int direction) {
+unsigned int incTime(unsigned int ms, int direction) {
+    return between(ms + (direction * (int)gTempo * 0.1), 0, 60000);
+}
+
+void setPhaseFromMidiKnob(byte phaseIdx, byte optionKey, int direction) {
     Serial.print("setPhaseFromMidi: ");
-    Serial.print(phase);
+    Serial.print(phaseIdx);
     Serial.print(" key: ");
     Serial.print(optionKey);
     Serial.print(" dir: ");
     Serial.println(direction);
 
+    Phase<MAX_NUM_CELLS> *phase = &phases[phaseIdx];
+
     // ToDo...
     // here we have to set gPhase[phase].adsr.setAttack...
 
-    // if (optionKey == 2) {
-    //     currentTableId = mod(currentTableId + direction, 24);
-    //     setTable(phase, currentTableId);
-    // } else if (optionKey == 3) {
+    if (optionKey == 2) {
+        currentTableId = mod(currentTableId + direction, 20);
+        setTable(phaseIdx, currentTableId);
+        // } else if (optionKey == 5) {
+        //     phase->adsr.getTime(ATTACK) + direction;
+        //     phase.adsr.ATime = between(gPhase[phase].ATime + direction, 0,
+        //     100);
+        // } else if (optionKey == 6) {
+        //     gPhase[phase].DTime = between(gPhase[phase].DTime + direction, 0,
+        //     100);
+        // } else if (optionKey == 7) {
+        //     gPhase[phase].STime = between(gPhase[phase].STime + direction, 0,
+        //     100);
+    } else if (optionKey == 8) {
+        phase->adsr.setReleaseTime(
+            incTime(phase->adsr.getTime(RELEASE), direction));
+    }
+
+    // else if (optionKey == 3) {
     //     gPhase[phase].PeakLevel =
     //         between(gPhase[phase].PeakLevel + direction, 0, 250);
     // } else if (optionKey == 4) {
     //     gPhase[phase].SustainLevel =
     //         between(gPhase[phase].SustainLevel + direction, 0, 250);
     // } else if (optionKey == 5) {
-    //     gPhase[phase].ATime = between(gPhase[phase].ATime + direction, 0, 100);
+    //     gPhase[phase].ATime = between(gPhase[phase].ATime + direction, 0,
+    //     100);
     // } else if (optionKey == 6) {
-    //     gPhase[phase].DTime = between(gPhase[phase].DTime + direction, 0, 100);
+    //     gPhase[phase].DTime = between(gPhase[phase].DTime + direction, 0,
+    //     100);
     // } else if (optionKey == 7) {
-    //     gPhase[phase].STime = between(gPhase[phase].STime + direction, 0, 100);
+    //     gPhase[phase].STime = between(gPhase[phase].STime + direction, 0,
+    //     100);
     // } else if (optionKey == 8) {
-    //     gPhase[phase].RTime = between(gPhase[phase].RTime + direction, 0, 100);
+    //     gPhase[phase].RTime = between(gPhase[phase].RTime + direction, 0,
+    //     100);
     // } else if (optionKey == 12) {
     //     gPhase[phase].frequency =
     //         between(gPhase[phase].frequency + direction, 0, 2000);
