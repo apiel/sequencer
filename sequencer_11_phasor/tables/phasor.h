@@ -1,5 +1,5 @@
-#ifndef PHASOR_H_
-#define PHASOR_H_
+#ifndef PHASOR_TABLE_H_
+#define PHASOR_TABLE_H_
 
 #if ARDUINO >= 100
  #include "Arduino.h"

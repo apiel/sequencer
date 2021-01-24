@@ -12,37 +12,8 @@ Look at synth in general:
 
 // #include <AudioDelay.h>
 #include <LowPassFilter.h>
-// #include <Oscil.h>  // oscillator template
-// #include <tables/brownnoise8192_int8.h>
-// #include <tables/chum78_int8.h>
-// #include <tables/cos256_int8.h>
-// #include <tables/noise_static_1_16384_int8.h>
-// #include <tables/phasor256_int8.h>
-// #include <tables/pinknoise8192_int8.h>
-// #include <tables/saw512_int8.h>
-// #include <tables/saw_analogue512_int8.h>
-// #include <tables/sin2048_int8.h>
-// #include <tables/smoothsquare8192_int8.h>
-// #include <tables/square_analogue512_int8.h>
-// #include <tables/square_no_alias_2048_int8.h>
-// #include <tables/triangle1024_int8.h>
-// #include <tables/triangle2048_int8.h>
-// // #include <tables/triangle_dist_cubed_2048_int8.h>
-// #include <tables/triangle_dist_squared_2048_int8.h>
-// #include <tables/triangle_hermes_2048_int8.h>
-// #include <tables/triangle_valve_2048_int8.h>
-// #include <tables/triangle_valve_2_2048_int8.h>
-// #include <tables/waveshape1_softclip_int8.h>
-// #include <tables/waveshape_chebyshev_3rd_256_int8.h>
-// #include <tables/waveshape_sigmoid_int8.h>
-// #include <tables/waveshape_tanh_int8.h>
-// #include <tables/whitenoise8192_int8.h>
-
-#include "tables/sin8192_int8.h"
-#include "tables/triangle_dist_cubed.h"
 
 // #include <ADSR.h>
-#include "ADSR_FIX.h"
 #include "Phase.h"
 
 #define D_KICK 1
@@ -157,7 +128,7 @@ void setDrumFromMidiKnob(byte drum, byte optionKey, int direction) {
 
     // if (optionKey == 2) {
     //     currentTableId = mod(currentTableId + direction, 24);
-    //     setDrumOptionTable(drum, currentTableId);
+    //     setTable(drum, currentTableId);
     // } else if (optionKey == 3) {
     //     gDrum[drum].PeakLevel =
     //         between(gDrum[drum].PeakLevel + direction, 0, 250);
@@ -222,7 +193,7 @@ void assignCurrentPattern(byte index) {
 byte getCurrentPatternId() { return gCurrentPatternId; }
 
 void setupDrum(byte drum, byte tableId, bool useFreqEnvelope, int frequency) {
-    setDrumOptionTable(drum, tableId);
+    setTable(drum, tableId);
 
     lpf.setCutoffFreqAndResonance(gCutoff, gResonance);
 
@@ -286,69 +257,6 @@ int updateAudioSeq() {
     // return (int)(ret * gVolume / MAX_VOLUME) >> 8;
 }
 
-void setDrumOptionTable(byte drum, byte tableId) {
-    // ToDo...
-    // if (tableId == 1) {
-    //     assignTable(drum, "phasor", PHASOR256_DATA, PHASOR256_NUM_CELLS);
-    // } else if (tableId == 2) {
-    //     assignTable(drum, "tri2048", TRIANGLE2048_DATA,
-    //     TRIANGLE2048_NUM_CELLS);
-    // } else if (tableId == 3) {
-    //     assignTable(drum, "triHermes", TRIANGLE_HERMES_2048_DATA,
-    //                 TRIANGLE_HERMES_2048_NUM_CELLS);
-    // } else if (tableId == 4) {
-    //     assignTable(drum, "triCubed", TRIANGLE_DIST_CUBED_DATA,
-    //                 TRIANGLE_DIST_CUBED_NUM_CELLS);
-    // } else if (tableId == 5) {
-    //     assignTable(drum, "triSquare", TRIANGLE_DIST_SQUARED_2048_DATA,
-    //                 TRIANGLE_DIST_SQUARED_2048_NUM_CELLS);
-    // } else if (tableId == 6) {
-    //     assignTable(drum, "triValve", TRIANGLE_VALVE_2048_DATA,
-    //                 TRIANGLE_VALVE_2048_NUM_CELLS);
-    // } else if (tableId == 7) {
-    //     assignTable(drum, "triValve2", TRIANGLE_VALVE_2_2048_DATA,
-    //                 TRIANGLE_VALVE_2_2048_NUM_CELLS);
-    // } else if (tableId == 8) {
-    //     assignTable(drum, "cos", COS256_DATA, COS256_NUM_CELLS);
-    // } else if (tableId == 9) {
-    //     assignTable(drum, "analogSqu", SQUARE_ANALOGUE512_DATA,
-    //                 SQUARE_ANALOGUE512_NUM_CELLS);
-    // } else if (tableId == 10) {
-    //     assignTable(drum, "noise_w", WHITENOISE8192_DATA,
-    //                 WHITENOISE8192_NUM_CELLS);
-    // } else if (tableId == 11) {
-    //     assignTable(drum, "noise_b", BROWNNOISE8192_DATA,
-    //                 BROWNNOISE8192_NUM_CELLS);
-    // } else if (tableId == 12) {
-    //     assignTable(drum, "noise_p", PINKNOISE8192_DATA,
-    //                 PINKNOISE8192_NUM_CELLS);
-    // } else if (tableId == 13) {
-    //     assignTable(drum, "saw", SAW512_DATA, SAW512_NUM_CELLS);
-    // } else if (tableId == 14) {
-    //     assignTable(drum, "sawAnalog", SAW_ANALOGUE512_DATA,
-    //                 SAW_ANALOGUE512_NUM_CELLS);
-    // } else if (tableId == 15) {
-    //     assignTable(drum, "smoothSqu", SMOOTHSQUARE8192_DATA,
-    //                 SMOOTHSQUARE8192_NUM_CELLS);
-    // } else if (tableId == 16) {
-    //     assignTable(drum, "chebyshev", CHEBYSHEV_3RD_256_DATA,
-    //                 CHEBYSHEV_3RD_256_NUM_CELLS);
-    // } else if (tableId == 17) {
-    //     assignTable(drum, "waveSoft", WAVESHAPE1_SOFTCLIP_DATA,
-    //                 WAVESHAPE1_SOFTCLIP_NUM_CELLS);
-    // } else if (tableId == 18) {
-    //     assignTable(drum, "waveSig", WAVESHAPE_SIGMOID_DATA,
-    //                 WAVESHAPE_SIGMOID_NUM_CELLS);
-    // } else if (tableId == 19) {
-    //     assignTable(drum, "noAlias", SQUARE_NO_ALIAS_2048_DATA,
-    //                 SQUARE_NO_ALIAS_2048_NUM_CELLS);
-    // } else {
-    //     assignTable(drum, "sin", SIN2048_DATA, SIN2048_NUM_CELLS);
-    // }
-
-    phases[drum].setTable(SIN8192_DATA);
-    phases[drum].name = "sin";
-}
 
 void increaseCutoff(int direction) {
     gCutoff = (byte)between(gCutoff + (direction * 2), 0, 255);
