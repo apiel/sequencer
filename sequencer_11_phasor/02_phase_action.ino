@@ -1,3 +1,4 @@
+bool gAdsrFreqSetMode = false;
 
 void togglePhase(byte phase, byte pos) {
     int aPhase = gCurrentPattern[pos];
@@ -9,19 +10,29 @@ void togglePhase(byte phase, byte pos) {
     }
 }
 
-void setPhaseFromMidiBtn(byte phase, byte optionKey) {
-    if (optionKey == 0) {
-        // ToDo change phase type
-        // gPhase[phase].useFreqEnvelope = !gPhase[phase].useFreqEnvelope;
-    } else if (optionKey == 1) {
-        if (phases[phase].freqShift > 0) {
-            phases[phase].freqShift--;
-        }
-    } else if (optionKey == 2) {
-        if (phases[phase].freqShift < 16) {
-            phases[phase].freqShift++;
-        }
+bool setPhaseFromMidiBtn(byte phaseIdx, byte key) {
+    if (key == 40 || key == 16) {
+        phases[phaseIdx].setType(mod(phases[phaseIdx].type + 1, 4));
+    } else if (key == 17 || key == 41) {
+        gAdsrFreqSetMode = !gAdsrFreqSetMode;
+    } else if (key == 18 || key == 42) {
+        // // we might better use knob for this
+        // if (phases[phaseIdx].freqShift > 0) {
+        //     phases[phaseIdx].freqShift--;
+        // }
+    } else if (key == 19 || key == 43) {
+        // // we might better use knob for this
+        //  if (phases[phaseIdx].freqShift < 16) {
+        //     phases[phaseIdx].freqShift++;
+        // }
+    } else if (key > 31 && key < 40) {
+        togglePhase(phaseIdx, key - 32 + 8);
+    } else if (key > 7 && key < 16) {
+        togglePhase(phaseIdx, key - 8);
+    } else {
+        return false;
     }
+    return true;
 }
 
 unsigned int incTime(unsigned int ms, int direction) {
@@ -41,9 +52,6 @@ void setPhaseFromMidiKnob(byte phaseIdx, byte optionKey, int direction) {
     Serial.println(direction);
 
     Phase<MAX_NUM_CELLS> *phase = &phases[phaseIdx];
-
-    // ToDo...
-    // here we have to set gPhase[phase].adsr.setAttack...
 
     if (optionKey == 2) {
         currentTableId = mod(currentTableId + direction, 20);

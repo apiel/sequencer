@@ -41,20 +41,7 @@ void handlePress(byte key) {
         }
         handleDefaultButton(key);
     } else if (isPhaseMenu()) {
-        if (key == 40 || key == 16) {
-            Serial.println("Toggle use freq envelope");
-            setPhaseFromMidiBtn(currentMenu, 0);
-        } else if (key == 18 || key == 42) {
-            Serial.println("Decrease freqShift");
-            setPhaseFromMidiBtn(currentMenu, 1);
-        } else if (key == 19 || key == 43) {
-            Serial.println("Increase freqShift");
-            setPhaseFromMidiBtn(currentMenu, 2);
-        } else if (key > 31 && key < 40) {
-            togglePhase(currentMenu, key - 32 + 8);
-        } else if (key > 7 && key < 16) {
-            togglePhase(currentMenu, key - 8);
-        } else {
+        if (!setPhaseFromMidiBtn(currentMenu, key)) {
             handleDefaultButton(key);
         }
     }
@@ -89,12 +76,12 @@ void handleKnob(byte key, byte val) {
         gVolume = val;
     } else if (knob == 1 || knob == 11) {
         currentMenu = mod(currentMenu + direction, MENU_SIZE);
-        Serial.print("Select menu: ");
+        // Serial.print("Select menu: ");
         // Serial.print(MENU_SIZE);
         // Serial.print(" - dir: ");
         // Serial.print(direction);
         // Serial.print(" - cur: ");
-        Serial.println(currentMenu);
+        // Serial.println(currentMenu);
     } else if (isPhaseMenu()) {
         setPhaseFromMidiKnob(currentMenu, key, direction);
     } else if (currentMenu == MAIN_MENU) {
