@@ -29,8 +29,16 @@ void setTempo(byte bpm) {
     // Serial.println(gTempo);
 }
 
-// unsigned int fnPattern(int val, int isInc) {
-//     gSeqPatternIndex = getVal(gSeqPatternIndex, val, isInc) % MAX_PATTERNS;
-//     assignCurrentPattern(gSeqPatternIndex);
-//     return gSeqPatternIndex;
-// }
+void increaseCutoff(int direction) {
+    gCutoff = (byte)between(gCutoff + (direction * 2), 0, 255);
+    lpf.setCutoffFreq(gCutoff);
+    // Serial.print("Set gCutoff ");
+    // Serial.println(gCutoff);
+}
+
+void increaseResonance(int direction) {
+    gResonance = (byte)between(gResonance + (direction * 2), 0, 255);
+    lpf.setResonance(gResonance);
+    // Serial.print("Set gResonance ");
+    // Serial.println(gResonance);
+}

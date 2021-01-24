@@ -1,18 +1,19 @@
 #ifndef PHASE_H_
 #define PHASE_H_
 
-#include <Phasor.h>
 #include <Oscil.h>
+#include <Phasor.h>
 
 #include "ADSR_FIX.h"
 
-enum { SIMPLE, FREQ_ENV, PHASOR };
+enum { SIMPLE, FREQ_ENV, PHASOR, PHASOR2 };
 
 template <uint16_t NUM_TABLE_CELLS>
 class Phase {
    public:
     byte type;
     const char* name;
+    // here we could use an array to have a specific freq per step
     int freqAdd;
     unsigned int frequency;
     ADSR<CONTROL_RATE, AUDIO_RATE> adsr;
@@ -27,7 +28,7 @@ class Phase {
     void noteOn() {
         if (type == FREQ_ENV) {
             noteOnFreqEnv();
-        } else if (type == PHASOR) {
+        } else if (type >= PHASOR) {
             noteOnPhasor();
         } else {
             noteOnSimple();
@@ -40,27 +41,24 @@ class Phase {
     }
 
     void update() {
+        adsr.update();
         if (type != SIMPLE) {
             adsrFreq.update();
-        }
-        adsr.update();
-
-        if (type == PHASOR) {
-            phasorFreq.setFreq(
-                frequency + freqAdd +
-                ((frequency + freqAdd) * adsrFreq.next() * PDM_SCALE));
         }
     }
 
     int next() {
-        if (type == PHASOR) {
-            return nextPhasor();
+        if (type >= PHASOR) {
+            if (type == PHASOR2) {
+                byte counter = phasor.next() >> 24;
+                if (counter < previous_counter) phasorFreq.set(0);
+                previous_counter = counter;
+            }
+            return (adsr.next() * oscil.atIndex(phasorFreq.next() >> 21)) >> 1;
         }
         if (type == FREQ_ENV) {
-            int freq = frequency + (adsrFreq.next() >> freqShift);
-            oscil.setFreq(freq);
+            oscil.setFreq((int)frequency + (adsrFreq.next() >> freqShift));
         }
-
         return (int)((adsr.next() * oscil.next()) >> 1);
     }
 
@@ -75,17 +73,7 @@ class Phase {
     Phasor<AUDIO_RATE> phasor;
     Phasor<AUDIO_RATE> phasorFreq;
 
-    int nextPhasor() {
-        static byte previous_counter;
-        byte counter = phasor.next() >> 24;
-
-        if (counter < previous_counter) phasorFreq.set(0);
-        previous_counter = counter;
-
-        unsigned int index = phasorFreq.next() >> 21;  // >>10 is really cool
-
-        return (adsr.next() * (255 - counter) * oscil.atIndex(index)) >> 16;
-    }
+    byte previous_counter;
 
     void noteOnSimple() {
         oscil.setFreq((int)(frequency + freqAdd));
@@ -98,8 +86,7 @@ class Phase {
     }
 
     void noteOnPhasor() {
-        adsr.noteOn();
-        adsrFreq.noteOn();
+        noteOnFreqEnv();
         phasor.setFreq((int)(frequency + freqAdd));
         phasorFreq.setFreq((int)(frequency + freqAdd));
     }

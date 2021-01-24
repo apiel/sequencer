@@ -84,7 +84,7 @@ void displayMainMenu() {
     display.println("Main menu");
     display.println("");
     dprintln("BPM: %d", gBPM);
-    dprintln("Pattern: %d", getCurrentPatternId());
+    dprintln("Pattern: %d", gCurrentPatternId);
     displayLpf();
 }
 
@@ -128,6 +128,11 @@ void displayDrumPattern(byte drum) {
             display.drawLine(i * 7 + 1 + s, 63, i * 7 + 4 + s, 63, WHITE);
         }
     }
+}
+
+void displayLpf() {
+    dprintln("Cutoff: %d", gCutoff);
+    dprintln("Resonance: %d", gResonance);
 }
 
 void dprintxy(byte x, byte y, const char *str, ...) {
