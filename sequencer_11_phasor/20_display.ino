@@ -42,8 +42,8 @@ void displaySetup() {
 
 void displayUpdate() {
     if (displayDelay.ready()) {
-        if (isDrumMenu()) {
-            displayDrum();
+        if (isPhaseMenu()) {
+            displayPhase();
         } else {
             displayMainMenu();
         }
@@ -60,8 +60,8 @@ void displayStatus() {
     } else {
         display.fillRect(100, 1, 6, 6, WHITE);
     }
-    // dprintxy(18, 0, "%d", gSeqDrumIndex+1);
-    for (byte i = 0; i < gSeqDrumIndex + 1; i++) {
+    // dprintxy(18, 0, "%d", gSeqPhaseIndex+1);
+    for (byte i = 0; i < gSeqPhaseIndex + 1; i++) {
         // display.fillRect(68 + (i%8) * 4, i >= 8 ? 0 : 5, 2, 2, WHITE);
         byte y = 0;
         if (i > 11)
@@ -88,43 +88,43 @@ void displayMainMenu() {
     displayLpf();
 }
 
-void displayDrum() {
+void displayPhase() {
     display.clearDisplay();
     display.setCursor(0, 0);
-    dprintln("Drum %c", getCurrentDrumChar());
-    byte drum = getCurrentDrum();
-    dprintln("A %.1f", (float)phases[drum].adsr.getTime(ATTACK) / gTempo);
-    dprintln("D %.1f", (float)phases[drum].adsr.getTime(DECAY) / gTempo);
-    dprintln("S %.1f", (float)phases[drum].adsr.getTime(SUSTAIN) / gTempo);
-    dprintln("R %.1f", (float)phases[drum].adsr.getTime(RELEASE) / gTempo);
-    dprintln("P %d", phases[drum].adsr.getLevel(ATTACK));
-    dprintln("S %d", phases[drum].adsr.getLevel(SUSTAIN));
+    dprintln("Phase %c", getCurrentPhaseChar());
+    byte phase = getCurrentPhase();
+    dprintln("A %.1f", (float)phases[phase].adsr.getTime(ATTACK) / gTempo);
+    dprintln("D %.1f", (float)phases[phase].adsr.getTime(DECAY) / gTempo);
+    dprintln("S %.1f", (float)phases[phase].adsr.getTime(SUSTAIN) / gTempo);
+    dprintln("R %.1f", (float)phases[phase].adsr.getTime(RELEASE) / gTempo);
+    dprintln("P %d", phases[phase].adsr.getLevel(ATTACK));
+    dprintln("S %d", phases[phase].adsr.getLevel(SUSTAIN));
 
-    // if (gDrum[drum].useFreqEnvelope) {
-    //     dprintxy(6, 1, "A %d", gDrum[drum].AFreqTime);
-    //     dprintxy(6, 2, "S %d", gDrum[drum].SFreqTime);
-    //     dprintxy(6, 3, "R %d", gDrum[drum].RFreqTime);
-    //     dprintxy(6, 4, "A %d", gDrum[drum].adsrFreq.getLevel(ATTACK));
-    //     dprintxy(6, 5, "S %d", gDrum[drum].adsrFreq.getLevel(SUSTAIN));
-    //     dprintxy(6, 6, "R %d", gDrum[drum].adsrFreq.getLevel(RELEASE));
-    //     dprintxy(12, 3, "Shift %d", gDrum[drum].freqShift);
+    // if (gPhase[phase].useFreqEnvelope) {
+    //     dprintxy(6, 1, "A %d", gPhase[phase].AFreqTime);
+    //     dprintxy(6, 2, "S %d", gPhase[phase].SFreqTime);
+    //     dprintxy(6, 3, "R %d", gPhase[phase].RFreqTime);
+    //     dprintxy(6, 4, "A %d", gPhase[phase].adsrFreq.getLevel(ATTACK));
+    //     dprintxy(6, 5, "S %d", gPhase[phase].adsrFreq.getLevel(SUSTAIN));
+    //     dprintxy(6, 6, "R %d", gPhase[phase].adsrFreq.getLevel(RELEASE));
+    //     dprintxy(12, 3, "Shift %d", gPhase[phase].freqShift);
     // }
 
-    dprintxy(12, 1, "%s", phases[drum].tableName);
-    dprintxy(12, 2, "Freq %d", phases[drum].frequency);
-    displayDrumPattern(drum);
+    dprintxy(12, 1, "%s", phases[phase].tableName);
+    dprintxy(12, 2, "Freq %d", phases[phase].frequency);
+    displayPhasePattern(phase);
 }
 
-void displayDrumPattern(byte drum) {
-    for (byte i = 0, s = 0; i < MAX_DRUMS; i++) {
+void displayPhasePattern(byte phase) {
+    for (byte i = 0, s = 0; i < MAX_PHASES; i++) {
         if (i % 4 == 0) s += 3;
-        int aDrum = gCurrentPattern[i];
-        if (aDrum & (int)pow(2, drum)) {
+        int aPhase = gCurrentPattern[i];
+        if (aPhase & (int)pow(2, phase)) {
             display.fillRect(i * 7 + s, 57, 6, 6, WHITE);
         } else {
             display.drawRect(i * 7 + s, 57, 6, 6, WHITE);
         }
-        if (i == gSeqDrumIndex) {
+        if (i == gSeqPhaseIndex) {
             display.drawLine(i * 7 + 1 + s, 63, i * 7 + 4 + s, 63, WHITE);
         }
     }

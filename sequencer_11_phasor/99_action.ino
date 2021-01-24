@@ -9,7 +9,7 @@ void togglePlay() {
 
 void play() {
     gSeqPlay = true;
-    gSeqDrumIndex = 0;
+    gSeqPhaseIndex = 0;
 }
 
 void stop() { gSeqPlay = false; }
@@ -22,7 +22,7 @@ void increaseBPM(int direction) {
 
 void setTempo(byte bpm) {
     gBPM = between(bpm, 10, 255);
-    // 4 ♬ ♬ drum per beat in 60000ms = 1min
+    // 4 ♬ ♬ phase per beat in 60000ms = 1min
     gTempo = 60000 / (gBPM * 4);
 
     // Serial.print("Set tempo ");

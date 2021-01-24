@@ -30,56 +30,56 @@ byte gResonance = 0;
 
 byte currentTableId = 0;
 
-byte gSeqDrums[MAX_PATTERNS][MAX_DRUMS] = {
+byte gSeqPhases[MAX_PATTERNS][MAX_PHASES] = {
     {D_KICK, 0, D_HIHAT, 0, D_SNARE, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT, 0,
      D_SNARE, 0, D_HIHAT, D_KICK},
     {D_KICK + D_CRASH, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT,
      0, D_CLAP, 0, D_HIHAT, D_KICK},
     {D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0}};
 
-byte gCurrentPattern[MAX_DRUMS] = {0, 0, 0, 0, 0, 0, 0, 0,
+byte gCurrentPattern[MAX_PHASES] = {0, 0, 0, 0, 0, 0, 0, 0,
                                    0, 0, 0, 0, 0, 0, 0, 0};
 
 byte gCurrentPatternId = 0;
 
-Phase<MAX_NUM_CELLS> phases[DRUMS_COUNT];
+Phase<MAX_NUM_CELLS> phases[PHASES_COUNT];
 
-void setupDrum(byte drum, byte tableId, byte type, int frequency) {
-    setTable(drum, tableId);
+void setupPhase(byte phase, byte tableId, byte type, int frequency) {
+    setTable(phase, tableId);
 
     lpf.setCutoffFreqAndResonance(gCutoff, gResonance);
 
-    phases[drum].setType(type);
-    phases[drum].frequency = frequency;
+    phases[phase].setType(type);
+    phases[phase].frequency = frequency;
 
-    phases[drum].adsr.setTimes(0, 0, 0, gTempo);
-    phases[drum].adsr.setLevels(250, 200, 200, 0);
+    phases[phase].adsr.setTimes(0, 0, 0, gTempo);
+    phases[phase].adsr.setLevels(250, 200, 200, 0);
 
-    phases[drum].adsrFreq.setTimes(0, 0, 0, gTempo);
-    phases[drum].adsrFreq.setLevels(200, 200, 200, 0);
-    phases[drum].freqShift = 1;
+    phases[phase].adsrFreq.setTimes(0, 0, 0, gTempo);
+    phases[phase].adsrFreq.setLevels(200, 200, 200, 0);
+    phases[phase].freqShift = 1;
 }
 
-void setupDrums() {
+void setupPhases() {
     assignCurrentPattern(gCurrentPatternId);
 
-    setupDrum(0, 20, FREQ_ENV, 45);
-    setupDrum(1, 20, PHASOR2, 150);
-    setupDrum(2, 10, SIMPLE, 100);
-    setupDrum(3, 10, SIMPLE, 0);
-    setupDrum(4, 10, SIMPLE, 0);
-    setupDrum(5, 2, SIMPLE, 100);
+    setupPhase(0, 20, FREQ_ENV, 45);
+    setupPhase(1, 20, PHASOR2, 150);
+    setupPhase(2, 10, SIMPLE, 100);
+    setupPhase(3, 10, SIMPLE, 0);
+    setupPhase(4, 10, SIMPLE, 0);
+    setupPhase(5, 2, SIMPLE, 100);
 }
 
 void updateEnvelopes() {
-    for (int i = 0; i < DRUMS_COUNT; i++) {
+    for (int i = 0; i < PHASES_COUNT; i++) {
         phases[i].update();
     }
 }
 
 int updateAudioSeq() {
     int ret = 0;
-    for (int i = 0; i < DRUMS_COUNT; i++) {
+    for (int i = 0; i < PHASES_COUNT; i++) {
         ret += phases[i].next();
     }
 

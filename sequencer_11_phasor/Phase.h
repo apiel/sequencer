@@ -53,29 +53,16 @@ class Phase {
         }
     }
 
-    void noteOn() { (this->*ptrNoteOn)(); }
-
     void noteOn(int add) {
         freqAdd = add;
         noteOn();
     }
 
-    void update() { (this->*ptrUpdate)(); }
+    void noteOn() { (this->*ptrNoteOn)(); }
 
-    int next() {
-        if (type >= PHASOR) {
-            if (type == PHASOR2) {
-                byte counter = phasor.next() >> 24;
-                if (counter < previous_counter) phasorFreq.set(0);
-                previous_counter = counter;
-            }
-            return (adsr.next() * oscil.atIndex(phasorFreq.next() >> 21)) >> 1;
-        }
-        if (type == FREQ_ENV) {
-            oscil.setFreq((int)frequency + (adsrFreq.next() >> freqShift));
-        }
-        return (int)((adsr.next() * oscil.next()) >> 1);
-    }
+    void update() { (this->*ptrUpdate)(); }
+    
+    int next() { return (this->*ptrNext)(); }
 
     void setTable(const int8_t* TABLE_NAME) { oscil.setTable(TABLE_NAME); }
 

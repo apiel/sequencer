@@ -19,66 +19,66 @@
 #include "tables/waveshape_sigmoid.h"
 #include "tables/square_no_alias.h"
 
-void setTable(byte drum, byte tableId) {
+void setTable(byte phase, byte tableId) {
     if (tableId == 1) {
-        phases[drum].setTable(PHASOR_DATA);
-        phases[drum].tableName = "phasor";
+        phases[phase].setTable(PHASOR_DATA);
+        phases[phase].tableName = "phasor";
     } else if (tableId == 2) {
-        phases[drum].setTable(TRIANGLE_DATA);
-        phases[drum].tableName = "triangle";
+        phases[phase].setTable(TRIANGLE_DATA);
+        phases[phase].tableName = "triangle";
     } else if (tableId == 3) {
-        phases[drum].setTable(TRIANGLE_HERMES_DATA);
-        phases[drum].tableName = "triHermes";
+        phases[phase].setTable(TRIANGLE_HERMES_DATA);
+        phases[phase].tableName = "triHermes";
     } else if (tableId == 4) {
-        phases[drum].setTable(TRIANGLE_DIST_CUBED_DATA);
-        phases[drum].tableName = "triCubed";
+        phases[phase].setTable(TRIANGLE_DIST_CUBED_DATA);
+        phases[phase].tableName = "triCubed";
     } else if (tableId == 5) {
-        phases[drum].setTable(TRIANGLE_DIST_SQUARED_DATA);
-        phases[drum].tableName = "triSquare";
+        phases[phase].setTable(TRIANGLE_DIST_SQUARED_DATA);
+        phases[phase].tableName = "triSquare";
     } else if (tableId == 6) {
-        phases[drum].setTable(TRIANGLE_VALVE_DATA);
-        phases[drum].tableName = "triValve";
+        phases[phase].setTable(TRIANGLE_VALVE_DATA);
+        phases[phase].tableName = "triValve";
     } else if (tableId == 7) {
-        phases[drum].setTable(TRIANGLE_VALVE_2_DATA);
-        phases[drum].tableName = "triValve2";
+        phases[phase].setTable(TRIANGLE_VALVE_2_DATA);
+        phases[phase].tableName = "triValve2";
     } else if (tableId == 8) {
-        phases[drum].setTable(COS8192_DATA);
-        phases[drum].tableName = "cos";
+        phases[phase].setTable(COS8192_DATA);
+        phases[phase].tableName = "cos";
     } else if (tableId == 9) {
-        phases[drum].setTable(SQUARE_ANALOG_DATA);
-        phases[drum].tableName = "analogSqu";
+        phases[phase].setTable(SQUARE_ANALOG_DATA);
+        phases[phase].tableName = "analogSqu";
     } else if (tableId == 10) {
-        phases[drum].setTable(WHITENOISE8192_DATA);
-        phases[drum].tableName = "noise_w";
+        phases[phase].setTable(WHITENOISE8192_DATA);
+        phases[phase].tableName = "noise_w";
     } else if (tableId == 11) {
-        phases[drum].setTable(BROWNNOISE8192_DATA);
-        phases[drum].tableName = "noise_b";
+        phases[phase].setTable(BROWNNOISE8192_DATA);
+        phases[phase].tableName = "noise_b";
     } else if (tableId == 12) {
-        phases[drum].setTable(PINKNOISE8192_DATA);
-        phases[drum].tableName = "noise_p";
+        phases[phase].setTable(PINKNOISE8192_DATA);
+        phases[phase].tableName = "noise_p";
     } else if (tableId == 13) {
-        phases[drum].setTable(SAW8192_DATA);
-        phases[drum].tableName = "saw";
+        phases[phase].setTable(SAW8192_DATA);
+        phases[phase].tableName = "saw";
     } else if (tableId == 14) {
-        phases[drum].setTable(SAW_ANALOG_DATA);
-        phases[drum].tableName = "sawAnalog";
+        phases[phase].setTable(SAW_ANALOG_DATA);
+        phases[phase].tableName = "sawAnalog";
     } else if (tableId == 15) {
-        phases[drum].setTable(SMOOTHSQUARE8192_DATA);
-        phases[drum].tableName = "smoothSqu";
+        phases[phase].setTable(SMOOTHSQUARE8192_DATA);
+        phases[phase].tableName = "smoothSqu";
     } else if (tableId == 16) {
-        phases[drum].setTable(WAVESHAPE_CHEBYSHEV_3RD_DATA);
-        phases[drum].tableName = "chebyshev";
+        phases[phase].setTable(WAVESHAPE_CHEBYSHEV_3RD_DATA);
+        phases[phase].tableName = "chebyshev";
     } else if (tableId == 17) {
-        phases[drum].setTable(WAVESHAPE1_SOFTCLIP_DATA);
-        phases[drum].tableName = "waveSoft";
+        phases[phase].setTable(WAVESHAPE1_SOFTCLIP_DATA);
+        phases[phase].tableName = "waveSoft";
     } else if (tableId == 18) {
-        phases[drum].setTable(WAVESHAPE_SIGMOID_DATA);
-        phases[drum].tableName = "waveSig";
+        phases[phase].setTable(WAVESHAPE_SIGMOID_DATA);
+        phases[phase].tableName = "waveSig";
     } else if (tableId == 19) {
-        phases[drum].setTable(SQUARE_NO_ALIAS_DATA);
-        phases[drum].tableName = "noAlias";
+        phases[phase].setTable(SQUARE_NO_ALIAS_DATA);
+        phases[phase].tableName = "noAlias";
     } else {
-        phases[drum].setTable(SIN8192_DATA);
-        phases[drum].tableName = "sin";
+        phases[phase].setTable(SIN8192_DATA);
+        phases[phase].tableName = "sin";
     }
 }
