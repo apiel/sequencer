@@ -191,8 +191,6 @@ void dprintxyLevelPct(byte x, byte y, byte level) {
         display.print(1);
     } else {
         int value = (float)level / 255 * 100;
-        Serial.println(level);
-        Serial.println(value);
         display.setCursor(x + 2, y);
         display.print(value);
         display.drawPixel(x, y + 6, WHITE);
