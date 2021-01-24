@@ -103,52 +103,51 @@ void displayPhase() {
     dprintln("Freq %d", phase->frequency);
 
     dprintxyAbs(4, 32, "A");
-    dprintxyFloat(0, 40, (float)phase->adsr.getTime(ATTACK) / gTempo);
-    dprintxyFloat(0, 48, (float)phase->adsr.getLevel(ATTACK) / 255);
+    dprintxyTimePct(0, 40, phase->adsr.getTime(ATTACK));
+    dprintxyLevelPct(0, 48, phase->adsr.getLevel(ATTACK));
 
     display.drawLine(15, 32, 15, 55, WHITE);
 
     dprintxyAbs(20, 32, "D");
-    dprintxyFloat(17, 40, (float)phase->adsr.getTime(DECAY) / gTempo);
-    dprintxyFloat(17, 48, (float)phase->adsr.getLevel(DECAY) / 255);
+    dprintxyTimePct(17, 40, phase->adsr.getTime(DECAY));
+    dprintxyLevelPct(17, 48, phase->adsr.getLevel(DECAY));
 
     display.drawLine(31, 32, 31, 55, WHITE);
 
     dprintxyAbs(36, 32, "S");
-    dprintxyFloat(33, 40, (float)phase->adsr.getTime(SUSTAIN) / gTempo);
-    dprintxyFloat(33, 48, (float)phase->adsr.getLevel(SUSTAIN) / 255);
+    dprintxyTimePct(33, 40, phase->adsr.getTime(SUSTAIN));
+    dprintxyLevelPct(33, 48, phase->adsr.getLevel(SUSTAIN));
 
     display.drawLine(47, 32, 47, 55, WHITE);
 
     dprintxyAbs(52, 32, "R");
-    dprintxyFloat(49, 40, (float)phase->adsr.getTime(RELEASE) / gTempo);
-    dprintxyFloat(49, 48, (float)phase->adsr.getLevel(RELEASE) / 255);
+    dprintxyTimePct(49, 40, phase->adsr.getTime(RELEASE));
+    dprintxyLevelPct(49, 48, phase->adsr.getLevel(RELEASE));
 
     if (phase->type > SIMPLE) {
         display.drawLine(63, 32, 63, 55, WHITE);
 
         dprintxyAbs(68, 32, "A");
-        dprintxyFloat(65, 40, (float)phase->adsrFreq.getTime(ATTACK) / gTempo);
-        dprintxyFloat(65, 48, (float)phase->adsrFreq.getLevel(ATTACK) / 255);
+        dprintxyTimePct(65, 40, phase->adsrFreq.getTime(ATTACK));
+        dprintxyLevelPct(65, 48, phase->adsrFreq.getLevel(ATTACK));
 
         display.drawLine(79, 32, 79, 55, WHITE);
 
         dprintxyAbs(84, 32, "D");
-        dprintxyFloat(81, 40, (float)phase->adsrFreq.getTime(DECAY) / gTempo);
-        dprintxyFloat(81, 48, (float)phase->adsrFreq.getLevel(DECAY) / 255);
+        dprintxyTimePct(81, 40, phase->adsrFreq.getTime(DECAY));
+        dprintxyLevelPct(81, 48, phase->adsrFreq.getLevel(DECAY));
 
         display.drawLine(95, 32, 95, 55, WHITE);
 
         dprintxyAbs(100, 32, "S");
-        dprintxyFloat(97, 40, (float)phase->adsrFreq.getTime(SUSTAIN) / gTempo);
-        dprintxyFloat(97, 48, (float)phase->adsrFreq.getLevel(SUSTAIN) / 255);
+        dprintxyTimePct(97, 40, phase->adsrFreq.getTime(SUSTAIN));
+        dprintxyLevelPct(97, 48, phase->adsrFreq.getLevel(SUSTAIN));
 
         display.drawLine(111, 32, 111, 55, WHITE);
 
         dprintxyAbs(116, 32, "R");
-        dprintxyFloat(113, 40,
-                      (float)phase->adsrFreq.getTime(RELEASE) / gTempo);
-        dprintxyFloat(113, 48, (float)phase->adsrFreq.getLevel(RELEASE) / 255);
+        dprintxyTimePct(113, 40, phase->adsrFreq.getTime(RELEASE));
+        dprintxyLevelPct(113, 48, phase->adsrFreq.getLevel(RELEASE));
 
         if (phase->type == FREQ_ENV) {
             dprintxy(12, 1, "Freq Env");
@@ -186,12 +185,27 @@ void displayLpf() {
     dprintln("Resonance: %d", gResonance);
 }
 
-void dprintxyFloat(byte x, byte y, float value) {
+void dprintxyLevelPct(byte x, byte y, byte level) {
+    if (level == 255) {
+        display.setCursor(x + 4, y);
+        display.print(1);
+    } else {
+        int value = (float)level / 255 * 100;
+        Serial.println(level);
+        Serial.println(value);
+        display.setCursor(x + 2, y);
+        display.print(value);
+        display.drawPixel(x, y + 6, WHITE);
+    }
+}
+
+void dprintxyTimePct(byte x, byte y, unsigned int ms) {
+    float value = ms / gTempo;
     if (value < 1) {
         byte f = value * 10;
-        display.setCursor(x + 4, y);
+        display.setCursor(x + 2, y);
         display.print(f);
-        display.drawPixel(x + 2, y + 6, WHITE);
+        display.drawPixel(x, y + 6, WHITE);
     } else {
         display.setCursor(x, y);
         byte i = (byte)value;
