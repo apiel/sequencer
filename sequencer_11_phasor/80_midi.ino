@@ -73,7 +73,7 @@ char getCurrentPhaseChar() {
     return currentMenu + 65;
 }
 
-byte getCurrentPhase() { return currentMenu; }
+byte getCurrentPhaseIdx() { return currentMenu; }
 
 void handleKnob(byte key, byte val) {
     byte knob = key % KNOB_COUNT;

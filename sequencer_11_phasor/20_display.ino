@@ -88,57 +88,80 @@ void displayMainMenu() {
     displayLpf();
 }
 
+Phase<MAX_NUM_CELLS> *getCurrentPhase() {
+    return &phases[getCurrentPhaseIdx()];
+}
+
 void displayPhase() {
     display.clearDisplay();
     display.setCursor(0, 0);
     dprintln("Phase %c", getCurrentPhaseChar());
-    byte phase = getCurrentPhase();
 
-    for (int i = 0; i < 8; i++) {
-        display.drawLine(i * 16 - 1, 32, i * 16 - 1, 55, WHITE);
-    }
+    Phase<MAX_NUM_CELLS> *phase = getCurrentPhase();
+
+    display.println(phase->tableName);
+    dprintln("Freq %d", phase->frequency);
+
     dprintxyAbs(4, 32, "A");
-    dprintxyFloat(0, 40, 0.35);
-    dprintxyFloat(0, 48, 1.56);
-    
+    dprintxyFloat(0, 40, (float)phase->adsr.getTime(ATTACK) / gTempo);
+    dprintxyFloat(0, 48, (float)phase->adsr.getLevel(ATTACK) / 255);
+
+    display.drawLine(15, 32, 15, 55, WHITE);
+
     dprintxyAbs(20, 32, "D");
-    dprintxyFloat(17, 40, 2.35);
-    dprintxyFloat(17, 48, 1.56);
-    
+    dprintxyFloat(17, 40, (float)phase->adsr.getTime(DECAY) / gTempo);
+    dprintxyFloat(17, 48, (float)phase->adsr.getLevel(DECAY) / 255);
+
+    display.drawLine(31, 32, 31, 55, WHITE);
+
     dprintxyAbs(36, 32, "S");
+    dprintxyFloat(33, 40, (float)phase->adsr.getTime(SUSTAIN) / gTempo);
+    dprintxyFloat(33, 48, (float)phase->adsr.getLevel(SUSTAIN) / 255);
+
+    display.drawLine(47, 32, 47, 55, WHITE);
+
     dprintxyAbs(52, 32, "R");
-    dprintxyAbs(68, 32, "A");
-    dprintxyAbs(84, 32, "D");
-    dprintxyAbs(100, 32, "S");
-    dprintxyAbs(116, 32, "R");
+    dprintxyFloat(49, 40, (float)phase->adsr.getTime(RELEASE) / gTempo);
+    dprintxyFloat(49, 48, (float)phase->adsr.getLevel(RELEASE) / 255);
 
-    // dprintln("A %.1f", (float)phases[phase].adsr.getTime(ATTACK) / gTempo);
-    // dprintln("D %.1f", (float)phases[phase].adsr.getTime(DECAY) / gTempo);
-    // dprintln("S %.1f", (float)phases[phase].adsr.getTime(SUSTAIN) / gTempo);
-    // dprintln("R %.1f", (float)phases[phase].adsr.getTime(RELEASE) / gTempo);
-    // dprintln("P %d", phases[phase].adsr.getLevel(ATTACK));
-    // dprintln("S %d", phases[phase].adsr.getLevel(SUSTAIN));
+    if (phase->type > SIMPLE) {
+        display.drawLine(63, 32, 63, 55, WHITE);
 
-    // if (gPhase[phase].useFreqEnvelope) {
-    //     dprintxy(6, 1, "A %d", gPhase[phase].AFreqTime);
-    //     dprintxy(6, 2, "S %d", gPhase[phase].SFreqTime);
-    //     dprintxy(6, 3, "R %d", gPhase[phase].RFreqTime);
-    //     dprintxy(6, 4, "A %d", gPhase[phase].adsrFreq.getLevel(ATTACK));
-    //     dprintxy(6, 5, "S %d", gPhase[phase].adsrFreq.getLevel(SUSTAIN));
-    //     dprintxy(6, 6, "R %d", gPhase[phase].adsrFreq.getLevel(RELEASE));
-    //     dprintxy(12, 3, "Shift %d", gPhase[phase].freqShift);
-    // }
+        dprintxyAbs(68, 32, "A");
+        dprintxyFloat(65, 40, (float)phase->adsrFreq.getTime(ATTACK) / gTempo);
+        dprintxyFloat(65, 48, (float)phase->adsrFreq.getLevel(ATTACK) / 255);
 
-    // dprintxy(12, 1, "%s", phases[phase].tableName);
-    // dprintxy(12, 2, "Freq %d", phases[phase].frequency);
-    displayPhasePattern(phase);
+        display.drawLine(79, 32, 79, 55, WHITE);
+
+        dprintxyAbs(84, 32, "D");
+        dprintxyFloat(81, 40, (float)phase->adsrFreq.getTime(DECAY) / gTempo);
+        dprintxyFloat(81, 48, (float)phase->adsrFreq.getLevel(DECAY) / 255);
+
+        display.drawLine(95, 32, 95, 55, WHITE);
+
+        dprintxyAbs(100, 32, "S");
+        dprintxyFloat(97, 40, (float)phase->adsrFreq.getTime(SUSTAIN) / gTempo);
+        dprintxyFloat(97, 48, (float)phase->adsrFreq.getLevel(SUSTAIN) / 255);
+
+        display.drawLine(111, 32, 111, 55, WHITE);
+
+        dprintxyAbs(116, 32, "R");
+        dprintxyFloat(113, 40,
+                      (float)phase->adsrFreq.getTime(RELEASE) / gTempo);
+        dprintxyFloat(113, 48, (float)phase->adsrFreq.getLevel(RELEASE) / 255);
+
+        // dprintxy(12, 3, "Shift %d", gPhase[phase].freqShift);
+    }
+    displayPhasePattern();
 }
 
-void displayPhasePattern(byte phase) {
+void displayPhasePattern() {
+    byte idx = getCurrentPhaseIdx();
+
     for (byte i = 0, s = 0; i < MAX_PHASES; i++) {
         if (i % 4 == 0) s += 3;
         int aPhase = gCurrentPattern[i];
-        if (aPhase & (int)pow(2, phase)) {
+        if (aPhase & (int)pow(2, idx)) {
             display.fillRect(i * 7 + s, 57, 6, 6, WHITE);
         } else {
             display.drawRect(i * 7 + s, 57, 6, 6, WHITE);
@@ -155,13 +178,20 @@ void displayLpf() {
 }
 
 void dprintxyFloat(byte x, byte y, float value) {
-    display.setCursor(x, y);
-    byte i = (byte) value;
-    byte f = (value - i) * 10;
-    display.print(i);
-    display.setCursor(x + 8, y);
-    display.print(f);
-    display.drawPixel(x + 6, y + 6, WHITE);
+    if (value < 1) {
+        byte f = value * 10;
+        display.setCursor(x + 4, y);
+        display.print(f);
+        display.drawPixel(x + 2, y + 6, WHITE);
+    } else {
+        display.setCursor(x, y);
+        byte i = (byte)value;
+        byte f = (value - i) * 10;
+        display.print(i);
+        display.setCursor(x + 8, y);
+        display.print(f);
+        display.drawPixel(x + 6, y + 6, WHITE);
+    }
 }
 
 void dprintxyAbs(byte x, byte y, const char *str, ...) {
