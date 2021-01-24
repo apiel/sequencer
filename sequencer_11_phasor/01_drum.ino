@@ -44,19 +44,15 @@ byte gCurrentPatternId = 0;
 
 Phase<MAX_NUM_CELLS> phases[DRUMS_COUNT];
 
-void setupDrum(byte drum, byte tableId, bool useFreqEnvelope, int frequency) {
+void setupDrum(byte drum, byte tableId, byte type, int frequency) {
     setTable(drum, tableId);
 
     lpf.setCutoffFreqAndResonance(gCutoff, gResonance);
 
-    phases[drum].setType(PHASOR2);
-    // phases[drum].type = PHASOR;  // todo configurable
-    // phases[drum].type = FREQ_ENV;  // todo configurable
-    // phases[drum].type = SIMPLE; // todo configurable
+    phases[drum].setType(type);
     phases[drum].frequency = frequency;
 
     phases[drum].adsr.setTimes(0, 0, 0, gTempo);
-    // phases[drum].adsr.setTimes(0, 0, 1000, 2000);
     phases[drum].adsr.setLevels(250, 200, 200, 0);
 
     phases[drum].adsrFreq.setTimes(0, 0, 0, gTempo);
@@ -67,12 +63,12 @@ void setupDrum(byte drum, byte tableId, bool useFreqEnvelope, int frequency) {
 void setupDrums() {
     assignCurrentPattern(gCurrentPatternId);
 
-    setupDrum(0, 20, true, 45);
-    setupDrum(1, 20, true, 150);
-    setupDrum(2, 10, false, 100);
-    setupDrum(3, 10, false, 0);
-    setupDrum(4, 10, false, 0);
-    setupDrum(5, 2, true, 100);
+    setupDrum(0, 20, FREQ_ENV, 45);
+    setupDrum(1, 20, PHASOR2, 150);
+    setupDrum(2, 10, SIMPLE, 100);
+    setupDrum(3, 10, SIMPLE, 0);
+    setupDrum(4, 10, SIMPLE, 0);
+    setupDrum(5, 2, SIMPLE, 100);
 }
 
 void updateEnvelopes() {
