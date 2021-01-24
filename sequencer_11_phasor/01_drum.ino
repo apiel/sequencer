@@ -49,7 +49,7 @@ void setupDrum(byte drum, byte tableId, bool useFreqEnvelope, int frequency) {
 
     lpf.setCutoffFreqAndResonance(gCutoff, gResonance);
 
-    phases[drum].type = PHASOR2;
+    phases[drum].setType(PHASOR2);
     // phases[drum].type = PHASOR;  // todo configurable
     // phases[drum].type = FREQ_ENV;  // todo configurable
     // phases[drum].type = SIMPLE; // todo configurable

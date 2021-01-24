@@ -29,30 +29,38 @@ class Phase {
 
     Phase() : PDM_SCALE(0.05) {
         freqAdd = 0;
-        type = SIMPLE;
+        setType(SIMPLE);
     }
 
-    void noteOn() {
+    void setType(byte newType) {
+        type = newType;
         if (type == FREQ_ENV) {
-            noteOnFreqEnv();
-        } else if (type >= PHASOR) {
-            noteOnPhasor();
+            ptrUpdate = &Phase<NUM_TABLE_CELLS>::updateFreq;
+            ptrNoteOn = &Phase<NUM_TABLE_CELLS>::noteOnFreqEnv;
+            ptrNext = &Phase<NUM_TABLE_CELLS>::nextFreqEnv;
+        } else if (type == PHASOR) {
+            ptrUpdate = &Phase<NUM_TABLE_CELLS>::updateFreq;
+            ptrNoteOn = &Phase<NUM_TABLE_CELLS>::noteOnPhasor;
+            ptrNext = &Phase<NUM_TABLE_CELLS>::nextPhasor;
+        } else if (type == PHASOR2) {
+            ptrUpdate = &Phase<NUM_TABLE_CELLS>::updateFreq;
+            ptrNoteOn = &Phase<NUM_TABLE_CELLS>::noteOnPhasor;
+            ptrNext = &Phase<NUM_TABLE_CELLS>::nextPhasor2;
         } else {
-            noteOnSimple();
+            ptrUpdate = &Phase<NUM_TABLE_CELLS>::updateSimple;
+            ptrNoteOn = &Phase<NUM_TABLE_CELLS>::noteOnSimple;
+            ptrNext = &Phase<NUM_TABLE_CELLS>::nextSimple;
         }
     }
+
+    void noteOn() { (this->*ptrNoteOn)(); }
 
     void noteOn(int add) {
         freqAdd = add;
         noteOn();
     }
 
-    void update() {
-        adsr.update();
-        if (type != SIMPLE) {
-            adsrFreq.update();
-        }
-    }
+    void update() { (this->*ptrUpdate)(); }
 
     int next() {
         if (type >= PHASOR) {
@@ -82,6 +90,17 @@ class Phase {
 
     byte previous_counter;
 
+    int (Phase<NUM_TABLE_CELLS>::*ptrNext)();
+    void (Phase<NUM_TABLE_CELLS>::*ptrUpdate)();
+    void (Phase<NUM_TABLE_CELLS>::*ptrNoteOn)();
+
+    void updateSimple() { adsr.update(); }
+
+    void updateFreq() {
+        updateSimple();
+        adsrFreq.update();
+    }
+
     void noteOnSimple() {
         oscil.setFreq((int)(frequency + freqAdd));
         adsr.noteOn();
@@ -96,6 +115,25 @@ class Phase {
         noteOnFreqEnv();
         phasor.setFreq((int)(frequency + freqAdd));
         phasorFreq.setFreq((int)(frequency + freqAdd));
+    }
+
+    int nextPhasor() {
+        return (adsr.next() * oscil.atIndex(phasorFreq.next() >> 21)) >> 1;
+    }
+
+    int nextPhasor2() {
+        byte counter = phasor.next() >> 24;
+        if (counter < previous_counter) phasorFreq.set(0);
+        previous_counter = counter;
+
+        return nextPhasor();
+    }
+
+    int nextSimple() { return (int)((adsr.next() * oscil.next()) >> 1); }
+
+    int nextFreqEnv() {
+        oscil.setFreq((int)frequency + (adsrFreq.next() >> freqShift));
+        return nextSimple();
     }
 };
 
