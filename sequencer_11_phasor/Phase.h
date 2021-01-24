@@ -8,11 +8,18 @@
 
 enum { SIMPLE, FREQ_ENV, PHASOR, PHASOR2 };
 
+/*
+Try to add setType function
+with ptrFunction to update and next
+
+Give a way to set a different table for adsrTable
+*/
+
 template <uint16_t NUM_TABLE_CELLS>
 class Phase {
    public:
     byte type;
-    const char* name;
+    const char* tableName;
     // here we could use an array to have a specific freq per step
     int freqAdd;
     unsigned int frequency;

@@ -110,7 +110,7 @@ void displayDrum() {
     //     dprintxy(12, 3, "Shift %d", gDrum[drum].freqShift);
     // }
 
-    dprintxy(12, 1, "%s", phases[drum].name);
+    dprintxy(12, 1, "%s", phases[drum].tableName);
     dprintxy(12, 2, "Freq %d", phases[drum].frequency);
     displayDrumPattern(drum);
 }
