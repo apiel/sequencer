@@ -8,13 +8,6 @@
 
 enum { SIMPLE, FREQ_ENV, PHASOR, PHASOR2 };
 
-/*
-Try to add setType function
-with ptrFunction to update and next
-
-Give a way to set a different table for adsrTable
-*/
-
 template <uint16_t NUM_TABLE_CELLS>
 class Phase {
    public:
@@ -64,13 +57,12 @@ class Phase {
     
     int next() { return (this->*ptrNext)(); }
 
-    void setTable(const int8_t* TABLE_NAME) { oscil.setTable(TABLE_NAME); }
+    void setTable(const int8_t* table) { oscil.setTable(table); }
 
    private:
     const float PDM_SCALE;
 
     Oscil<NUM_TABLE_CELLS, AUDIO_RATE> oscil;
-    Oscil<NUM_TABLE_CELLS, AUDIO_RATE> oscilFreq;
 
     Phasor<AUDIO_RATE> phasor;
     Phasor<AUDIO_RATE> phasorFreq;
