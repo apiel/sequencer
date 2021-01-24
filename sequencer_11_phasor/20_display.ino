@@ -210,7 +210,7 @@ void dprintxyLevelPct(byte x, byte y, byte level) {
 }
 
 void dprintxyTimePct(byte x, byte y, unsigned int ms) {
-    float value = ms / gTempo;
+    float value = (float)ms / gTempo;
     if (value < 1) {
         byte f = value * 10;
         display.setCursor(x + 2, y);
@@ -219,9 +219,9 @@ void dprintxyTimePct(byte x, byte y, unsigned int ms) {
     } else {
         display.setCursor(x, y);
         byte i = (byte)value;
-        byte f = (value - i) * 10;
         display.print(i);
         display.setCursor(x + 8, y);
+        byte f = (value - i) * 10;
         display.print(f);
         display.drawPixel(x + 6, y + 6, WHITE);
     }
