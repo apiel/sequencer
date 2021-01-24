@@ -150,7 +150,16 @@ void displayPhase() {
                       (float)phase->adsrFreq.getTime(RELEASE) / gTempo);
         dprintxyFloat(113, 48, (float)phase->adsrFreq.getLevel(RELEASE) / 255);
 
-        // dprintxy(12, 3, "Shift %d", gPhase[phase].freqShift);
+        if (phase->type == FREQ_ENV) {
+            dprintxy(12, 1, "Freq Env");
+            dprintxy(12, 2, "Shift %d", phase->freqShift);
+        } else if (phase->type == PHASOR) {
+            dprintxy(12, 1, "Phasor");
+        } else if (phase->type == PHASOR2) {
+            dprintxy(12, 1, "Phasor 2");
+        }
+    } else {
+        dprintxy(12, 1, "Simple");
     }
     displayPhasePattern();
 }
