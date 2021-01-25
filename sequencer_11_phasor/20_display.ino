@@ -168,6 +168,8 @@ void displayPhase() {
             dprintxy(12, 1, "Phasor");
         } else if (phase->type == PHASOR2) {
             dprintxy(12, 1, "Phasor 2");
+        } else if (phase->type == PHASOR3) {
+            dprintxy(12, 1, "Phasor 3");
         }
     } else {
         dprintxy(12, 1, "Simple");
