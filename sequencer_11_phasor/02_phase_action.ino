@@ -12,7 +12,7 @@ void togglePhase(byte phase, byte pos) {
 
 bool setPhaseFromMidiBtn(byte phaseIdx, byte key) {
     if (key == 40 || key == 16) {
-        phases[phaseIdx].setType(mod(phases[phaseIdx].type + 1, 4));
+        phases[phaseIdx].setType(mod(phases[phaseIdx].type + 1, 5));
     } else if (key == 17 || key == 41) {
         gAdsrFreqSetMode = !gAdsrFreqSetMode;
     } else if (key == 18 || key == 42) {

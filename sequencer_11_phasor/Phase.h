@@ -6,19 +6,26 @@
 
 #include "ADSR_FIX.h"
 
-enum { SIMPLE, FREQ_ENV, PHASOR, PHASOR2 };
+/*
+random freq feature
+*/
+
+enum { SIMPLE, FREQ_ENV, PHASOR, PHASOR2, PHASOR3 };
 
 template <uint16_t NUM_TABLE_CELLS>
 class Phase {
    public:
     byte type;
     const char* tableName;
-    // here we could use an array to have a specific freq per step
+    // // here we could use an array to have a specific freq per step
     int freqAdd;
     unsigned int frequency;
-    ADSR<CONTROL_RATE, AUDIO_RATE> adsr;
-    ADSR<CONTROL_RATE, AUDIO_RATE> adsrFreq;
     byte freqShift;
+
+    ADSR<CONTROL_RATE, AUDIO_RATE> adsr;
+    ADSR<CONTROL_RATE, CONTROL_RATE> adsrFreq;
+    // // before to have PHASOR3 it was AUDIO_RATE
+    // ADSR<CONTROL_RATE, AUDIO_RATE> adsrFreq;
 
     Phase() : PDM_SCALE(0.05) {
         freqAdd = 0;
@@ -39,6 +46,10 @@ class Phase {
             ptrUpdate = &Phase<NUM_TABLE_CELLS>::updateFreq;
             ptrNoteOn = &Phase<NUM_TABLE_CELLS>::noteOnPhasor;
             ptrNext = &Phase<NUM_TABLE_CELLS>::nextPhasor2;
+        } else if (type == PHASOR3) {
+            ptrUpdate = &Phase<NUM_TABLE_CELLS>::updatePhasor3;
+            ptrNoteOn = &Phase<NUM_TABLE_CELLS>::noteOnPhasor;
+            ptrNext = &Phase<NUM_TABLE_CELLS>::nextPhasor3;
         } else {
             ptrUpdate = &Phase<NUM_TABLE_CELLS>::updateSimple;
             ptrNoteOn = &Phase<NUM_TABLE_CELLS>::noteOnSimple;
@@ -54,7 +65,7 @@ class Phase {
     void noteOn() { (this->*ptrNoteOn)(); }
 
     void update() { (this->*ptrUpdate)(); }
-    
+
     int next() { return (this->*ptrNext)(); }
 
     void setTable(const int8_t* table) { oscil.setTable(table); }
@@ -80,6 +91,14 @@ class Phase {
         adsrFreq.update();
     }
 
+    void updatePhasor3() {
+        updateFreq();
+        float resonance_freq =
+            frequency +
+            ((float)frequency * ((float)adsrFreq.next() * PDM_SCALE));
+        phasorFreq.setFreq(resonance_freq);
+    }
+
     void noteOnSimple() {
         oscil.setFreq((int)(frequency + freqAdd));
         adsr.noteOn();
@@ -100,12 +119,24 @@ class Phase {
         return (adsr.next() * oscil.atIndex(phasorFreq.next() >> 21)) >> 1;
     }
 
-    int nextPhasor2() {
+    byte handleCounter() {
         byte counter = phasor.next() >> 24;
         if (counter < previous_counter) phasorFreq.set(0);
         previous_counter = counter;
 
+        return counter;
+    }
+
+    int nextPhasor2() {
+        handleCounter();
         return nextPhasor();
+    }
+
+    int nextPhasor3() {
+        byte amp_ramp = 255 - handleCounter();
+        return ((long)adsr.next() * amp_ramp *
+                oscil.atIndex(phasorFreq.next() >> 21)) >>
+               8;
     }
 
     int nextSimple() { return (int)((adsr.next() * oscil.next()) >> 1); }

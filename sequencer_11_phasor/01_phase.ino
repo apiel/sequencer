@@ -19,7 +19,7 @@ Look at synth in general:
 #define D_HIHAT 4
 #define D_CLAP 8
 #define D_CRASH 16
-#define D_TOMHI 32
+#define D_PHASOR 32
 
 #define MAX_NUM_CELLS 8192
 
@@ -35,10 +35,11 @@ byte gSeqPhases[MAX_PATTERNS][MAX_PHASES] = {
      D_SNARE, 0, D_HIHAT, D_KICK},
     {D_KICK + D_CRASH, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT,
      0, D_CLAP, 0, D_HIHAT, D_KICK},
-    {D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0}};
+    {D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0},
+    {D_PHASOR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
 byte gCurrentPattern[MAX_PHASES] = {0, 0, 0, 0, 0, 0, 0, 0,
-                                   0, 0, 0, 0, 0, 0, 0, 0};
+                                    0, 0, 0, 0, 0, 0, 0, 0};
 
 byte gCurrentPatternId = 0;
 
@@ -64,11 +65,17 @@ void setupPhases() {
     assignCurrentPattern(gCurrentPatternId);
 
     setupPhase(0, 20, FREQ_ENV, 45);
-    setupPhase(1, 20, PHASOR2, 150);
+    // setupPhase(1, 20, PHASOR2, 150);
+    setupPhase(1, 20, FREQ_ENV, 150);
     setupPhase(2, 10, SIMPLE, 100);
     setupPhase(3, 10, SIMPLE, 0);
     setupPhase(4, 10, SIMPLE, 0);
-    setupPhase(5, 2, SIMPLE, 100);
+
+    setupPhase(5, 20, PHASOR3, 30);
+    phases[5].adsr.setADLevels(255, 255);
+    phases[5].adsr.setTimes(gTempo, gTempo, gTempo * 8, gTempo * 2);
+    phases[5].adsrFreq.setADLevels(255, 100);
+    phases[5].adsrFreq.setTimes(gTempo * 3, gTempo * 5, gTempo * 8, gTempo * 2);
 }
 
 void updateEnvelopes() {
@@ -82,7 +89,7 @@ int updateAudioSeq() {
     for (int i = 0; i < PHASES_COUNT; i++) {
         ret += phases[i].next();
     }
-
+    
     // return ret >> 8;
     return lpf.next((int)(ret * gVolume / MAX_VOLUME)) >> 8;
     // return (int)(ret * gVolume / MAX_VOLUME) >> 8;

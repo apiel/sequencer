@@ -11,7 +11,7 @@
 #define PIN_SYNC_OUT 27
 
 #define MAX_PHASES 16  // max # of phases in pattern
-#define MAX_PATTERNS 3
+#define MAX_PATTERNS 4
 
 #define PHASES_COUNT 6  // number of existing phases
 #define MENU_SIZE (PHASES_COUNT + 1)
