@@ -55,7 +55,7 @@ void handleDefaultButton(byte key) {
     }
 }
 
-bool isPhaseMenu() { return currentMenu >= 0 && currentMenu < PHASES_COUNT; }
+bool isPhaseMenu() { return currentMenu >= 0 && currentMenu < MAX_PHASES; }
 
 char getCurrentPhaseChar() {
     // 65 is 'A' position in ascii table

@@ -1,4 +1,5 @@
 bool gMcMode = false;
+byte gStepMode = 0;
 
 void togglePhase(byte phaseIdx, byte pos) {
     int aPhase = gCurrentPattern[pos];
@@ -15,7 +16,9 @@ void setPhaseType(byte phaseIdx, byte pos) {
 }
 
 bool setPhaseFromMidiBtn(byte phaseIdx, byte key) {
-    if (key == 18 || key == 42) {
+    if (key == 17 || key == 41) {
+        gStepMode = (gStepMode + 1) % STEP_COUNT;
+    } else if (key == 18 || key == 42) {
         // // we might better use knob for this
         // if (phases[phaseIdx].freqShift > 0) {
         //     phases[phaseIdx].freqShift--;
@@ -61,13 +64,18 @@ void setPhaseFromMidiKnob(byte phaseIdx, byte optionKey, int direction) {
     // Serial.print(" dir: ");
     // Serial.println(direction);
 
-    Phase<MAX_NUM_CELLS> *phase = &phases[phaseIdx];
+    Phase<MAX_NUM_CELLS, STEP_COUNT> *phase = &phases[phaseIdx];
 
     if (optionKey == 2) {
         currentTableId = mod(currentTableId + direction, 20);
         setTable(phaseIdx, currentTableId);
     } else if (optionKey == 3 || optionKey == 13) {
-        phase->frequency = between(phase->frequency + direction, 0, 5000);
+        if (gMcMode) {
+            phase->freqSteps[gStepMode] =
+                between(phase->freqSteps[gStepMode] + direction, -5000, 5000);
+        } else {
+            phase->frequency = between(phase->frequency + direction, 0, 5000);
+        }
     } else if (optionKey == 4 || optionKey == 14) {
         if (phase->type > FREQ_ENV) {
             phase->phasorShift = between(phase->phasorShift + direction, 0, 24);
@@ -146,21 +154,11 @@ void setPhaseFromMidiKnob(byte phaseIdx, byte optionKey, int direction) {
     }
 }
 
-void playPhase() {
-    int aPhase = gCurrentPattern[gSeqPhaseIndex];
-
-    for (int i = 0; i < PHASES_COUNT; i++) {
-        if (aPhase & (int)pow(2, i)) {
-            phases[i].noteOn();
-        }
-    }
-}
-
 void setStepPattern(byte step, int val) { gCurrentPattern[step] = val; }
 
 void assignCurrentPattern(byte index) {
     gCurrentPatternId = index % MAX_PATTERNS;
-    for (int i = 0; i < MAX_PHASES; i++) {
+    for (int i = 0; i < STEP_COUNT; i++) {
         gCurrentPattern[i] = gSeqPhases[gCurrentPatternId][i];
     }
 }

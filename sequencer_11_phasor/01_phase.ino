@@ -30,7 +30,7 @@ byte gResonance = 0;
 
 byte currentTableId = 0;
 
-byte gSeqPhases[MAX_PATTERNS][MAX_PHASES] = {
+byte gSeqPhases[MAX_PATTERNS][STEP_COUNT] = {
     {D_KICK, 0, D_HIHAT, 0, D_SNARE, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT, 0,
      D_SNARE, 0, D_HIHAT, D_KICK},
     {D_KICK + D_CRASH, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT,
@@ -38,12 +38,12 @@ byte gSeqPhases[MAX_PATTERNS][MAX_PHASES] = {
     {D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0},
     {D_PHASOR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
-byte gCurrentPattern[MAX_PHASES] = {0, 0, 0, 0, 0, 0, 0, 0,
+byte gCurrentPattern[STEP_COUNT] = {0, 0, 0, 0, 0, 0, 0, 0,
                                     0, 0, 0, 0, 0, 0, 0, 0};
 
 byte gCurrentPatternId = 0;
 
-Phase<MAX_NUM_CELLS> phases[PHASES_COUNT];
+Phase<MAX_NUM_CELLS, STEP_COUNT> phases[MAX_PHASES];
 
 void setupPhase(byte phase, byte tableId, byte type, int frequency) {
     setTable(phase, tableId);
@@ -64,6 +64,11 @@ void setupPhases() {
     assignCurrentPattern(gCurrentPatternId);
 
     setupPhase(0, 20, FREQ_ENV, 45);
+    phases[0].freqSteps[0] = 100;
+    phases[0].freqSteps[4] = 400;
+    phases[0].freqSteps[8] = 200;
+    phases[0].freqSteps[12] = -300;
+
     // setupPhase(1, 20, PHASOR2, 150);
     setupPhase(1, 20, FREQ_ENV, 150);
     setupPhase(2, 10, SIMPLE, 100);
@@ -77,15 +82,25 @@ void setupPhases() {
     phases[5].adsrFreq.setTimes(gTempo * 3, gTempo * 5, gTempo * 8, gTempo * 2);
 }
 
+void playPhase() {
+    int aPhase = gCurrentPattern[gSeqStepIndex];
+
+    for (int i = 0; i < MAX_PHASES; i++) {
+        if (aPhase & (int)pow(2, i)) {
+            phases[i].noteOn(gSeqStepIndex);
+        }
+    }
+}
+
 void updateEnvelopes() {
-    for (int i = 0; i < PHASES_COUNT; i++) {
+    for (int i = 0; i < MAX_PHASES; i++) {
         phases[i].update();
     }
 }
 
 int updateAudioSeq() {
     int ret = 0;
-    for (int i = 0; i < PHASES_COUNT; i++) {
+    for (int i = 0; i < MAX_PHASES; i++) {
         ret += phases[i].next();
     }
     

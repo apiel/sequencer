@@ -60,8 +60,8 @@ void displayStatus() {
     } else {
         display.fillRect(100, 1, 6, 6, WHITE);
     }
-    // dprintxy(18, 0, "%d", gSeqPhaseIndex+1);
-    for (byte i = 0; i < gSeqPhaseIndex + 1; i++) {
+    // dprintxy(18, 0, "%d", gSeqStepIndex+1);
+    for (byte i = 0; i < gSeqStepIndex + 1; i++) {
         // display.fillRect(68 + (i%8) * 4, i >= 8 ? 0 : 5, 2, 2, WHITE);
         byte y = 0;
         if (i > 11)
@@ -96,7 +96,7 @@ void displayMainMenu() {
     displayLpf();
 }
 
-Phase<MAX_NUM_CELLS> *getCurrentPhase() {
+Phase<MAX_NUM_CELLS, STEP_COUNT> *getCurrentPhase() {
     return &phases[getCurrentPhaseIdx()];
 }
 
@@ -105,10 +105,13 @@ void displayPhase() {
     display.setCursor(0, 0);
     dprintln("Phase %c", getCurrentPhaseChar());
 
-    Phase<MAX_NUM_CELLS> *phase = getCurrentPhase();
+    Phase<MAX_NUM_CELLS, STEP_COUNT> *phase = getCurrentPhase();
 
     display.println(phase->tableName);
     dprintln("Freq %d", phase->frequency);
+    if (gMcMode) {
+        dprintln("%d: %d", gStepMode + 1, phase->freqSteps[gStepMode]);
+    }
 
     dprintxyAbs(4, 32, "A");
     dprintxyTimePct(0, 40, phase->adsr.getTime(ATTACK));
@@ -191,7 +194,7 @@ void displayPhase() {
 void displayPhasePattern() {
     byte idx = getCurrentPhaseIdx();
 
-    for (byte i = 0, s = 0; i < MAX_PHASES; i++) {
+    for (byte i = 0, s = 0; i < STEP_COUNT; i++) {
         if (i % 4 == 0) s += 3;
         int aPhase = gCurrentPattern[i];
         if (aPhase & (int)pow(2, idx)) {
@@ -199,7 +202,7 @@ void displayPhasePattern() {
         } else {
             display.drawRect(i * 7 + s, 57, 6, 6, WHITE);
         }
-        if (i == gSeqPhaseIndex) {
+        if (i == gSeqStepIndex) {
             display.drawLine(i * 7 + 1 + s, 63, i * 7 + 4 + s, 63, WHITE);
         }
     }

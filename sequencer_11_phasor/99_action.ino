@@ -9,7 +9,7 @@ void togglePlay() {
 
 void play() {
     gSeqPlay = true;
-    gSeqPhaseIndex = 0;
+    gSeqStepIndex = 0;
 }
 
 void stop() { gSeqPlay = false; }
