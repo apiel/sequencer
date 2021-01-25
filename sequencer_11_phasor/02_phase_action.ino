@@ -1,8 +1,8 @@
-bool gAdsrFreqSetMode = false;
+bool gMcMode = false;
 
-void togglePhase(byte phase, byte pos) {
+void togglePhase(byte phaseIdx, byte pos) {
     int aPhase = gCurrentPattern[pos];
-    int powPhase = pow(2, phase);
+    int powPhase = pow(2, phaseIdx);
     if (aPhase & powPhase) {
         gCurrentPattern[pos] -= powPhase;
     } else {
@@ -10,12 +10,12 @@ void togglePhase(byte phase, byte pos) {
     }
 }
 
+void setPhaseType(byte phaseIdx, byte pos) {
+    phases[phaseIdx].setType(mod(pos, 5));
+}
+
 bool setPhaseFromMidiBtn(byte phaseIdx, byte key) {
-    if (key == 40 || key == 16) {
-        phases[phaseIdx].setType(mod(phases[phaseIdx].type + 1, 5));
-    } else if (key == 17 || key == 41) {
-        gAdsrFreqSetMode = !gAdsrFreqSetMode;
-    } else if (key == 18 || key == 42) {
+    if (key == 18 || key == 42) {
         // // we might better use knob for this
         // if (phases[phaseIdx].freqShift > 0) {
         //     phases[phaseIdx].freqShift--;
@@ -28,9 +28,17 @@ bool setPhaseFromMidiBtn(byte phaseIdx, byte key) {
     } else if (key == 20 || key == 44) {
         // Loop
     } else if (key > 31 && key < 40) {
-        togglePhase(phaseIdx, key - 32 + 8);
+        if (gMcMode) {
+            setPhaseType(phaseIdx, key - 32 + 8);
+        } else {
+            togglePhase(phaseIdx, key - 32 + 8);
+        }
     } else if (key > 7 && key < 16) {
-        togglePhase(phaseIdx, key - 8);
+        if (gMcMode) {
+            setPhaseType(phaseIdx, key - 8);
+        } else {
+            togglePhase(phaseIdx, key - 8);
+        }
     } else {
         return false;
     }
@@ -64,11 +72,11 @@ void setPhaseFromMidiKnob(byte phaseIdx, byte optionKey, int direction) {
         if (phase->type > FREQ_ENV) {
             phase->phasorShift = between(phase->phasorShift + direction, 0, 24);
         } else {
-            // this could be only with gAdsrFreqSetMode
+            // this could be only with gMcMode
             phase->freqShift = between(phase->freqShift + direction, 0, 16);
         }
     } else if (optionKey == 5) {
-        if (gAdsrFreqSetMode) {
+        if (gMcMode) {
             phase->adsrFreq.setAttackTime(
                 incTime(phase->adsrFreq.getTime(ATTACK), direction));
         } else {
@@ -76,7 +84,7 @@ void setPhaseFromMidiKnob(byte phaseIdx, byte optionKey, int direction) {
                 incTime(phase->adsr.getTime(ATTACK), direction));
         }
     } else if (optionKey == 6) {
-        if (gAdsrFreqSetMode) {
+        if (gMcMode) {
             phase->adsrFreq.setDecayTime(
                 incTime(phase->adsrFreq.getTime(DECAY), direction));
         } else {
@@ -84,7 +92,7 @@ void setPhaseFromMidiKnob(byte phaseIdx, byte optionKey, int direction) {
                 incTime(phase->adsr.getTime(DECAY), direction));
         }
     } else if (optionKey == 7) {
-        if (gAdsrFreqSetMode) {
+        if (gMcMode) {
             phase->adsrFreq.setSustainTime(
                 incTime(phase->adsrFreq.getTime(SUSTAIN), direction));
         } else {
@@ -93,7 +101,7 @@ void setPhaseFromMidiKnob(byte phaseIdx, byte optionKey, int direction) {
         }
 
     } else if (optionKey == 8) {
-        if (gAdsrFreqSetMode) {
+        if (gMcMode) {
             phase->adsrFreq.setReleaseTime(
                 incTime(phase->adsrFreq.getTime(RELEASE), direction));
         } else {
@@ -101,7 +109,7 @@ void setPhaseFromMidiKnob(byte phaseIdx, byte optionKey, int direction) {
                 incTime(phase->adsr.getTime(RELEASE), direction));
         }
     } else if (optionKey == 15) {
-        if (gAdsrFreqSetMode) {
+        if (gMcMode) {
             phase->adsrFreq.setAttackLevel(
                 incLevel(phase->adsrFreq.getLevel(ATTACK), direction));
         } else {
@@ -110,7 +118,7 @@ void setPhaseFromMidiKnob(byte phaseIdx, byte optionKey, int direction) {
         }
 
     } else if (optionKey == 16) {
-        if (gAdsrFreqSetMode) {
+        if (gMcMode) {
             phase->adsrFreq.setDecayLevel(
                 incLevel(phase->adsrFreq.getLevel(DECAY), direction));
         } else {
@@ -119,7 +127,7 @@ void setPhaseFromMidiKnob(byte phaseIdx, byte optionKey, int direction) {
         }
 
     } else if (optionKey == 17) {
-        if (gAdsrFreqSetMode) {
+        if (gMcMode) {
             phase->adsrFreq.setSustainLevel(
                 incLevel(phase->adsrFreq.getLevel(SUSTAIN), direction));
         } else {
@@ -128,7 +136,7 @@ void setPhaseFromMidiKnob(byte phaseIdx, byte optionKey, int direction) {
         }
 
     } else if (optionKey == 18) {
-        if (gAdsrFreqSetMode) {
+        if (gMcMode) {
             phase->adsrFreq.setReleaseLevel(
                 incLevel(phase->adsrFreq.getLevel(RELEASE), direction));
         } else {

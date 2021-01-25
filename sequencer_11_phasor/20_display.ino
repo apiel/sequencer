@@ -76,6 +76,14 @@ void displayStatus() {
     display.fillTriangle(110, 6, 110 + (17 * gVolume / MAX_VOLUME), 6,
                          110 + (17 * gVolume / MAX_VOLUME),
                          6 - (6 * gVolume / MAX_VOLUME), WHITE);
+
+    if (gMcMode) {
+        display.setCursor(66, 0);
+        display.setTextColor(BLACK, WHITE);
+        display.print("mc");
+        display.setTextColor(WHITE);
+        display.drawLine(65, 0, 65, 7, WHITE);
+    }
 }
 
 void displayMainMenu() {
@@ -102,18 +110,6 @@ void displayPhase() {
     display.println(phase->tableName);
     dprintln("Freq %d", phase->frequency);
 
-    if (gAdsrFreqSetMode) {
-        display.fillTriangle(65, 33, 65, 38, 67, 35, WHITE);
-        display.fillTriangle(82, 33, 82, 38, 84, 35, WHITE);
-        display.fillTriangle(98, 33, 98, 38, 100, 35, WHITE);
-        display.fillTriangle(114, 33, 114, 38, 116, 35, WHITE);
-    } else {
-        display.fillTriangle(0, 33, 0, 38, 2, 35, WHITE);
-        display.fillTriangle(17, 33, 17, 38, 19, 35, WHITE);
-        display.fillTriangle(33, 33, 33, 38, 35, 35, WHITE);
-        display.fillTriangle(49, 33, 49, 38, 51, 35, WHITE);
-    }
-
     dprintxyAbs(4, 32, "A");
     dprintxyTimePct(0, 40, phase->adsr.getTime(ATTACK));
     dprintxyLevelPct(0, 48, phase->adsr.getLevel(ATTACK));
@@ -137,6 +133,18 @@ void displayPhase() {
     dprintxyLevelPct(49, 48, phase->adsr.getLevel(RELEASE));
 
     if (phase->type > SIMPLE) {
+        if (gMcMode) {
+            display.fillTriangle(65, 33, 65, 38, 67, 35, WHITE);
+            display.fillTriangle(82, 33, 82, 38, 84, 35, WHITE);
+            display.fillTriangle(98, 33, 98, 38, 100, 35, WHITE);
+            display.fillTriangle(114, 33, 114, 38, 116, 35, WHITE);
+        } else {
+            display.fillTriangle(0, 33, 0, 38, 2, 35, WHITE);
+            display.fillTriangle(17, 33, 17, 38, 19, 35, WHITE);
+            display.fillTriangle(33, 33, 33, 38, 35, 35, WHITE);
+            display.fillTriangle(49, 33, 49, 38, 51, 35, WHITE);
+        }
+
         display.drawLine(63, 32, 63, 55, WHITE);
 
         dprintxyAbs(70, 32, "A");

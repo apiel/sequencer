@@ -71,7 +71,7 @@ void setupPhases() {
     setupPhase(4, 10, SIMPLE, 0);
 
     setupPhase(5, 20, PHASOR3, 30);
-    phases[5].adsr.setADLevels(255, 255);
+    phases[5].adsr.setADLevels(70, 70);
     phases[5].adsr.setTimes(gTempo, gTempo, gTempo * 8, gTempo * 2);
     phases[5].adsrFreq.setADLevels(255, 100);
     phases[5].adsrFreq.setTimes(gTempo * 3, gTempo * 5, gTempo * 8, gTempo * 2);

@@ -50,6 +50,8 @@ void handlePress(byte key) {
 void handleDefaultButton(byte key) {
     if (key == 46 || key == 22) {
         togglePlay();
+    } else if (key == 40 || key == 16) {
+        gMcMode = !gMcMode;
     }
 }
 
