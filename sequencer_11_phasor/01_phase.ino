@@ -58,7 +58,6 @@ void setupPhase(byte phase, byte tableId, byte type, int frequency) {
 
     phases[phase].adsrFreq.setTimes(0, 0, 0, gTempo);
     phases[phase].adsrFreq.setLevels(200, 200, 200, 0);
-    phases[phase].freqShift = 1;
 }
 
 void setupPhases() {

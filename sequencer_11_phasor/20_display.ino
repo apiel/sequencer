@@ -166,10 +166,13 @@ void displayPhase() {
             dprintxy(12, 2, "Shift %d", phase->freqShift);
         } else if (phase->type == PHASOR) {
             dprintxy(12, 1, "Phasor");
+            dprintxy(12, 2, "Shift %d", phase->phasorShift);
         } else if (phase->type == PHASOR2) {
             dprintxy(12, 1, "Phasor 2");
+            dprintxy(12, 2, "Shift %d", phase->phasorShift);
         } else if (phase->type == PHASOR3) {
             dprintxy(12, 1, "Phasor 3");
+            dprintxy(12, 2, "Shift %d", phase->phasorShift);
         }
     } else {
         dprintxy(12, 1, "Simple");

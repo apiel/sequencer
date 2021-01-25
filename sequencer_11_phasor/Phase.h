@@ -21,6 +21,7 @@ class Phase {
     int freqAdd;
     unsigned int frequency;
     byte freqShift;
+    byte phasorShift;
 
     ADSR<CONTROL_RATE, AUDIO_RATE> adsr;
     ADSR<CONTROL_RATE, CONTROL_RATE> adsrFreq;
@@ -29,6 +30,8 @@ class Phase {
 
     Phase() : PDM_SCALE(0.05) {
         freqAdd = 0;
+        freqShift = 1;
+        phasorShift = 21;
         setType(SIMPLE);
     }
 
@@ -116,7 +119,9 @@ class Phase {
     }
 
     int nextPhasor() {
-        return (adsr.next() * oscil.atIndex(phasorFreq.next() >> 21)) >> 1;
+        return (adsr.next() *
+                oscil.atIndex(phasorFreq.next() >> phasorShift)) >>
+               1;
     }
 
     byte handleCounter() {
@@ -135,7 +140,7 @@ class Phase {
     int nextPhasor3() {
         byte amp_ramp = 255 - handleCounter();
         return ((long)adsr.next() * amp_ramp *
-                oscil.atIndex(phasorFreq.next() >> 21)) >>
+                oscil.atIndex(phasorFreq.next() >> phasorShift)) >>
                8;
     }
 

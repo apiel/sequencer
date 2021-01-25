@@ -61,8 +61,12 @@ void setPhaseFromMidiKnob(byte phaseIdx, byte optionKey, int direction) {
     } else if (optionKey == 3 || optionKey == 13) {
         phase->frequency = between(phase->frequency + direction, 0, 5000);
     } else if (optionKey == 4 || optionKey == 14) {
-        // this could be only with gAdsrFreqSetMode
-        phase->freqShift = between(phase->freqShift + direction, 0, 16);
+        if (phase->type > FREQ_ENV) {
+            phase->phasorShift = between(phase->phasorShift + direction, 0, 24);
+        } else {
+            // this could be only with gAdsrFreqSetMode
+            phase->freqShift = between(phase->freqShift + direction, 0, 16);
+        }
     } else if (optionKey == 5) {
         if (gAdsrFreqSetMode) {
             phase->adsrFreq.setAttackTime(
