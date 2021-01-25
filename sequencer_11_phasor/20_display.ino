@@ -110,7 +110,7 @@ void displayPhase() {
     display.println(phase->tableName);
     dprintln("Freq %d", phase->frequency);
     if (gMcMode) {
-        dprintln("%d: %d", gStepMode + 1, phase->freqSteps[gStepMode]);
+        dprintln("%d-> %d", gStepMode + 1, phase->freqSteps[gStepMode]);
     }
 
     dprintxyAbs(4, 32, "A");
