@@ -12,7 +12,7 @@ void togglePhase(byte phaseIdx, byte pos) {
 }
 
 void setPhaseType(byte phaseIdx, byte pos) {
-    phases[phaseIdx].setType(mod(pos, 5));
+    phases[phaseIdx].setType(mod(pos, PHASE_TYPE_COUNT));
 }
 
 bool setPhaseFromMidiBtn(byte phaseIdx, byte key) {

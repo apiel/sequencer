@@ -30,15 +30,33 @@ class Phase {
     byte phasorShift;
 
     ADSR<CONTROL_RATE, AUDIO_RATE> adsr;
-    // ADSR<CONTROL_RATE, CONTROL_RATE> adsrFreq;
-    // // before to have PHASOR3 it was AUDIO_RATE
-    ADSR<CONTROL_RATE, AUDIO_RATE> adsrFreq;
+    ADSR<CONTROL_RATE, AUDIO_RATE> adsrFreq0;
+    ADSR<CONTROL_RATE, CONTROL_RATE> adsrFreq1;
 
     Phase() : PDM_SCALE(0.05) {
         freqAdd = 0;
         freqShift = 1;
         phasorShift = 21;
         setType(SIMPLE);
+        setAdsrFreqType(0);
+    }
+
+    void setAdsrFreqType(byte idx) {
+        if (idx == 0) {
+            ptrAdsrFreqNext =
+                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::adsrFreq0Next;
+            ptrAdsrFreqUpdate =
+                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::adsrFreq0Update;
+            ptrAdsrFreqNoteOn =
+                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::adsrFreq0NoteOn;
+        } else {
+            ptrAdsrFreqNext =
+                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::adsrFreq1Next;
+            ptrAdsrFreqUpdate =
+                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::adsrFreq1Update;
+            ptrAdsrFreqNoteOn =
+                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::adsrFreq1NoteOn;
+        }
     }
 
     void setType(byte newType) {
@@ -99,18 +117,29 @@ class Phase {
     void (Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::*ptrUpdate)();
     void (Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::*ptrNoteOn)();
 
+    int (Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::*ptrAdsrFreqNext)();
+    void (Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::*ptrAdsrFreqUpdate)();
+    void (Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::*ptrAdsrFreqNoteOn)();
+
+    int adsrFreq0Next { return adsrFreq0.next(); }
+    void adsrFreq0Update { adsrFreq0.update(); }
+    void adsrFreq0NoteOn { adsrFreq0.nodeOn(); }
+    int adsrFreq1Next { return adsrFreq1.next(); }
+    void adsrFreq1Update { adsrFreq1.update(); }
+    void adsrFreq1NoteOn { adsrFreq1.nodeOn(); }
+
     void updateSimple() { adsr.update(); }
 
     void updateFreq() {
         updateSimple();
-        adsrFreq.update();
+        ptrAdsrFreqUpdate();
     }
 
     void updatePhasor3() {
         updateFreq();
         float resonance_freq = frequency + freqAdd +
                                ((float)(frequency + freqAdd) *
-                                ((float)adsrFreq.next() * PDM_SCALE));
+                                ((float)ptrAdsrFreqNext() * PDM_SCALE));
         phasorFreq.setFreq(resonance_freq);
     }
 
@@ -121,7 +150,7 @@ class Phase {
 
     void noteOnFreqEnv() {
         noteOnSimple();
-        adsrFreq.noteOn();
+        ptrAdsrFreqNoteOn();
     }
 
     void noteOnPhasor() {
@@ -156,7 +185,7 @@ class Phase {
 
     int nextFreqEnv() {
         oscil.setFreq((int)frequency + freqAdd +
-                      (adsrFreq.next() >> freqShift));
+                      (ptrAdsrFreqNext() >> freqShift));
         return nextSimple();
     }
 };
