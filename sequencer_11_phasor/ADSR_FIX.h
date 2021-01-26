@@ -11,11 +11,10 @@
 
 enum { ATTACK, DECAY, SUSTAIN, RELEASE, IDLE };
 
-template <unsigned int CONTROL_UPDATE_RATE, unsigned int LERP_RATE,
-          typename T = unsigned int>
+template <unsigned int CONTROL_UPDATE_RATE, typename T = unsigned int>
 class ADSR {
    private:
-    const unsigned int LERPS_PER_CONTROL;
+    unsigned int LERPS_PER_CONTROL;
 
     T update_step_counter;
     T num_update_steps;
@@ -69,7 +68,7 @@ class ADSR {
    public:
     /** Constructor.
      */
-    ADSR() : LERPS_PER_CONTROL(LERP_RATE / CONTROL_UPDATE_RATE) {
+    ADSR(unsigned int LERP_RATE) {
         attack.phase_type = ATTACK;
         decay.phase_type = DECAY;
         sustain.phase_type = SUSTAIN;
@@ -78,6 +77,12 @@ class ADSR {
         release.level = 0;
         adsr_playing = false;
         current_phase = &idle;
+        setLerpRate(LERP_RATE);
+    }
+
+    void setLerpRate(unsigned int LERP_RATE) {
+        LERPS_PER_CONTROL = LERP_RATE / CONTROL_UPDATE_RATE;
+        setTimes(attack.ms, decay.ms, sustain.ms, release.ms);
     }
 
     /** Updates the internal controls of the ADSR.

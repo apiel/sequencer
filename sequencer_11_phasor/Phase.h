@@ -29,10 +29,10 @@ class Phase {
     byte freqShift;
     byte phasorShift;
 
-    ADSR<CONTROL_RATE, AUDIO_RATE> adsr;
-    // ADSR<CONTROL_RATE, CONTROL_RATE> adsrFreq;
+    ADSR<CONTROL_RATE> adsr{AUDIO_RATE};
+    ADSR<CONTROL_RATE> adsrFreq{CONTROL_RATE};
     // // before to have PHASOR3 it was AUDIO_RATE
-    ADSR<CONTROL_RATE, AUDIO_RATE> adsrFreq;
+    // ADSR<CONTROL_RATE> adsrFreq{AUDIO_RATE};
 
     Phase() : PDM_SCALE(0.05) {
         freqAdd = 0;
