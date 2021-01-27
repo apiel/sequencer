@@ -182,6 +182,7 @@ void displayPhase() {
             dprintxy(12, 1, "Phasor 3");
             dprintxy(12, 2, "Shift %d", phase->phasorShift);
         }
+        dprintxy(12, 3, "Lerp %d", gFreqLerpRate);
     } else {
         dprintxy(12, 1, "Simple");
     }

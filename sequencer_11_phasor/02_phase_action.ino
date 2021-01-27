@@ -1,5 +1,6 @@
 bool gMcMode = false;
 byte gStepMode = 0;
+byte gFreqLerpRate = 0;
 
 void togglePhase(byte phaseIdx, byte pos) {
     int aPhase = gCurrentPattern[pos];
@@ -12,7 +13,16 @@ void togglePhase(byte phaseIdx, byte pos) {
 }
 
 void setPhaseType(byte phaseIdx, byte pos) {
-    phases[phaseIdx].setType(mod(pos, PHASE_TYPE_COUNT));
+    byte type = mod(pos, PHASE_TYPE_COUNT + 1);
+    if (type < PHASE_TYPE_COUNT) {
+        phases[phaseIdx].setType(type);
+    } else if (gFreqLerpRate == 1) {
+        phases[phaseIdx].adsrFreq.setLerpRate(AUDIO_RATE);
+        gFreqLerpRate = 0;
+    } else {
+        phases[phaseIdx].adsrFreq.setLerpRate(CONTROL_RATE);
+        gFreqLerpRate = 1;
+    }
 }
 
 bool setPhaseFromMidiBtn(byte phaseIdx, byte key) {
