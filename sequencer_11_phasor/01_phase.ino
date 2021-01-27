@@ -40,8 +40,6 @@ byte gSeqPhases[MAX_PATTERNS][STEP_COUNT] = {
 byte gCurrentPattern[STEP_COUNT] = {0, 0, 0, 0, 0, 0, 0, 0,
                                     0, 0, 0, 0, 0, 0, 0, 0};
 
-byte gCurrentPatternId = 0;
-
 Phase<MAX_NUM_CELLS, STEP_COUNT> phases[MAX_PHASES];
 
 void setupPhase(byte phase, byte tableId, byte type, int frequency) {
@@ -59,27 +57,39 @@ void setupPhase(byte phase, byte tableId, byte type, int frequency) {
     phases[phase].adsrFreq.setLevels(200, 200, 200, 0);
 }
 
-void setupPhases() {
-    assignCurrentPattern(gCurrentPatternId);
+#define MAX_PHASES_SETUP 2
 
-    setupPhase(0, 20, FREQ_ENV, 45);
-    // phases[0].freqSteps[0] = 100;
-    // phases[0].freqSteps[4] = 400;
-    // phases[0].freqSteps[8] = 200;
-    // phases[0].freqSteps[12] = -300;
+void setupPhases(byte phasesSetupId) {
+    gCurrentPhasesSetup = mod(phasesSetupId, MAX_PHASES_SETUP);
 
-    // setupPhase(1, 20, PHASOR2, 150);
-    setupPhase(1, 20, FREQ_ENV, 150);
-    setupPhase(2, 10, SIMPLE, 100);
-    setupPhase(3, 10, SIMPLE, 0);
-    setupPhase(4, 10, SIMPLE, 0);
+    if (gCurrentPhasesSetup == 0) {
+        setupPhase(0, 20, FREQ_ENV, 45);
+        // phases[0].freqSteps[0] = 100;
+        // phases[0].freqSteps[4] = 400;
+        // phases[0].freqSteps[8] = 200;
+        // phases[0].freqSteps[12] = -300;
 
-    setupPhase(5, 20, PHASOR3, 30);
-    phases[5].adsr.setADLevels(70, 70);
-    phases[5].adsr.setTimes(gTempo, gTempo, gTempo * 8, gTempo * 2);
-    phases[5].adsrFreq.setADLevels(255, 100);
-    phases[5].adsrFreq.setTimes(gTempo * 3, gTempo * 5, gTempo * 8, gTempo * 2);
-    phases[5].adsrFreq.setLerpRate(CONTROL_RATE);
+        // setupPhase(1, 20, PHASOR2, 150);
+        setupPhase(1, 20, FREQ_ENV, 150);
+        setupPhase(2, 10, SIMPLE, 100);
+        setupPhase(3, 10, SIMPLE, 0);
+        setupPhase(4, 10, SIMPLE, 0);
+
+        setupPhase(5, 20, PHASOR3, 30);
+        phases[5].adsr.setADLevels(70, 70);
+        phases[5].adsr.setTimes(gTempo, gTempo, gTempo * 8, gTempo * 2);
+        phases[5].adsrFreq.setADLevels(255, 100);
+        phases[5].adsrFreq.setTimes(gTempo * 3, gTempo * 5, gTempo * 8,
+                                    gTempo * 2);
+        phases[5].adsrFreq.setLerpRate(CONTROL_RATE);
+    } else {
+        setupPhase(0, 9, FREQ_ENV, 45);
+        setupPhase(1, 20, PHASOR2, 150);
+        setupPhase(2, 10, SIMPLE, 100);
+        setupPhase(3, 4, SIMPLE, 0);
+        setupPhase(4, 10, SIMPLE, 0);
+        setupPhase(5, 18, PHASOR3, 30);
+    }
 }
 
 void playPhase() {

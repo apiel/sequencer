@@ -27,6 +27,9 @@ EventDelay phaseDelay;
 byte gBPM = 100;
 unsigned int gTempo = 150;
 
+byte gCurrentPhasesSetup = 0;
+byte gCurrentPatternId = 0;
+
 byte gSyncTempo = HIGH;
 
 void handleStepSequencer() {
@@ -58,8 +61,9 @@ void setup() {
     wifiBegin();
 
     setTempo(gBPM);
+    assignCurrentPattern(gCurrentPatternId);
 
-    setupPhases();
+    setupPhases(gCurrentPhasesSetup);
     displaySetup();
     setupServer();
 

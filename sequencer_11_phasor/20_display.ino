@@ -93,6 +93,7 @@ void displayMainMenu() {
     display.println("");
     dprintln("BPM: %d", gBPM);
     dprintln("Pattern: %d", gCurrentPatternId);
+    dprintln("Setup: %d", gCurrentPhasesSetup);
     displayLpf();
 }
 

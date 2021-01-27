@@ -11,7 +11,6 @@ byte knobValues[KNOB_COUNT] = {
 
 const byte MAIN_MENU = mod(-1, MENU_SIZE);
 byte currentMenu = MAIN_MENU;
-// byte currentMenu = 0;
 
 void handleMidi(byte type, byte key, byte val) {
     // knob
@@ -35,9 +34,17 @@ void handlePress(byte key) {
     // Serial.println(key);
     if (currentMenu == MAIN_MENU) {
         if (key > 31 && key < 40) {
-            assignCurrentPattern(key - 32 + 8);
+            if (gMcMode) {
+                setupPhases(key - 32 + 8);
+            } else {
+                assignCurrentPattern(key - 32 + 8);
+            }
         } else if (key > 7 && key < 16) {
-            assignCurrentPattern(key - 8);
+            if (gMcMode) {
+                setupPhases(key - 8);
+            } else {
+                assignCurrentPattern(key - 8);
+            }
         }
         handleDefaultButton(key);
     } else if (isPhaseMenu()) {
