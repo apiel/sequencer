@@ -15,6 +15,7 @@ template <unsigned int CONTROL_UPDATE_RATE, typename T = unsigned int>
 class ADSR {
    private:
     unsigned int LERPS_PER_CONTROL;
+    unsigned int LERP_RATE;
 
     T update_step_counter;
     T num_update_steps;
@@ -68,7 +69,7 @@ class ADSR {
    public:
     /** Constructor.
      */
-    ADSR(unsigned int LERP_RATE) {
+    ADSR(unsigned int lerp_rate) {
         attack.phase_type = ATTACK;
         decay.phase_type = DECAY;
         sustain.phase_type = SUSTAIN;
@@ -77,12 +78,17 @@ class ADSR {
         release.level = 0;
         adsr_playing = false;
         current_phase = &idle;
-        setLerpRate(LERP_RATE);
+        setLerpRate(lerp_rate);
     }
 
-    void setLerpRate(unsigned int LERP_RATE) {
+    void setLerpRate(unsigned int lerp_rate) {
+        LERP_RATE = lerp_rate;
         LERPS_PER_CONTROL = LERP_RATE / CONTROL_UPDATE_RATE;
         setTimes(attack.ms, decay.ms, sustain.ms, release.ms);
+    }
+
+    unsigned int getLerpRate() {
+        return LERP_RATE;
     }
 
     /** Updates the internal controls of the ADSR.

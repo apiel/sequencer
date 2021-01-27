@@ -79,6 +79,7 @@ void setupPhases() {
     phases[5].adsr.setTimes(gTempo, gTempo, gTempo * 8, gTempo * 2);
     phases[5].adsrFreq.setADLevels(255, 100);
     phases[5].adsrFreq.setTimes(gTempo * 3, gTempo * 5, gTempo * 8, gTempo * 2);
+    phases[5].adsrFreq.setLerpRate(CONTROL_RATE);
 }
 
 void playPhase() {
