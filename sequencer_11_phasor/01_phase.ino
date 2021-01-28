@@ -43,6 +43,22 @@ byte gCurrentPattern[STEP_COUNT] = {0, 0, 0, 0, 0, 0, 0, 0,
 Phase<MAX_NUM_CELLS, STEP_COUNT> phases[MAX_PHASES];
 
 void setupPhase(byte phase, byte tableId, byte type, int frequency) {
+    const float adsrTimes[] = {0.0, 0.0, 0.0, 1.0};
+    const byte adsrLevels[] = {200, 200, 200, 0};
+    setupPhase(phase, tableId, type, frequency, adsrTimes, adsrLevels);
+}
+
+void setupPhase(byte phase, byte tableId, byte type, int frequency,
+                const float adsrTimes[4], const byte adsrLevels[4]) {
+    const float adsrFreqTimes[] = {0.0, 0.0, 0.0, 1.0};
+    const byte adsrFreqLevels[] = {200, 200, 200, 0};
+    setupPhase(phase, tableId, type, frequency, adsrTimes, adsrLevels,
+               adsrFreqTimes, adsrFreqLevels);
+}
+
+void setupPhase(byte phase, byte tableId, byte type, int frequency,
+                const float adsrTimes[4], const byte adsrLevels[4],
+                const float adsrFreqTimes[4], const byte adsrFreqLevels[4]) {
     setTable(phase, tableId);
 
     lpf.setCutoffFreqAndResonance(gCutoff, gResonance);
@@ -50,11 +66,16 @@ void setupPhase(byte phase, byte tableId, byte type, int frequency) {
     phases[phase].setType(type);
     phases[phase].frequency = frequency;
 
-    phases[phase].adsr.setTimes(0, 0, 0, gTempo);
-    phases[phase].adsr.setLevels(250, 200, 200, 0);
+    phases[phase].adsr.setTimes(adsrTimes[0] * gTempo, adsrTimes[1] * gTempo,
+                                adsrTimes[2] * gTempo, adsrTimes[3] * gTempo);
+    phases[phase].adsr.setLevels(adsrLevels[0], adsrLevels[1], adsrLevels[2],
+                                 adsrLevels[3]);
 
-    phases[phase].adsrFreq.setTimes(0, 0, 0, gTempo);
-    phases[phase].adsrFreq.setLevels(200, 200, 200, 0);
+    phases[phase].adsrFreq.setTimes(
+        adsrFreqTimes[0] * gTempo, adsrFreqTimes[1] * gTempo,
+        adsrFreqTimes[2] * gTempo, adsrFreqTimes[3] * gTempo);
+    phases[phase].adsrFreq.setLevels(adsrFreqLevels[0], adsrFreqLevels[1],
+                                     adsrFreqLevels[2], adsrFreqLevels[3]);
 }
 
 #define MAX_PHASES_SETUP 2
@@ -71,16 +92,14 @@ void setupPhases(byte phasesSetupId) {
 
         // setupPhase(1, 20, PHASOR2, 150);
         setupPhase(1, 20, FREQ_ENV, 150);
-        setupPhase(2, 10, SIMPLE, 100);
+        setupPhase(2, 10, SIMPLE, 2, (const float[4]){0.0, 0.0, 0.0, 0.3},
+                   (const byte[4]){100, 100, 100, 0});
         setupPhase(3, 10, SIMPLE, 0);
         setupPhase(4, 10, SIMPLE, 0);
-
-        setupPhase(5, 20, PHASOR3, 30);
-        phases[5].adsr.setADLevels(70, 70);
-        phases[5].adsr.setTimes(gTempo, gTempo, gTempo * 8, gTempo * 2);
-        phases[5].adsrFreq.setADLevels(255, 100);
-        phases[5].adsrFreq.setTimes(gTempo * 3, gTempo * 5, gTempo * 8,
-                                    gTempo * 2);
+        setupPhase(5, 20, PHASOR3, 30, (const float[4]){1.0, 1.0, 12.0, 2.0},
+                   (const byte[4]){70, 70, 70, 0},
+                   (const float[4]){3.0, 5.0, 8.0, 2.0},
+                   (const byte[4]){255, 100, 100, 0});
         phases[5].adsrFreq.setLerpRate(CONTROL_RATE);
     } else {
         setupPhase(0, 9, FREQ_ENV, 45);
@@ -116,5 +135,6 @@ int updateAudioSeq() {
 
     // return ret >> 8;
     return lpf.next((int)(ret * gVolume / MAX_VOLUME)) >> 8;
-    // return (int)(ret * gVolume / MAX_VOLUME) >> 8;
+    // return (int)(ret * gVolume /
+    // MAX_VOLUME) >> 8;
 }
