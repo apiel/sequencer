@@ -14,6 +14,5 @@ a way save and share and load phase&pattern
             -> could use the photoresitor to switch QR code everytime flash goes away
 
 
-byte adsrTimes[4] or unsigned int adsrTimes[4] ?
 
 when we increase bmp should we then increase adsr time?
