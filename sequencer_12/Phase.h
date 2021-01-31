@@ -3,6 +3,7 @@
 
 #include <Oscil.h>
 #include <Phasor.h>
+#include <ReverbTank.h>
 
 #include "ADSR_FIX.h"
 
@@ -10,9 +11,9 @@
 random freq feature?
 */
 
-#define PHASE_TYPE_COUNT 4
+#define PHASE_TYPE_COUNT 5
 
-enum { SIMPLE, FREQ_ENV, PHASOR2, PHASOR3 };
+enum { SIMPLE, REVERB, FREQ_ENV, PHASOR2, PHASOR3 };
 
 template <uint16_t NUM_TABLE_CELLS, byte PHASES_STEP_COUNT>
 class Phase {
@@ -45,6 +46,12 @@ class Phase {
             ptrNoteOn =
                 &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnFreqEnv;
             ptrNext = &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextFreqEnv;
+        } else if (type == REVERB) {
+            ptrUpdate =
+                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateSimple;
+            ptrNoteOn =
+                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnSimple;
+            ptrNext = &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextReverb;
         } else if (type == PHASOR2) {
             ptrUpdate = &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateFreq;
             ptrNoteOn =
@@ -89,6 +96,8 @@ class Phase {
 
     Phasor<AUDIO_RATE> phasor;
     Phasor<AUDIO_RATE> phasorFreq;
+
+    ReverbTank reverb;
 
     byte previous_counter;
 
@@ -147,6 +156,10 @@ class Phase {
         return ((long)adsr.next() * amp_ramp *
                 oscil.atIndex(phasorFreq.next() >> phasorShift)) >>
                8;
+    }
+
+    int nextReverb() {
+        return (int)((reverb.next(adsr.next()) * oscil.next()) >> 1);
     }
 
     int nextSimple() { return (int)((adsr.next() * oscil.next()) >> 1); }

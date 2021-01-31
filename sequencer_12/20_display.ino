@@ -136,7 +136,7 @@ void displayPhase() {
     dprintxyTimePct(49, 40, phase->adsr.getTime(RELEASE));
     dprintxyLevelPct(49, 48, phase->adsr.getLevel(RELEASE));
 
-    if (phase->type > SIMPLE) {
+    if (phase->type > REVERB) {
         if (gMcMode) {
             display.fillTriangle(65, 33, 65, 38, 67, 35, WHITE);
             display.fillTriangle(82, 33, 82, 38, 84, 35, WHITE);
@@ -185,7 +185,11 @@ void displayPhase() {
         }
         dprintxy(12, 3, "LR %d", phase->adsrFreq.getLerpRate());
     } else {
-        dprintxy(12, 1, "Simple");
+        if (phase->type == REVERB) {
+            dprintxy(12, 1, "Reverb");
+        } else {
+            dprintxy(12, 1, "Simple");
+        }
     }
     displayPhasePattern();
 }
