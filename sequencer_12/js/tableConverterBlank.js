@@ -30,10 +30,8 @@ const json = data.replace('{', '[').replace(/([\s\,]+)\}/gs, ']');
 const table = JSON.parse(json);
 console.log(`Found ${table.length} cells`);
 const newTable = [];
-const inc = table.length / NUM_CELLS;
-console.log(`Increment value ${inc}.`);
-for (i = 0, x = 0; i < NUM_CELLS; i++, x += inc) {
-    newTable[i] = table[Math.round(x)];
+for (i = 0, x = 0; i < NUM_CELLS; i++) {
+    newTable[i] = i < table.length ? table[i] : 0;
 }
 
 console.log(`New table ${newTable.length} cells`);

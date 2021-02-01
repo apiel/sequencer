@@ -84,26 +84,26 @@ void setupPhases(byte phasesSetupId) {
     gCurrentPhasesSetup = mod(phasesSetupId, MAX_PHASES_SETUP);
 
     if (gCurrentPhasesSetup == 0) {
-        setupPhase(0, 20, FREQ_ENV, 45);
+        setupPhase(0, getTablesCount(), FREQ_ENV, 45);
         // phases[0].freqSteps[0] = 100;
         // phases[0].freqSteps[4] = 400;
         // phases[0].freqSteps[8] = 200;
         // phases[0].freqSteps[12] = -300;
 
         // setupPhase(1, 20, PHASOR2, 150);
-        setupPhase(1, 20, FREQ_ENV, 150);
+        setupPhase(1, getTablesCount(), FREQ_ENV, 150);
         setupPhase(2, 10, SIMPLE, 2, (const float[4]){0.0, 0.0, 0.0, 0.3},
                    (const byte[4]){100, 100, 100, 0});
         setupPhase(3, 10, SIMPLE, 0);
         setupPhase(4, 10, SIMPLE, 0);
-        setupPhase(5, 20, PHASOR3, 30, (const float[4]){1.0, 1.0, 12.0, 2.0},
+        setupPhase(5, getTablesCount(), PHASOR3, 30, (const float[4]){1.0, 1.0, 12.0, 2.0},
                    (const byte[4]){70, 70, 70, 0},
                    (const float[4]){3.0, 5.0, 8.0, 2.0},
                    (const byte[4]){255, 100, 100, 0});
         phases[5].adsrFreq.setLerpRate(CONTROL_RATE);
     } else {
         setupPhase(0, 9, FREQ_ENV, 45);
-        setupPhase(1, 20, PHASOR2, 150);
+        setupPhase(1, getTablesCount(), PHASOR2, 150);
         setupPhase(2, 10, SIMPLE, 100);
         setupPhase(3, 4, SIMPLE, 0);
         setupPhase(4, 10, SIMPLE, 0);

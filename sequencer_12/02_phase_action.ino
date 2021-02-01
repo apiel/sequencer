@@ -74,7 +74,7 @@ void setPhaseFromMidiKnob(byte phaseIdx, byte optionKey, int direction) {
     Phase<MAX_NUM_CELLS, STEP_COUNT> *phase = &phases[phaseIdx];
 
     if (optionKey == 2) {
-        currentTableId = mod(currentTableId + direction, 20);
+        currentTableId = mod(currentTableId + direction, getTablesCount());
         setTable(phaseIdx, currentTableId);
     } else if (optionKey == 3 || optionKey == 13) {
         if (gMcMode) {

@@ -1,3 +1,6 @@
+- create another phase type called sample to read table like a sample 
+  with adsr and sampleFreq with the possibility to have adsr frequency modulation
+  
 - Bug fix problem of not being able to change table
 - Level per channel/phase
 

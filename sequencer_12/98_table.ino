@@ -18,6 +18,17 @@
 #include "tables/waveshape_chebyshev_3rd.h"
 #include "tables/waveshape_sigmoid.h"
 #include "tables/whitenoise8192_int8.h"
+#include "tables/psy_kick.h"
+// we could remove one of the kick
+#include "tables/psy_kick2.h"
+#include "tables/psy_kick3.h"
+#include "tables/kick.h"
+
+#define TABLES_COUNT 24
+
+byte getTablesCount() {
+    return TABLES_COUNT;
+}
 
 void setTable(byte phaseIdx, byte tableId) {
     if (tableId == 1) {
@@ -77,6 +88,18 @@ void setTable(byte phaseIdx, byte tableId) {
     } else if (tableId == 19) {
         phases[phaseIdx].setTable(SQUARE_NO_ALIAS_DATA);
         phases[phaseIdx].tableName = "noAlias";
+    } else if (tableId == 20) {
+        phases[phaseIdx].setTable(PSY_KICK_DATA);
+        phases[phaseIdx].tableName = "psyKick";
+    } else if (tableId == 21) {
+        phases[phaseIdx].setTable(PSY_KICK2_DATA);
+        phases[phaseIdx].tableName = "psyKick2";
+    } else if (tableId == 22) {
+        phases[phaseIdx].setTable(PSY_KICK3_DATA);
+        phases[phaseIdx].tableName = "psyKick3";
+    } else if (tableId == 23) {
+        phases[phaseIdx].setTable(KICK_DATA);
+        phases[phaseIdx].tableName = "kick";
     } else {
         phases[phaseIdx].setTable(SIN8192_DATA);
         phases[phaseIdx].tableName = "sin";
