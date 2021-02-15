@@ -1,5 +1,36 @@
 const easymidi = require('easymidi');
-const WebSocket = require('ws');
+// const SerialPort = require('serialport');
+const SerialPort = require('@serialport/stream');
+SerialPort.Binding = require('@serialport/bindings');
+const port = new SerialPort('/dev/ttyUSB0', {
+    baudRate: 115200,
+    dataBits: 8,
+    parity: 'none',
+    stopBits: 1,
+});
+
+// function openPort() {
+//     port.open((err) => {
+//         err && console.log('Open error: ', err.message);
+//     });
+// }
+
+port.on('error', function (err) {
+    console.log('Error: ', err.message);
+});
+
+let buffer = '';
+port.on('data', (data) => {
+    process.stdout.write(data.toString());
+    buffer += data.toString();
+    // if (buffer.includes('POWERON_RESET')) {
+    if (buffer.includes('download')) {
+        port.close();
+        console.log('port close');
+    } else if (buffer.includes('\n')) {
+        buffer = '';
+    }
+});
 
 const inputs = easymidi.getInputs();
 
@@ -8,51 +39,26 @@ console.log('inputs', inputs);
 // const input = new easymidi.Input('X-TOUCH MINI:X-TOUCH MINI MIDI 1 24:0');
 const input = new easymidi.Input(inputs[1]);
 
+// ToDo: avoid midi convertion...
 input.on('message', ({ controller, value, _type, note }) => {
     if (_type === 'cc') {
         // console.log('knob:', JSON.stringify({ controller, value }));
-        wsSend([186, controller, value]);
+        send([186, controller, value]);
     } else if (_type === 'noteon') {
         // console.log('noteon:', note);
-        wsSend([154, note, 0]);
+        send([154, note, 0]);
     } else if (_type === 'noteoff') {
         // console.log('noteoff:', note);
-        wsSend([138, note, 0]);
+        send([138, note, 0]);
     }
 });
 
-let ws;
-let wsIsConnected = false;
-
-function wsSend(data) {
-    if (wsIsConnected) {
+function send(data) {
+    if (port.isOpen) {
         data = data.map((c) => String.fromCharCode(c));
         const msg = `:${data.join('')}`;
-        console.log(`msg ${JSON.stringify(data)}:`, msg);
-        ws.send(msg);
+        console.log(`write ${JSON.stringify(data)}:`, msg);
+        port.write(msg + '\n');
+        // port.write(Buffer.from(msg + "\n", 'ascii'));
     }
 }
-
-function wsConnect() {
-    console.log('WS init connection');
-    ws = new WebSocket('ws://192.168.0.24/ws', {
-        perMessageDeflate: false,
-    });
-
-    ws.on('open', function open() {
-        console.log('WS connection open');
-        wsIsConnected = true;
-    });
-
-    ws.on('message', function incoming(data) {
-        console.log('WS msg received:', data);
-    });
-
-    ws.on('close', function() {
-        console.log('socket close');
-        wsIsConnected = false;
-        setTimeout(wsConnect, 1000);
-    });
-}
-
-wsConnect();
