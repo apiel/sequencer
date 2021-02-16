@@ -42,7 +42,6 @@ void handleStepSequencer() {
 }
 
 void updateControl() {
-    wifiCheck();
     handleStepSequencer();
     displayUpdate();
     handleSerial();
@@ -53,8 +52,6 @@ int updateAudio() { return gSeqPlay ? updateAudioSeq() : 0; }
 void setup() {
     Serial.begin(115200);
     pinMode(PIN_SYNC_OUT, OUTPUT);
-
-    wifiBegin();
 
     setTempo(gBPM);
     assignCurrentPattern(gCurrentPatternId);
