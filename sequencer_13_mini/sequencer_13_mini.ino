@@ -5,7 +5,7 @@
 
 EventDelay phaseDelay;
 
-unsigned int gTempo = 400;
+unsigned int gTempo = 500;
 
 bool gSeqPlay = true;
 
@@ -13,7 +13,7 @@ void updateControl() {
     if (gSeqPlay) {
         if (phaseDelay.ready()) {
             playPhase();
-            phaseDelay.start(gTempo + 100);
+            phaseDelay.start(gTempo + 500);
         }
         updateEnvelopes();
     }

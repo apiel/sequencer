@@ -24,6 +24,7 @@ port.on('data', (data) => {
     if (buffer.includes('download')) {
         port.close();
         console.log('port close');
+        buffer = '';
     } else if (buffer.includes('\n')) {
         buffer = '';
     }
