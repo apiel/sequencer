@@ -25,6 +25,9 @@ void setupPhase(byte tableId, byte type, int frequency,
     const float adsrTimes[] = {0.5, 0.5, 0.0, 0.0};
     const byte adsrLevels[] = {200, 1, 0, 0};
 
+    // const float adsrTimes[] = {0.25, 0.5, 0.25, 0.0};
+    // const byte adsrLevels[] = {200, 200, 200, 0};
+
     setTable(tableId);
 
     phase.setType(type);
@@ -45,7 +48,6 @@ void setupPhase(byte tableId, byte type, int frequency,
 void setupPhases() {
     // setupPhase(getTablesCount(), FREQ_ENV, 45);
     setupPhase(9, SIMPLE, 45);
-
 
     // setupPhase(getTablesCount(), FREQ_ENV, 150);
     // setupPhase(10, SIMPLE, 2, (const float[4]){0.0, 0.0, 0.0, 0.3},
