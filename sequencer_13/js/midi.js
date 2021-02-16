@@ -26,6 +26,6 @@ input.on('message', ({ controller, value, _type, note }) => {
 function send(data) {
     data = data.map((c) => String.fromCharCode(c));
     const msg = `:${data.join('')}`;
-    console.log(`write ${JSON.stringify(data)}:`, msg);
+    // console.log(`write ${JSON.stringify(data)}:`, msg);
     write(msg + '\n');
 }

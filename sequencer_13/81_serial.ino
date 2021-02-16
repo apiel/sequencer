@@ -6,7 +6,7 @@ void handleSerial() {
             byte type = Serial.read();
             byte key = Serial.read();
             byte val = Serial.read();
-            Serial.print("received midi");
+            Serial.print("received midi ");
             Serial.print(type, DEC);
             Serial.print(" ");
             Serial.print(key, DEC);
