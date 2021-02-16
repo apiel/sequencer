@@ -1,8 +1,3 @@
-// http server need to stay on root
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
-// http server
-
 #include <MozziGuts.h>
 
 // this should be after MozziGuts
@@ -50,6 +45,7 @@ void updateControl() {
     wifiCheck();
     handleStepSequencer();
     displayUpdate();
+    handleSerial();
 }
 
 int updateAudio() { return gSeqPlay ? updateAudioSeq() : 0; }
@@ -65,7 +61,6 @@ void setup() {
 
     setupPhases(gCurrentPhasesSetup);
     displaySetup();
-    setupServer();
 
     startMozzi();
 }
