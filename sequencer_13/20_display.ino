@@ -115,30 +115,23 @@ void displayPhase() {
     }
 
     dprintxyAbs(4, 32, "A");
-    dprintxyTimePct(0, 40, phase->adsr.getTime(ATTACK));
-    dprintxyLevelPct(0, 48, phase->adsr.getLevel(ATTACK));
+    dprintxyTimePct(0, 40, phase->envlop.getTime(0));
+    dprintxyLevelPct(0, 48, phase->envlop.getLevel(0));
 
     display.drawLine(15, 32, 15, 55, WHITE);
 
-    dprintxyAbs(21, 32, "D");
-    dprintxyTimePct(17, 40, phase->adsr.getTime(DECAY));
-    dprintxyLevelPct(17, 48, phase->adsr.getLevel(DECAY));
+    dprintxyAbs(21, 32, "S");
+    dprintxyTimePct(17, 40, phase->envlop.getTime(1));
+    dprintxyLevelPct(17, 48, phase->envlop.getLevel(1));
 
     display.drawLine(31, 32, 31, 55, WHITE);
 
-    dprintxyAbs(37, 32, "S");
-    dprintxyTimePct(33, 40, phase->adsr.getTime(SUSTAIN));
-    dprintxyLevelPct(33, 48, phase->adsr.getLevel(SUSTAIN));
-
-    display.drawLine(47, 32, 47, 55, WHITE);
-
-    dprintxyAbs(53, 32, "R");
-    dprintxyTimePct(49, 40, phase->adsr.getTime(RELEASE));
-    dprintxyLevelPct(49, 48, phase->adsr.getLevel(RELEASE));
+    dprintxyAbs(37, 32, "D");
+    dprintxyTimePct(33, 40, phase->envlop.getTime(2));
+    dprintxyLevelPct(33, 48, phase->envlop.getLevel(2));
 
     if (phase->type > REVERB) {
         if (gMcMode) {
-            display.fillTriangle(65, 33, 65, 38, 67, 35, WHITE);
             display.fillTriangle(82, 33, 82, 38, 84, 35, WHITE);
             display.fillTriangle(98, 33, 98, 38, 100, 35, WHITE);
             display.fillTriangle(114, 33, 114, 38, 116, 35, WHITE);
@@ -146,32 +139,23 @@ void displayPhase() {
             display.fillTriangle(0, 33, 0, 38, 2, 35, WHITE);
             display.fillTriangle(17, 33, 17, 38, 19, 35, WHITE);
             display.fillTriangle(33, 33, 33, 38, 35, 35, WHITE);
-            display.fillTriangle(49, 33, 49, 38, 51, 35, WHITE);
         }
 
-        display.drawLine(63, 32, 63, 55, WHITE);
-
-        dprintxyAbs(70, 32, "A");
-        dprintxyTimePct(65, 40, phase->adsrFreq.getTime(ATTACK));
-        dprintxyLevelPct(65, 48, phase->adsrFreq.getLevel(ATTACK));
-
-        display.drawLine(79, 32, 79, 55, WHITE);
-
-        dprintxyAbs(86, 32, "D");
-        dprintxyTimePct(81, 40, phase->adsrFreq.getTime(DECAY));
-        dprintxyLevelPct(81, 48, phase->adsrFreq.getLevel(DECAY));
+        dprintxyAbs(86, 32, "A");
+        dprintxyTimePct(81, 40, phase->envlopFreq.getTime(0));
+        dprintxyLevelPct(81, 48, phase->envlopFreq.getLevel(0));
 
         display.drawLine(95, 32, 95, 55, WHITE);
 
         dprintxyAbs(102, 32, "S");
-        dprintxyTimePct(97, 40, phase->adsrFreq.getTime(SUSTAIN));
-        dprintxyLevelPct(97, 48, phase->adsrFreq.getLevel(SUSTAIN));
+        dprintxyTimePct(97, 40, phase->envlopFreq.getTime(1));
+        dprintxyLevelPct(97, 48, phase->envlopFreq.getLevel(1));
 
         display.drawLine(111, 32, 111, 55, WHITE);
 
-        dprintxyAbs(118, 32, "R");
-        dprintxyTimePct(113, 40, phase->adsrFreq.getTime(RELEASE));
-        dprintxyLevelPct(113, 48, phase->adsrFreq.getLevel(RELEASE));
+        dprintxyAbs(118, 32, "D");
+        dprintxyTimePct(113, 40, phase->envlopFreq.getTime(2));
+        dprintxyLevelPct(113, 48, phase->envlopFreq.getLevel(2));
 
         if (phase->type == FREQ_ENV) {
             dprintxy(12, 1, "Freq Env");
@@ -183,7 +167,7 @@ void displayPhase() {
             dprintxy(12, 1, "Phasor 3");
             dprintxy(12, 2, "Shift %d", phase->phasorShift);
         }
-        dprintxy(12, 3, "LR %d", phase->adsrFreq.getLerpRate());
+        dprintxy(12, 3, "LR %d", phase->envlopFreq.getLerpRate());
     } else {
         if (phase->type == REVERB) {
             dprintxy(12, 1, "Reverb");

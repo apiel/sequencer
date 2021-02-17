@@ -15,10 +15,10 @@ void setPhaseType(byte phaseIdx, byte pos) {
     byte type = mod(pos, PHASE_TYPE_COUNT + 1);
     if (type < PHASE_TYPE_COUNT) {
         phases[phaseIdx].setType(type);
-    } else if (phases[phaseIdx].adsrFreq.getLerpRate() == CONTROL_RATE) {
-        phases[phaseIdx].adsrFreq.setLerpRate(AUDIO_RATE);
+    } else if (phases[phaseIdx].envlopFreq.getLerpRate() == CONTROL_RATE) {
+        phases[phaseIdx].envlopFreq.setLerpRate(AUDIO_RATE);
     } else {
-        phases[phaseIdx].adsrFreq.setLerpRate(CONTROL_RATE);
+        phases[phaseIdx].envlopFreq.setLerpRate(CONTROL_RATE);
     }
 }
 
@@ -91,72 +91,59 @@ void setPhaseFromMidiKnob(byte phaseIdx, byte optionKey, int direction) {
             phase->freqShift = between(phase->freqShift + direction, 0, 16);
         }
     } else if (optionKey == 5) {
-        if (gMcMode) {
-            phase->adsrFreq.setAttackTime(
-                incTime(phase->adsrFreq.getTime(ATTACK), direction));
-        } else {
-            phase->adsr.setAttackTime(
-                incTime(phase->adsr.getTime(ATTACK), direction));
-        }
+        // free spot
     } else if (optionKey == 6) {
         if (gMcMode) {
-            phase->adsrFreq.setDecayTime(
-                incTime(phase->adsrFreq.getTime(DECAY), direction));
+            phase->envlopFreq.setTime(
+                0, incTime(phase->envlopFreq.getTime(0), direction));
         } else {
-            phase->adsr.setDecayTime(
-                incTime(phase->adsr.getTime(DECAY), direction));
+            phase->envlop.setTime(0,
+                                  incTime(phase->envlop.getTime(0), direction));
         }
     } else if (optionKey == 7) {
         if (gMcMode) {
-            phase->adsrFreq.setSustainTime(
-                incTime(phase->adsrFreq.getTime(SUSTAIN), direction));
+            phase->envlopFreq.setTime(
+                1, incTime(phase->envlopFreq.getTime(1), direction));
         } else {
-            phase->adsr.setSustainTime(
-                incTime(phase->adsr.getTime(SUSTAIN), direction));
+            phase->envlop.setTime(1,
+                                  incTime(phase->envlop.getTime(1), direction));
         }
 
     } else if (optionKey == 8) {
         if (gMcMode) {
-            phase->adsrFreq.setReleaseTime(
-                incTime(phase->adsrFreq.getTime(RELEASE), direction));
+            phase->envlopFreq.setTime(
+                2, incTime(phase->envlopFreq.getTime(2), direction));
         } else {
-            phase->adsr.setReleaseTime(
-                incTime(phase->adsr.getTime(RELEASE), direction));
+            phase->envlop.setTime(2,
+                                  incTime(phase->envlop.getTime(2), direction));
         }
     } else if (optionKey == 15) {
-        if (gMcMode) {
-            phase->adsrFreq.setAttackLevel(
-                incLevel(phase->adsrFreq.getLevel(ATTACK), direction));
-        } else {
-            phase->adsr.setAttackLevel(
-                incLevel(phase->adsr.getLevel(ATTACK), direction));
-        }
-
+        // free spot
     } else if (optionKey == 16) {
         if (gMcMode) {
-            phase->adsrFreq.setDecayLevel(
-                incLevel(phase->adsrFreq.getLevel(DECAY), direction));
+            phase->envlopFreq.setLevel(0,
+                incLevel(phase->envlopFreq.getLevel(0), direction));
         } else {
-            phase->adsr.setDecayLevel(
-                incLevel(phase->adsr.getLevel(DECAY), direction));
+            phase->envlop.setLevel(0,
+                incLevel(phase->envlop.getLevel(0), direction));
         }
 
     } else if (optionKey == 17) {
         if (gMcMode) {
-            phase->adsrFreq.setSustainLevel(
-                incLevel(phase->adsrFreq.getLevel(SUSTAIN), direction));
+            phase->envlopFreq.setLevel(1,
+                incLevel(phase->envlopFreq.getLevel(1), direction));
         } else {
-            phase->adsr.setSustainLevel(
-                incLevel(phase->adsr.getLevel(SUSTAIN), direction));
+            phase->envlop.setLevel(1,
+                incLevel(phase->envlop.getLevel(1), direction));
         }
 
     } else if (optionKey == 18) {
         if (gMcMode) {
-            phase->adsrFreq.setReleaseLevel(
-                incLevel(phase->adsrFreq.getLevel(RELEASE), direction));
+            phase->envlopFreq.setLevel(2,
+                incLevel(phase->envlopFreq.getLevel(2), direction));
         } else {
-            phase->adsr.setReleaseLevel(
-                incLevel(phase->adsr.getLevel(RELEASE), direction));
+            phase->envlop.setLevel(2,
+                incLevel(phase->envlop.getLevel(2), direction));
         }
     }
 }

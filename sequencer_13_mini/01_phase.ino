@@ -14,8 +14,8 @@ void setupPhase(byte tableId, byte type, int frequency) {
 }
 
 void setupPhase(byte tableId, byte type, int frequency,
-                const float envlopFreqTimes[4],
-                const byte envlopFreqLevels[4]) {
+                const float envlopFreqTimes[3],
+                const byte envlopFreqLevels[3]) {
     // const float envlopTimes[] = {0.1, 0.1, 0.7, 0.1};
     // const float envlopTimes[] = {0.5, 0.0, 0.0, 0.5};
     // const float envlopTimes[] = {0.0, 0.0, 0.0, 1.0};
