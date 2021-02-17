@@ -5,13 +5,14 @@
 #include <Phasor.h>
 #include <ReverbTank.h>
 
-#include "ADSR_FIX.h"
+#include "Envelope.h"
 
 /*
 random freq feature?
 */
 
 #define PHASE_TYPE_COUNT 5
+#define ENV_NUM_PHASE 3 
 
 enum { SIMPLE, REVERB, FREQ_ENV, PHASOR2, PHASOR3 };
 
@@ -27,10 +28,10 @@ class Phase {
     byte freqShift;
     byte phasorShift;
 
-    ADSR<CONTROL_RATE> adsr{AUDIO_RATE};
-    // ADSR<CONTROL_RATE> adsrFreq{CONTROL_RATE};
+    Envelope<CONTROL_RATE, ENV_NUM_PHASE> envlop{AUDIO_RATE};
+    // Envelope<CONTROL_RATE, ENV_NUM_PHASE> envlopFreq{CONTROL_RATE};
     // // before to have PHASOR3 it was AUDIO_RATE
-    ADSR<CONTROL_RATE> adsrFreq{AUDIO_RATE};
+    Envelope<CONTROL_RATE, ENV_NUM_PHASE> envlopFreq{AUDIO_RATE};
 
     Phase() : PDM_SCALE(0.05) {
         freqAdd = 0;
@@ -105,29 +106,29 @@ class Phase {
     void (Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::*ptrUpdate)();
     void (Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::*ptrNoteOn)();
 
-    void updateSimple() { adsr.update(); }
+    void updateSimple() { envlop.update(); }
 
     void updateFreq() {
         updateSimple();
-        adsrFreq.update();
+        envlopFreq.update();
     }
 
     void updatePhasor3() {
         updateFreq();
         float resonance_freq = frequency + freqAdd +
                                ((float)(frequency + freqAdd) *
-                                ((float)adsrFreq.next() * PDM_SCALE));
+                                ((float)envlopFreq.next() * PDM_SCALE));
         phasorFreq.setFreq(resonance_freq);
     }
 
     void noteOnSimple() {
         oscil.setFreq((int)(frequency + freqAdd));
-        adsr.noteOn();
+        envlop.play();
     }
 
     void noteOnFreqEnv() {
         noteOnSimple();
-        adsrFreq.noteOn();
+        envlopFreq.play();
     }
 
     void noteOnPhasor() {
@@ -146,27 +147,27 @@ class Phase {
 
     int nextPhasor2() {
         handleCounter();
-        return (adsr.next() *
+        return (envlop.next() *
                 oscil.atIndex(phasorFreq.next() >> phasorShift)) >>
                1;
     }
 
     int nextPhasor3() {
         byte amp_ramp = 255 - handleCounter();
-        return ((long)adsr.next() * amp_ramp *
+        return ((long)envlop.next() * amp_ramp *
                 oscil.atIndex(phasorFreq.next() >> phasorShift)) >>
                8;
     }
 
     int nextReverb() {
-        return (int)((reverb.next(adsr.next()) * oscil.next()) >> 1);
+        return (int)((reverb.next(envlop.next()) * oscil.next()) >> 1);
     }
 
-    int nextSimple() { return (int)((adsr.next() * oscil.next()) >> 1); }
+    int nextSimple() { return (int)((envlop.next() * oscil.next()) >> 1); }
 
     int nextFreqEnv() {
         oscil.setFreq((int)frequency + freqAdd +
-                      (adsrFreq.next() >> freqShift));
+                      (envlopFreq.next() >> freqShift));
         return nextSimple();
     }
 };
