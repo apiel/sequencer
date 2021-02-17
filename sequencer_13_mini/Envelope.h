@@ -27,7 +27,7 @@ class Envelope {
         Q8n0 level;
     };
 
-    byte current = 0;
+    byte current = NUM_PHASES; // NUM_PHASES = off
     phase phases[NUM_PHASES];
 
     // Linear audio rate transitions for envelope

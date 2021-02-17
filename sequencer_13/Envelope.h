@@ -27,7 +27,7 @@ class Envelope {
         Q8n0 level;
     };
 
-    byte current = 0;
+    byte current = NUM_PHASES; // NUM_PHASES = off
     phase phases[NUM_PHASES];
 
     // Linear audio rate transitions for envelope
@@ -47,19 +47,13 @@ class Envelope {
         while (playing() && phases[current].lerp_steps == 0) {
             current++;
         }
-        Serial.print("setNextPhase ");
-        Serial.print(index);
-        Serial.print(" ");
-        Serial.print(current);
         if (playing()) {
-            Serial.print(" playing");
             num_update_steps = phases[current].update_steps;
             transition.set(
                 current == 0 ? 0 : Q8n0_to_Q15n16(phases[current - 1].level));
             transition.set(Q8n0_to_Q15n16(phases[current].level),
                            phases[current].lerp_steps);
         }
-        Serial.println("");
     }
 
     inline void setUpdateSteps(phase* p, unsigned int steps) {
