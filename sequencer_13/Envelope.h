@@ -18,6 +18,9 @@ class Envelope {
     unsigned int update_step_counter;
     unsigned int num_update_steps;
 
+    byte loop_start = NUM_PHASES;
+    byte loop_stop = NUM_PHASES;
+
     struct phase {
         unsigned int ms;
         byte phase_type;
@@ -27,7 +30,7 @@ class Envelope {
         Q8n0 level;
     };
 
-    byte current = NUM_PHASES; // NUM_PHASES = off
+    byte current = NUM_PHASES;  // NUM_PHASES = off
     phase phases[NUM_PHASES];
 
     // Linear audio rate transitions for envelope
@@ -44,15 +47,17 @@ class Envelope {
     inline void setNextPhase(byte index) {
         update_step_counter = 0;
         current = index;
-        while (playing() && phases[current].lerp_steps == 0) {
-            current++;
-        }
         if (playing()) {
-            num_update_steps = phases[current].update_steps;
-            transition.set(
-                current == 0 ? 0 : Q8n0_to_Q15n16(phases[current - 1].level));
-            transition.set(Q8n0_to_Q15n16(phases[current].level),
-                           phases[current].lerp_steps);
+            if (phases[current].lerp_steps == 0) {
+                setNextPhase();
+            } else {
+                num_update_steps = phases[current].update_steps;
+                transition.set(current == 0
+                                   ? 0
+                                   : Q8n0_to_Q15n16(phases[current - 1].level));
+                transition.set(Q8n0_to_Q15n16(phases[current].level),
+                               phases[current].lerp_steps);
+            }
         }
     }
 
@@ -129,7 +134,12 @@ class Envelope {
         }
     }
 
-    // inline void loop(byte index start, byte index stop) {}
+    inline void loop(byte start) { loop(start, start); }
+
+    inline void loop(byte start, byte stop) {
+        loop_start = start;
+        loop_stop = stop;
+    }
 
     inline bool playing() { return current < NUM_PHASES; }
 };
