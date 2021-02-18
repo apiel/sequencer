@@ -39,16 +39,11 @@ void handlePress(byte key) {
         phase.setType(PHASOR2);
     } else if (key == 12) {
         phase.setType(PHASOR3);
-    } else if (key == 15) {
-        phase.noteOn(1);
-        phase.envlop.loop(1);
     }
 }
 
 void handleUp(byte key) {
-    if (key == 15) {
-        phase.envlop.stop();
-    }
+  
 }
 
 void handleKnob(byte key, byte val) {
