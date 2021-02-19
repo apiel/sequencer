@@ -44,6 +44,7 @@ class Envelope {
     }
 
     inline void setNextPhase() {
+        // looooop fix bug if loop doesnt have length...
         if (loop_start < NUM_PHASES && loop_stop < NUM_PHASES &&
             current == loop_stop) {
             setNextPhase(loop_start);

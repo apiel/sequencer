@@ -8,7 +8,8 @@ byte currentTableId = 0;
 Phase<MAX_NUM_CELLS, STEP_COUNT> phase;
 
 void setupPhase(byte tableId, byte type, int frequency) {
-    const float envlopFreqTimes[] = {0.0, 0.0, 1.0};
+    const float envlopFreqTimes[] = {0.0, 0.1, 0.9};
+    // const float envlopFreqTimes[] = {0.0, 0.0, 1.0};
     const byte envlopFreqLevels[] = {200, 200, 0};
     setupPhase(tableId, type, frequency, envlopFreqTimes, envlopFreqLevels);
 }
