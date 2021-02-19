@@ -9,6 +9,8 @@
 #include "Line.h"
 #include "mozzi_fixmath.h"
 
+// we might want to update from env of mini keyboard
+
 template <unsigned int CONTROL_UPDATE_RATE, byte NUM_PHASES = 2>
 class Envelope {
    private:

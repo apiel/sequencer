@@ -17,7 +17,10 @@
         "utility": "cpp",
         "istream": "cpp",
         "ostream": "cpp",
-        "*.def": "cpp"
+        "*.def": "cpp",
+        "chrono": "cpp",
+        "random": "cpp",
+        "limits": "cpp"
     },
     "emeraldwalk.runonsave": {
         "commands": [

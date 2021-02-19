@@ -10,17 +10,19 @@ unsigned int gTempo = 500;
 bool gSeqPlay = true;
 
 void updateControl() {
+    // important change here! keep updating the envelop
+    // even if seq play is false so we can play synth with keyboard
     if (gSeqPlay) {
         if (phaseDelay.ready()) {
             playPhase();
             phaseDelay.start(gTempo + 500);
         }
-        updateEnvelopes();
     }
+    updateEnvelopes();
     handleSerial();
 }
 
-int updateAudio() { return gSeqPlay ? updateAudioSeq() : 0; }
+int updateAudio() { return updateAudioSeq(); }
 
 void setup() {
     Serial.begin(115200);

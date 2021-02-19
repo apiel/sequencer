@@ -28,7 +28,7 @@ void setupPhase(byte tableId, byte type, int frequency,
 
     // ToDo make min level value to 1
     const float envlopTimes[] = {0.3, 0.5, 0.2};
-    const byte envlopLevels[] = {200, 150, 1};
+    const byte envlopLevels[] = {150, 150, 1};
 
     setTable(tableId);
 
@@ -62,10 +62,6 @@ void setupPhases() {
     // phase.envlopFreq.setLerpRate(CONTROL_RATE);
 }
 
-void playPhase() { 
-    phase.noteOn(1);
-}
-
+void playPhase() { phase.noteOn(1); }
 void updateEnvelopes() { phase.update(); }
-
 int updateAudioSeq() { return (int)phase.next() >> 8; }

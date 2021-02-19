@@ -109,6 +109,8 @@ class Envelope {
 
     inline void setLevel(byte index, byte value) {
         if (isValidIndex(index)) {
+            // seem that when we have level to 0, there is a little noize
+            // phases[index].level = max(value, 1);
             phases[index].level = value;
         }
     }
