@@ -12,11 +12,9 @@ bool gSeqPlay = true;
 void updateControl() {
     // important change here! keep updating the envelop
     // even if seq play is false so we can play synth with keyboard
-    if (gSeqPlay) {
-        if (phaseDelay.ready()) {
-            playPhase();
-            phaseDelay.start(gTempo + 500);
-        }
+    if (gSeqPlay && phaseDelay.ready()) {
+        playPhase();
+        phaseDelay.start(gTempo + 500);
     }
     updateEnvelopes();
     handleSerial();
