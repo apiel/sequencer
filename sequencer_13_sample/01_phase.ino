@@ -1,6 +1,4 @@
-// #include "Fix_Sample.h"
 #include "Phase.h"
-// #include "tables/psy_kick.h"
 
 #define MAX_NUM_CELLS 8192
 #define STEP_COUNT 16
@@ -57,7 +55,9 @@ void setupPhases() {
     // setupPhase(9, SIMPLE, 45,(const float[3]){0.0, 0.0, 0.3},
     //            (const byte[3]){100, 100, 0});
 
-    setupPhase(20, SAMPLE, 1);
+    // setupPhase(20, SAMPLE, 1);
+    setupPhase(20, SAMPLE_FREQ, 1, (const float[3]){0.3, 0.4, 0.3},
+               (const byte[3]){10, 8,  0});
 
     // setupPhase(getTablesCount(), FREQ_ENV, 150);
     // setupPhase(10, SIMPLE, 2, (const float[4]){0.0, 0.0, 0.0, 0.3},
@@ -74,11 +74,3 @@ void setupPhases() {
 void playPhase() { phase.noteOn(1); }
 void updateEnvelopes() { phase.update(); }
 int updateAudioSeq() { return (int)phase.next() >> 8; }
-// int updateAudioSeq() { return (int)phase.next(); }
-
-// void playPhase() {
-//     sample.setFreq((float)1);
-//     sample.start();
-// }
-// void updateEnvelopes() {}
-// int updateAudioSeq() { return (int)sample.next(); }

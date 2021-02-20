@@ -71,7 +71,7 @@ class Phase {
             ptrNext = &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextPhasor3;
         } else if (type == SAMPLE) {
             ptrUpdate =
-                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateSimple;
+                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateNone;
             ptrNoteOn =
                 &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnSample;
             ptrNext = &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextSample;
@@ -127,6 +127,8 @@ class Phase {
     void (Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::*ptrUpdate)();
     void (Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::*ptrNoteOn)();
 
+    void updateNone() {}
+
     void updateSimple() { envlop.update(); }
 
     void updateFreq() {
@@ -143,7 +145,7 @@ class Phase {
     }
 
     void noteOnSample() {
-        sample.setFreq((float)frequency);
+        sample.setFreq((float)(frequency + freqAdd));
         sample.start();
     }
 
@@ -196,14 +198,13 @@ class Phase {
 
     int nextSimple() { return (int)((envlop.next() * oscil.next()) >> 1); }
 
-    // int nextSample() { return (int)((envlop.next() * sample.next())); }
-    int nextSample() { return (int)sample.next() << 8; }
-
     int nextFreqEnv() {
         oscil.setFreq((int)frequency + freqAdd +
                       (envlopFreq.next() >> freqShift));
         return nextSimple();
     }
+
+    int nextSample() { return (int)sample.next() << 8; }
 
     int nextSampleFreq() {
         sample.setFreq(
