@@ -10,9 +10,7 @@ a sequence is assign to one instrument/tone (should it be multple output?)
 #include "note.h"
 
 #define PIN_SYNC_OUT 27
-
 #define MAX_PATTERNS 4
-
 #define STEP_COUNT MAX_STEPS_IN_PATTERN
 
 EventDelay stepDelay;
@@ -67,6 +65,8 @@ void playStep() {
             tones[patterns[p].outputId].noteOn(
                 patterns[p].steps[gSeqStepIndex].freqDiff);
             // tones[patterns[p].outputId].noteOn();
+
+            // think about substain and release (noteOff())
         }
     }
 }
