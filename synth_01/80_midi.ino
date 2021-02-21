@@ -37,13 +37,13 @@ void handlePress(byte key) {
             if (gMcMode) {
                 setupTones(key - 32 + 8);
             } else {
-                assignCurrentPattern(key - 32 + 8);
+                // assignCurrentPattern(key - 32 + 8);
             }
         } else if (key > 7 && key < 16) {
             if (gMcMode) {
                 setupTones(key - 8);
             } else {
-                assignCurrentPattern(key - 8);
+                // assignCurrentPattern(key - 8);
             }
         }
         handleDefaultButton(key);

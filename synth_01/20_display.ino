@@ -92,7 +92,7 @@ void displayMainMenu() {
     display.println("Main menu");
     display.println("");
     dprintln("BPM: %d", gBPM);
-    dprintln("Pattern: %d", gCurrentPatternId);
+    // dprintln("Pattern: %d", gCurrentPatternId);
     dprintln("Setup: %d", gCurrentTonesSetup);
     displayLpf();
 }
@@ -179,20 +179,20 @@ void displayTone() {
 }
 
 void displayTonePattern() {
-    byte idx = getCurrentToneIdx();
+    // byte idx = getCurrentToneIdx();
 
-    for (byte i = 0, s = 0; i < STEP_COUNT; i++) {
-        if (i % 4 == 0) s += 3;
-        int aTone = gCurrentPattern[i];
-        if (aTone & (int)pow(2, idx)) {
-            display.fillRect(i * 7 + s, 57, 6, 6, WHITE);
-        } else {
-            display.drawRect(i * 7 + s, 57, 6, 6, WHITE);
-        }
-        if (i == gSeqStepIndex) {
-            display.drawLine(i * 7 + 1 + s, 63, i * 7 + 4 + s, 63, WHITE);
-        }
-    }
+    // for (byte i = 0, s = 0; i < STEP_COUNT; i++) {
+    //     if (i % 4 == 0) s += 3;
+    //     int aTone = gCurrentPattern[i];
+    //     if (aTone & (int)pow(2, idx)) {
+    //         display.fillRect(i * 7 + s, 57, 6, 6, WHITE);
+    //     } else {
+    //         display.drawRect(i * 7 + s, 57, 6, 6, WHITE);
+    //     }
+    //     if (i == gSeqStepIndex) {
+    //         display.drawLine(i * 7 + 1 + s, 63, i * 7 + 4 + s, 63, WHITE);
+    //     }
+    // }
 }
 
 void displayLpf() {

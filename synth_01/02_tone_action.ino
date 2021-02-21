@@ -31,13 +31,13 @@ bool setToneFromMidiBtn(byte toneIdx, byte key) {
         if (gMcMode) {
             setToneType(toneIdx, key - 32 + 8);
         } else {
-            toggleTone(toneIdx, key - 32 + 8);
+            // toggleTone(toneIdx, key - 32 + 8);
         }
     } else if (key > 7 && key < 16) {
         if (gMcMode) {
             setToneType(toneIdx, key - 8);
         } else {
-            toggleTone(toneIdx, key - 8);
+            // toggleTone(toneIdx, key - 8);
         }
     } else {
         return false;

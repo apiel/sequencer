@@ -15,8 +15,9 @@ class Pattern {
     Pattern() {}
     Pattern(const char* ptrName) { name = (char*)ptrName; }
 
-    Pattern* setName(char* ptrName) {
+    Pattern* set(char* ptrName, byte _outputId) {
         name = ptrName;
+        outputId = _outputId;
         return this;
     }
 
@@ -33,6 +34,10 @@ class Pattern {
 
     // for testing
     void print() {
+        Serial.print("Name: ");
+        Serial.print(name);
+        Serial.print(" output: ");
+        Serial.println(outputId);
         for (byte x = 0; x < MAX_STEPS_IN_PATTERN; x++) {
             Serial.print("[");
             Serial.print(x);
