@@ -14,13 +14,6 @@ Look at synth in general:
 
 #include "Phase.h"
 
-#define D_KICK 1
-#define D_SNARE 2
-#define D_HIHAT 4
-#define D_CLAP 8
-#define D_CRASH 16
-#define D_PHASOR 32
-
 #define MAX_NUM_CELLS 8192
 
 // seem to be kind of useless
@@ -29,16 +22,6 @@ byte gCutoff = 255;
 byte gResonance = 0;
 
 byte currentTableId = 0;
-
-byte gSeqPhases[MAX_PATTERNS][STEP_COUNT] = {
-    {D_KICK, 0, 0, 0, D_SNARE, 0, 0, 0, D_KICK, 0, 0, 0, D_SNARE, 0, 0, D_KICK},
-    {D_KICK + D_CRASH, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT,
-     0, D_CLAP, 0, D_HIHAT, D_KICK},
-    {D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0},
-    {D_PHASOR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
-
-byte gCurrentPattern[STEP_COUNT] = {0, 0, 0, 0, 0, 0, 0, 0,
-                                    0, 0, 0, 0, 0, 0, 0, 0};
 
 Phase<MAX_NUM_CELLS, STEP_COUNT> phases[MAX_PHASES];
 
@@ -106,16 +89,6 @@ void setupPhases(byte phasesSetupId) {
         setupPhase(3, 4, SIMPLE, 0);
         setupPhase(4, 10, SIMPLE, 0);
         setupPhase(5, 18, PHASOR3, 30);
-    }
-}
-
-void playPhase() {
-    int aPhase = gCurrentPattern[gSeqStepIndex];
-
-    for (int i = 0; i < MAX_PHASES; i++) {
-        if (aPhase & (int)pow(2, i)) {
-            phases[i].noteOn(gSeqStepIndex);
-        }
     }
 }
 

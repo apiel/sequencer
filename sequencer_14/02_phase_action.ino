@@ -1,16 +1,6 @@
 bool gMcMode = false;
 byte gStepMode = 0;
 
-void togglePhase(byte phaseIdx, byte pos) {
-    int aPhase = gCurrentPattern[pos];
-    int powPhase = pow(2, phaseIdx);
-    if (aPhase & powPhase) {
-        gCurrentPattern[pos] -= powPhase;
-    } else {
-        gCurrentPattern[pos] += powPhase;
-    }
-}
-
 void setPhaseType(byte phaseIdx, byte pos) {
     byte type = mod(pos, PHASE_TYPE_COUNT + 1);
     if (type < PHASE_TYPE_COUNT) {
@@ -145,14 +135,5 @@ void setPhaseFromMidiKnob(byte phaseIdx, byte optionKey, int direction) {
             phase->envlop.setLevel(2,
                 incLevel(phase->envlop.getLevel(2), direction));
         }
-    }
-}
-
-void setStepPattern(byte step, int val) { gCurrentPattern[step] = val; }
-
-void assignCurrentPattern(byte index) {
-    gCurrentPatternId = index % MAX_PATTERNS;
-    for (int i = 0; i < STEP_COUNT; i++) {
-        gCurrentPattern[i] = gSeqPhases[gCurrentPatternId][i];
     }
 }
