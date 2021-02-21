@@ -27,7 +27,7 @@ Tone<MAX_NUM_CELLS, STEP_COUNT> tones[MAX_TONES];
 
 void setupTone(byte id, byte tableId, byte type, int frequency) {
     const float envlopTimes[] = {0.0, 0.0, 1.0};
-    const byte envlopLevels[] = {200, 200, 0};
+    const byte envlopLevels[] = {200, 200, 1};
     setupTone(id, tableId, type, frequency, envlopTimes, envlopLevels);
 }
 
@@ -73,12 +73,12 @@ void setupTones(byte tonesSetupId) {
         // setupTone(1, 20, PHASOR2, 150);
         setupTone(1, getTablesCount(), FREQ_ENV, 150);
         setupTone(2, 10, SIMPLE, 2, (const float[3]){0.0, 0.0, 0.3},
-                   (const byte[3]){100, 100, 0});
+                   (const byte[3]){100, 100, 1});
         setupTone(3, 10, SIMPLE, 0);
         setupTone(4, 10, SIMPLE, 0);
         setupTone(5, getTablesCount(), PHASOR3, 30,
                    (const float[3]){1.0, 12.0, 2.0},
-                   (const byte[3]){70, 70, 0},
+                   (const byte[3]){70, 70, 1},
                    (const float[3]){3.0, 8.0, 2.0},
                    (const byte[3]){255, 100, 0});
         tones[5].envlopFreq.setLerpRate(CONTROL_RATE);
