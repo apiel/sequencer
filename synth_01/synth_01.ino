@@ -28,8 +28,8 @@ int updateAudio() { return updateAudioSeq(); }
 
 void setup() {
     Serial.begin(115200);
-    setupSequencer();
 
+    setupSequencer();
     setupTones(gCurrentTonesSetup);
     displaySetup();
 

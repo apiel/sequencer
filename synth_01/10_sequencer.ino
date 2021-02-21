@@ -2,8 +2,9 @@
 create a list of sequences with different pitch
 a sequence is assign to one instrument/tone (should it be multple output?)
 */
-// this should be after MozziGuts
+
 #include <EventDelay.h>
+#include "note.h"
 
 #define PIN_SYNC_OUT 27
 
