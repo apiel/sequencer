@@ -1,8 +1,5 @@
 #include <MozziGuts.h>
 
-// to be moved in sequencer
-#define STEP_COUNT 16  // count of tones in pattern
-
 #define MAX_TONES 6  // number of existing tones
 #define MENU_SIZE (MAX_TONES + 1)
 

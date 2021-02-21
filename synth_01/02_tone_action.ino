@@ -14,7 +14,7 @@ void setToneType(byte toneIdx, byte pos) {
 
 bool setToneFromMidiBtn(byte toneIdx, byte key) {
     if (key == 17 || key == 41) {
-        gStepMode = (gStepMode + 1) % STEP_COUNT;
+        // gStepMode = (gStepMode + 1) % STEP_COUNT;
     } else if (key == 18 || key == 42) {
         // // we might better use knob for this
         // if (tones[toneIdx].freqShift > 0) {
@@ -61,15 +61,15 @@ void setToneFromMidiKnob(byte toneIdx, byte optionKey, int direction) {
     // Serial.print(" dir: ");
     // Serial.println(direction);
 
-    Tone<MAX_NUM_CELLS, STEP_COUNT> *tone = &tones[toneIdx];
+    Tone<MAX_NUM_CELLS> *tone = &tones[toneIdx];
 
     if (optionKey == 2) {
         currentTableId = mod(currentTableId + direction, getTablesCount());
         setTable(toneIdx, currentTableId);
     } else if (optionKey == 3 || optionKey == 13) {
         if (gMcMode) {
-            tone->freqSteps[gStepMode] =
-                between(tone->freqSteps[gStepMode] + direction, -5000, 5000);
+            // tone->freqSteps[gStepMode] =
+            //     between(tone->freqSteps[gStepMode] + direction, -5000, 5000);
         } else {
             tone->frequency = between(tone->frequency + direction, 0, 5000);
         }

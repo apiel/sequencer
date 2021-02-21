@@ -97,7 +97,7 @@ void displayMainMenu() {
     displayLpf();
 }
 
-Tone<MAX_NUM_CELLS, STEP_COUNT> *getCurrentTone() {
+Tone<MAX_NUM_CELLS> *getCurrentTone() {
     return &tones[getCurrentToneIdx()];
 }
 
@@ -106,12 +106,12 @@ void displayTone() {
     display.setCursor(0, 0);
     dprintln("Tone %c", getCurrentToneChar());
 
-    Tone<MAX_NUM_CELLS, STEP_COUNT> *tone = getCurrentTone();
+    Tone<MAX_NUM_CELLS> *tone = getCurrentTone();
 
     display.println(tone->tableName);
     dprintln("Freq %d", tone->frequency);
     if (gMcMode) {
-        dprintln("%d-> %d", gStepMode + 1, tone->freqSteps[gStepMode]);
+        // dprintln("%d-> %d", gStepMode + 1, tone->freqSteps[gStepMode]);
     }
 
     dprintxyAbs(4, 32, "A");

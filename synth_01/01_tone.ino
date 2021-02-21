@@ -23,7 +23,7 @@ byte gResonance = 0;
 
 byte currentTableId = 0;
 
-Tone<MAX_NUM_CELLS, STEP_COUNT> tones[MAX_TONES];
+Tone<MAX_NUM_CELLS> tones[MAX_TONES];
 
 void setupTone(byte id, byte tableId, byte type, int frequency) {
     const float envlopTimes[] = {0.0, 0.0, 1.0};

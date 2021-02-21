@@ -24,14 +24,11 @@ having separate type for FREQ env might not be necessary
 
 enum { SIMPLE, REVERB, FREQ_ENV, PHASOR2, PHASOR3, SAMPLE, SAMPLE_FREQ };
 
-template <uint16_t NUM_TABLE_CELLS, byte PHASES_STEP_COUNT>
+template <uint16_t NUM_TABLE_CELLS>
 class Tone {
    public:
     byte type;
     const char* tableName;
-    int freqSteps[PHASES_STEP_COUNT] = {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    };
     unsigned int frequency;
     byte freqShift;
     byte phasorShift;
@@ -51,50 +48,50 @@ class Tone {
     void setType(byte newType) {
         type = newType;
         if (type == FREQ_ENV) {
-            ptrUpdate = &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateFreq;
+            ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateFreq;
             ptrNoteOn =
-                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnFreqEnv;
-            ptrNext = &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextFreqEnv;
+                &Tone<NUM_TABLE_CELLS>::noteOnFreqEnv;
+            ptrNext = &Tone<NUM_TABLE_CELLS>::nextFreqEnv;
         } else if (type == REVERB) {
             ptrUpdate =
-                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateSimple;
+                &Tone<NUM_TABLE_CELLS>::updateSimple;
             ptrNoteOn =
-                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnSimple;
-            ptrNext = &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextReverb;
+                &Tone<NUM_TABLE_CELLS>::noteOnSimple;
+            ptrNext = &Tone<NUM_TABLE_CELLS>::nextReverb;
         } else if (type == PHASOR2) {
-            ptrUpdate = &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateFreq;
+            ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateFreq;
             ptrNoteOn =
-                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnPhasor;
-            ptrNext = &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextPhasor2;
+                &Tone<NUM_TABLE_CELLS>::noteOnPhasor;
+            ptrNext = &Tone<NUM_TABLE_CELLS>::nextPhasor2;
         } else if (type == PHASOR3) {
             ptrUpdate =
-                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updatePhasor3;
+                &Tone<NUM_TABLE_CELLS>::updatePhasor3;
             ptrNoteOn =
-                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnPhasor;
-            ptrNext = &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextPhasor3;
+                &Tone<NUM_TABLE_CELLS>::noteOnPhasor;
+            ptrNext = &Tone<NUM_TABLE_CELLS>::nextPhasor3;
         } else if (type == SAMPLE) {
             ptrUpdate =
-                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateNone;
+                &Tone<NUM_TABLE_CELLS>::updateNone;
             ptrNoteOn =
-                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnSample;
-            ptrNext = &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextSample;
+                &Tone<NUM_TABLE_CELLS>::noteOnSample;
+            ptrNext = &Tone<NUM_TABLE_CELLS>::nextSample;
         } else if (type == SAMPLE_FREQ) {
-            ptrUpdate = &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateFreq;
+            ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateFreq;
             ptrNoteOn =
-                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnSampleFreq;
+                &Tone<NUM_TABLE_CELLS>::noteOnSampleFreq;
             ptrNext =
-                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextSampleFreq;
+                &Tone<NUM_TABLE_CELLS>::nextSampleFreq;
         } else {
             ptrUpdate =
-                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateSimple;
+                &Tone<NUM_TABLE_CELLS>::updateSimple;
             ptrNoteOn =
-                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnSimple;
-            ptrNext = &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextSimple;
+                &Tone<NUM_TABLE_CELLS>::noteOnSimple;
+            ptrNext = &Tone<NUM_TABLE_CELLS>::nextSimple;
         }
     }
 
-    void noteOn(byte step) {
-        freqAdd = freqSteps[step];
+    void noteOn(int _freqAdd) {
+        freqAdd = _freqAdd;
         (this->*ptrNoteOn)();
     }
 
@@ -126,9 +123,9 @@ class Tone {
 
     byte previous_counter;
 
-    int (Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::*ptrNext)();
-    void (Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::*ptrUpdate)();
-    void (Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::*ptrNoteOn)();
+    int (Tone<NUM_TABLE_CELLS>::*ptrNext)();
+    void (Tone<NUM_TABLE_CELLS>::*ptrUpdate)();
+    void (Tone<NUM_TABLE_CELLS>::*ptrNoteOn)();
 
     void updateNone() {}
 
