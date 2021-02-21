@@ -30,78 +30,78 @@ byte getTablesCount() {
     return TABLES_COUNT;
 }
 
-void setTable(byte phaseIdx, byte tableId) {
+void setTable(byte toneIdx, byte tableId) {
     if (tableId == 1) {
-        phases[phaseIdx].setTable(PHASOR_DATA);
-        phases[phaseIdx].tableName = "phasor";
+        tones[toneIdx].setTable(PHASOR_DATA);
+        tones[toneIdx].tableName = "phasor";
     } else if (tableId == 2) {
-        phases[phaseIdx].setTable(TRIANGLE_DATA);
-        phases[phaseIdx].tableName = "triangle";
+        tones[toneIdx].setTable(TRIANGLE_DATA);
+        tones[toneIdx].tableName = "triangle";
     } else if (tableId == 3) {
-        phases[phaseIdx].setTable(TRIANGLE_HERMES_DATA);
-        phases[phaseIdx].tableName = "triHermes";
+        tones[toneIdx].setTable(TRIANGLE_HERMES_DATA);
+        tones[toneIdx].tableName = "triHermes";
     } else if (tableId == 4) {
-        phases[phaseIdx].setTable(TRIANGLE_DIST_CUBED_DATA);
-        phases[phaseIdx].tableName = "triCubed";
+        tones[toneIdx].setTable(TRIANGLE_DIST_CUBED_DATA);
+        tones[toneIdx].tableName = "triCubed";
     } else if (tableId == 5) {
-        phases[phaseIdx].setTable(TRIANGLE_DIST_SQUARED_DATA);
-        phases[phaseIdx].tableName = "triSquare";
+        tones[toneIdx].setTable(TRIANGLE_DIST_SQUARED_DATA);
+        tones[toneIdx].tableName = "triSquare";
     } else if (tableId == 6) {
-        phases[phaseIdx].setTable(TRIANGLE_VALVE_DATA);
-        phases[phaseIdx].tableName = "triValve";
+        tones[toneIdx].setTable(TRIANGLE_VALVE_DATA);
+        tones[toneIdx].tableName = "triValve";
     } else if (tableId == 7) {
-        phases[phaseIdx].setTable(TRIANGLE_VALVE_2_DATA);
-        phases[phaseIdx].tableName = "triValve2";
+        tones[toneIdx].setTable(TRIANGLE_VALVE_2_DATA);
+        tones[toneIdx].tableName = "triValve2";
     } else if (tableId == 8) {
-        phases[phaseIdx].setTable(COS8192_DATA);
-        phases[phaseIdx].tableName = "cos";
+        tones[toneIdx].setTable(COS8192_DATA);
+        tones[toneIdx].tableName = "cos";
     } else if (tableId == 9) {
-        phases[phaseIdx].setTable(SQUARE_ANALOG_DATA);
-        phases[phaseIdx].tableName = "analogSqu";
+        tones[toneIdx].setTable(SQUARE_ANALOG_DATA);
+        tones[toneIdx].tableName = "analogSqu";
     } else if (tableId == 10) {
-        phases[phaseIdx].setTable(WHITENOISE8192_DATA);
-        phases[phaseIdx].tableName = "noise_w";
+        tones[toneIdx].setTable(WHITENOISE8192_DATA);
+        tones[toneIdx].tableName = "noise_w";
     } else if (tableId == 11) {
-        phases[phaseIdx].setTable(BROWNNOISE8192_DATA);
-        phases[phaseIdx].tableName = "noise_b";
+        tones[toneIdx].setTable(BROWNNOISE8192_DATA);
+        tones[toneIdx].tableName = "noise_b";
     } else if (tableId == 12) {
-        phases[phaseIdx].setTable(PINKNOISE8192_DATA);
-        phases[phaseIdx].tableName = "noise_p";
+        tones[toneIdx].setTable(PINKNOISE8192_DATA);
+        tones[toneIdx].tableName = "noise_p";
     } else if (tableId == 13) {
-        phases[phaseIdx].setTable(SAW8192_DATA);
-        phases[phaseIdx].tableName = "saw";
+        tones[toneIdx].setTable(SAW8192_DATA);
+        tones[toneIdx].tableName = "saw";
     } else if (tableId == 14) {
-        phases[phaseIdx].setTable(SAW_ANALOG_DATA);
-        phases[phaseIdx].tableName = "sawAnalog";
+        tones[toneIdx].setTable(SAW_ANALOG_DATA);
+        tones[toneIdx].tableName = "sawAnalog";
     } else if (tableId == 15) {
-        phases[phaseIdx].setTable(SMOOTHSQUARE8192_DATA);
-        phases[phaseIdx].tableName = "smoothSqu";
+        tones[toneIdx].setTable(SMOOTHSQUARE8192_DATA);
+        tones[toneIdx].tableName = "smoothSqu";
     } else if (tableId == 16) {
-        phases[phaseIdx].setTable(WAVESHAPE_CHEBYSHEV_3RD_DATA);
-        phases[phaseIdx].tableName = "chebyshev";
+        tones[toneIdx].setTable(WAVESHAPE_CHEBYSHEV_3RD_DATA);
+        tones[toneIdx].tableName = "chebyshev";
     } else if (tableId == 17) {
-        phases[phaseIdx].setTable(WAVESHAPE1_SOFTCLIP_DATA);
-        phases[phaseIdx].tableName = "waveSoft";
+        tones[toneIdx].setTable(WAVESHAPE1_SOFTCLIP_DATA);
+        tones[toneIdx].tableName = "waveSoft";
     } else if (tableId == 18) {
-        phases[phaseIdx].setTable(WAVESHAPE_SIGMOID_DATA);
-        phases[phaseIdx].tableName = "waveSig";
+        tones[toneIdx].setTable(WAVESHAPE_SIGMOID_DATA);
+        tones[toneIdx].tableName = "waveSig";
     } else if (tableId == 19) {
-        phases[phaseIdx].setTable(SQUARE_NO_ALIAS_DATA);
-        phases[phaseIdx].tableName = "noAlias";
+        tones[toneIdx].setTable(SQUARE_NO_ALIAS_DATA);
+        tones[toneIdx].tableName = "noAlias";
     } else if (tableId == 20) {
-        phases[phaseIdx].setTable(PSY_KICK_DATA);
-        phases[phaseIdx].tableName = "psyKick";
+        tones[toneIdx].setTable(PSY_KICK_DATA);
+        tones[toneIdx].tableName = "psyKick";
     } else if (tableId == 21) {
-        phases[phaseIdx].setTable(PSY_KICK2_DATA);
-        phases[phaseIdx].tableName = "psyKick2";
+        tones[toneIdx].setTable(PSY_KICK2_DATA);
+        tones[toneIdx].tableName = "psyKick2";
     } else if (tableId == 22) {
-        phases[phaseIdx].setTable(PSY_KICK3_DATA);
-        phases[phaseIdx].tableName = "psyKick3";
+        tones[toneIdx].setTable(PSY_KICK3_DATA);
+        tones[toneIdx].tableName = "psyKick3";
     } else if (tableId == 23) {
-        phases[phaseIdx].setTable(KICK_DATA);
-        phases[phaseIdx].tableName = "kick";
+        tones[toneIdx].setTable(KICK_DATA);
+        tones[toneIdx].tableName = "kick";
     } else {
-        phases[phaseIdx].setTable(SIN8192_DATA);
-        phases[phaseIdx].tableName = "sin";
+        tones[toneIdx].setTable(SIN8192_DATA);
+        tones[toneIdx].tableName = "sin";
     }
 }

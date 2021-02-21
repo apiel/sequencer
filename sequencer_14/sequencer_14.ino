@@ -1,62 +1,36 @@
 #include <MozziGuts.h>
 
-// this should be after MozziGuts
-#include <EventDelay.h>
+// to be moved in sequencer
+#define STEP_COUNT 16  // count of tones in pattern
 
-#define PIN_SYNC_OUT 27
-
-#define STEP_COUNT 16  // count of phases in pattern
-#define MAX_PATTERNS 4
-#define MAX_PHASES 6  // number of existing phases
-#define MENU_SIZE (MAX_PHASES + 1)
+#define MAX_TONES 6  // number of existing tones
+#define MENU_SIZE (MAX_TONES + 1)
 
 #define MAX_VOLUME 127
 
-bool gSeqPlay = true;
 byte gVolume = 127;
 
-byte gSeqStepIndex = 0;
-byte gSeqPatternIndex = 0;
-
-EventDelay phaseDelay;
-byte gBPM = 100;
+// gTempo is related to sequencer
+// but tone need to know about it, to be able to calculate envelop timing
+// ToDo see if there would be way to do differently
 unsigned int gTempo = 150;
 
-byte gCurrentPhasesSetup = 0;
-byte gCurrentPatternId = 0;
-
-byte gSyncTempo = HIGH;
-
-void handleStepSequencer() {
-    // we might need rethink the way to play stop and sync with other device
-    if (gSeqPlay) {
-        if (phaseDelay.ready()) {
-            gSeqStepIndex = (gSeqStepIndex + 1) % STEP_COUNT;
-            gSyncTempo = (gSyncTempo + 1) % 2;
-            digitalWrite(PIN_SYNC_OUT, gSyncTempo);
-            playPhase();
-            phaseDelay.start(gTempo);
-        }
-        updateEnvelopes();
-    }
-}
+byte gCurrentTonesSetup = 0;
 
 void updateControl() {
+    updateEnvelopes();
     handleStepSequencer();
     displayUpdate();
     handleSerial();
 }
 
-int updateAudio() { return gSeqPlay ? updateAudioSeq() : 0; }
+int updateAudio() { return updateAudioSeq(); }
 
 void setup() {
     Serial.begin(115200);
-    pinMode(PIN_SYNC_OUT, OUTPUT);
+    setupSequencer();
 
-    setTempo(gBPM);
-    assignCurrentPattern(gCurrentPatternId);
-
-    setupPhases(gCurrentPhasesSetup);
+    setupTones(gCurrentTonesSetup);
     displaySetup();
 
     startMozzi();

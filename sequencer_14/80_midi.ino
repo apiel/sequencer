@@ -35,20 +35,20 @@ void handlePress(byte key) {
     if (currentMenu == MAIN_MENU) {
         if (key > 31 && key < 40) {
             if (gMcMode) {
-                setupPhases(key - 32 + 8);
+                setupTones(key - 32 + 8);
             } else {
                 assignCurrentPattern(key - 32 + 8);
             }
         } else if (key > 7 && key < 16) {
             if (gMcMode) {
-                setupPhases(key - 8);
+                setupTones(key - 8);
             } else {
                 assignCurrentPattern(key - 8);
             }
         }
         handleDefaultButton(key);
-    } else if (isPhaseMenu()) {
-        if (!setPhaseFromMidiBtn(currentMenu, key)) {
+    } else if (isToneMenu()) {
+        if (!setToneFromMidiBtn(currentMenu, key)) {
             handleDefaultButton(key);
         }
     }
@@ -62,14 +62,14 @@ void handleDefaultButton(byte key) {
     }
 }
 
-bool isPhaseMenu() { return currentMenu >= 0 && currentMenu < MAX_PHASES; }
+bool isToneMenu() { return currentMenu >= 0 && currentMenu < MAX_TONES; }
 
-char getCurrentPhaseChar() {
+char getCurrentToneChar() {
     // 65 is 'A' position in ascii table
     return currentMenu + 65;
 }
 
-byte getCurrentPhaseIdx() { return currentMenu; }
+byte getCurrentToneIdx() { return currentMenu; }
 
 void handleKnob(byte key, byte val) {
     byte knob = key % KNOB_COUNT;
@@ -91,8 +91,8 @@ void handleKnob(byte key, byte val) {
         // Serial.print(direction);
         // Serial.print(" - cur: ");
         // Serial.println(currentMenu);
-    } else if (isPhaseMenu()) {
-        setPhaseFromMidiKnob(currentMenu, key, direction);
+    } else if (isToneMenu()) {
+        setToneFromMidiKnob(currentMenu, key, direction);
     } else if (currentMenu == MAIN_MENU) {
         if (knob == 2 || knob == 12) {
             increaseBPM(direction);

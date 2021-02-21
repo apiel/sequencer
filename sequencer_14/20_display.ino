@@ -42,8 +42,8 @@ void displaySetup() {
 
 void displayUpdate() {
     if (displayDelay.ready()) {
-        if (isPhaseMenu()) {
-            displayPhase();
+        if (isToneMenu()) {
+            displayTone();
         } else {
             displayMainMenu();
         }
@@ -93,44 +93,44 @@ void displayMainMenu() {
     display.println("");
     dprintln("BPM: %d", gBPM);
     dprintln("Pattern: %d", gCurrentPatternId);
-    dprintln("Setup: %d", gCurrentPhasesSetup);
+    dprintln("Setup: %d", gCurrentTonesSetup);
     displayLpf();
 }
 
-Phase<MAX_NUM_CELLS, STEP_COUNT> *getCurrentPhase() {
-    return &phases[getCurrentPhaseIdx()];
+Tone<MAX_NUM_CELLS, STEP_COUNT> *getCurrentTone() {
+    return &tones[getCurrentToneIdx()];
 }
 
-void displayPhase() {
+void displayTone() {
     display.clearDisplay();
     display.setCursor(0, 0);
-    dprintln("Phase %c", getCurrentPhaseChar());
+    dprintln("Tone %c", getCurrentToneChar());
 
-    Phase<MAX_NUM_CELLS, STEP_COUNT> *phase = getCurrentPhase();
+    Tone<MAX_NUM_CELLS, STEP_COUNT> *tone = getCurrentTone();
 
-    display.println(phase->tableName);
-    dprintln("Freq %d", phase->frequency);
+    display.println(tone->tableName);
+    dprintln("Freq %d", tone->frequency);
     if (gMcMode) {
-        dprintln("%d-> %d", gStepMode + 1, phase->freqSteps[gStepMode]);
+        dprintln("%d-> %d", gStepMode + 1, tone->freqSteps[gStepMode]);
     }
 
     dprintxyAbs(4, 32, "A");
-    dprintxyTimePct(0, 40, phase->envlop.getTime(0));
-    dprintxyLevelPct(0, 48, phase->envlop.getLevel(0));
+    dprintxyTimePct(0, 40, tone->envlop.getTime(0));
+    dprintxyLevelPct(0, 48, tone->envlop.getLevel(0));
 
     display.drawLine(15, 32, 15, 55, WHITE);
 
     dprintxyAbs(21, 32, "S");
-    dprintxyTimePct(17, 40, phase->envlop.getTime(1));
-    dprintxyLevelPct(17, 48, phase->envlop.getLevel(1));
+    dprintxyTimePct(17, 40, tone->envlop.getTime(1));
+    dprintxyLevelPct(17, 48, tone->envlop.getLevel(1));
 
     display.drawLine(31, 32, 31, 55, WHITE);
 
     dprintxyAbs(37, 32, "D");
-    dprintxyTimePct(33, 40, phase->envlop.getTime(2));
-    dprintxyLevelPct(33, 48, phase->envlop.getLevel(2));
+    dprintxyTimePct(33, 40, tone->envlop.getTime(2));
+    dprintxyLevelPct(33, 48, tone->envlop.getLevel(2));
 
-    if (phase->type > REVERB) {
+    if (tone->type > REVERB) {
         if (gMcMode) {
             display.fillTriangle(82, 33, 82, 38, 84, 35, WHITE);
             display.fillTriangle(98, 33, 98, 38, 100, 35, WHITE);
@@ -142,49 +142,49 @@ void displayPhase() {
         }
 
         dprintxyAbs(86, 32, "A");
-        dprintxyTimePct(81, 40, phase->envlopFreq.getTime(0));
-        dprintxyLevelPct(81, 48, phase->envlopFreq.getLevel(0));
+        dprintxyTimePct(81, 40, tone->envlopFreq.getTime(0));
+        dprintxyLevelPct(81, 48, tone->envlopFreq.getLevel(0));
 
         display.drawLine(95, 32, 95, 55, WHITE);
 
         dprintxyAbs(102, 32, "S");
-        dprintxyTimePct(97, 40, phase->envlopFreq.getTime(1));
-        dprintxyLevelPct(97, 48, phase->envlopFreq.getLevel(1));
+        dprintxyTimePct(97, 40, tone->envlopFreq.getTime(1));
+        dprintxyLevelPct(97, 48, tone->envlopFreq.getLevel(1));
 
         display.drawLine(111, 32, 111, 55, WHITE);
 
         dprintxyAbs(118, 32, "D");
-        dprintxyTimePct(113, 40, phase->envlopFreq.getTime(2));
-        dprintxyLevelPct(113, 48, phase->envlopFreq.getLevel(2));
+        dprintxyTimePct(113, 40, tone->envlopFreq.getTime(2));
+        dprintxyLevelPct(113, 48, tone->envlopFreq.getLevel(2));
 
-        if (phase->type == FREQ_ENV) {
+        if (tone->type == FREQ_ENV) {
             dprintxy(12, 1, "Freq Env");
-            dprintxy(12, 2, "Shift %d", phase->freqShift);
-        } else if (phase->type == PHASOR2) {
+            dprintxy(12, 2, "Shift %d", tone->freqShift);
+        } else if (tone->type == PHASOR2) {
             dprintxy(12, 1, "Phasor 2");
-            dprintxy(12, 2, "Shift %d", phase->phasorShift);
-        } else if (phase->type == PHASOR3) {
+            dprintxy(12, 2, "Shift %d", tone->phasorShift);
+        } else if (tone->type == PHASOR3) {
             dprintxy(12, 1, "Phasor 3");
-            dprintxy(12, 2, "Shift %d", phase->phasorShift);
+            dprintxy(12, 2, "Shift %d", tone->phasorShift);
         }
-        dprintxy(12, 3, "LR %d", phase->envlopFreq.getLerpRate());
+        dprintxy(12, 3, "LR %d", tone->envlopFreq.getLerpRate());
     } else {
-        if (phase->type == REVERB) {
+        if (tone->type == REVERB) {
             dprintxy(12, 1, "Reverb");
         } else {
             dprintxy(12, 1, "Simple");
         }
     }
-    displayPhasePattern();
+    displayTonePattern();
 }
 
-void displayPhasePattern() {
-    byte idx = getCurrentPhaseIdx();
+void displayTonePattern() {
+    byte idx = getCurrentToneIdx();
 
     for (byte i = 0, s = 0; i < STEP_COUNT; i++) {
         if (i % 4 == 0) s += 3;
-        int aPhase = gCurrentPattern[i];
-        if (aPhase & (int)pow(2, idx)) {
+        int aTone = gCurrentPattern[i];
+        if (aTone & (int)pow(2, idx)) {
             display.fillRect(i * 7 + s, 57, 6, 6, WHITE);
         } else {
             display.drawRect(i * 7 + s, 57, 6, 6, WHITE);

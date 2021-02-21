@@ -1,5 +1,5 @@
-#ifndef PHASE_H_
-#define PHASE_H_
+#ifndef TONE_H_
+#define TONE_H_
 
 #include <Oscil.h>
 #include <Phasor.h>
@@ -19,13 +19,13 @@ might move the frequency picht out being part of sequencer
 having separate type for FREQ env might not be necessary
 */
 
-#define PHASE_TYPE_COUNT 7
+#define TONE_TYPE_COUNT 7
 #define ENV_NUM_PHASE 3
 
 enum { SIMPLE, REVERB, FREQ_ENV, PHASOR2, PHASOR3, SAMPLE, SAMPLE_FREQ };
 
 template <uint16_t NUM_TABLE_CELLS, byte PHASES_STEP_COUNT>
-class Phase {
+class Tone {
    public:
     byte type;
     const char* tableName;
@@ -41,7 +41,7 @@ class Phase {
     // // before to have PHASOR3 it was AUDIO_RATE
     Envelope<CONTROL_RATE, ENV_NUM_PHASE> envlopFreq{AUDIO_RATE};
 
-    Phase() : PDM_SCALE(0.05) {
+    Tone() : PDM_SCALE(0.05) {
         freqAdd = 0;
         freqShift = 1;
         phasorShift = 21;
@@ -51,45 +51,45 @@ class Phase {
     void setType(byte newType) {
         type = newType;
         if (type == FREQ_ENV) {
-            ptrUpdate = &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateFreq;
+            ptrUpdate = &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateFreq;
             ptrNoteOn =
-                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnFreqEnv;
-            ptrNext = &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextFreqEnv;
+                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnFreqEnv;
+            ptrNext = &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextFreqEnv;
         } else if (type == REVERB) {
             ptrUpdate =
-                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateSimple;
+                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateSimple;
             ptrNoteOn =
-                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnSimple;
-            ptrNext = &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextReverb;
+                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnSimple;
+            ptrNext = &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextReverb;
         } else if (type == PHASOR2) {
-            ptrUpdate = &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateFreq;
+            ptrUpdate = &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateFreq;
             ptrNoteOn =
-                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnPhasor;
-            ptrNext = &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextPhasor2;
+                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnPhasor;
+            ptrNext = &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextPhasor2;
         } else if (type == PHASOR3) {
             ptrUpdate =
-                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updatePhasor3;
+                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updatePhasor3;
             ptrNoteOn =
-                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnPhasor;
-            ptrNext = &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextPhasor3;
+                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnPhasor;
+            ptrNext = &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextPhasor3;
         } else if (type == SAMPLE) {
             ptrUpdate =
-                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateNone;
+                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateNone;
             ptrNoteOn =
-                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnSample;
-            ptrNext = &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextSample;
+                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnSample;
+            ptrNext = &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextSample;
         } else if (type == SAMPLE_FREQ) {
-            ptrUpdate = &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateFreq;
+            ptrUpdate = &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateFreq;
             ptrNoteOn =
-                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnSampleFreq;
+                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnSampleFreq;
             ptrNext =
-                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextSampleFreq;
+                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextSampleFreq;
         } else {
             ptrUpdate =
-                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateSimple;
+                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::updateSimple;
             ptrNoteOn =
-                &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnSimple;
-            ptrNext = &Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextSimple;
+                &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::noteOnSimple;
+            ptrNext = &Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::nextSimple;
         }
     }
 
@@ -126,9 +126,9 @@ class Phase {
 
     byte previous_counter;
 
-    int (Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::*ptrNext)();
-    void (Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::*ptrUpdate)();
-    void (Phase<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::*ptrNoteOn)();
+    int (Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::*ptrNext)();
+    void (Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::*ptrUpdate)();
+    void (Tone<NUM_TABLE_CELLS, PHASES_STEP_COUNT>::*ptrNoteOn)();
 
     void updateNone() {}
 
