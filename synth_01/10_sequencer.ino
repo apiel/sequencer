@@ -61,7 +61,8 @@ void setupSequencer() {
     assignCurrentPattern(gCurrentPatternId);
 
     Pattern hello;
-    hello.setName((char *)"hello").add(0, _C4, 1).add(4, _C4, 1);
+    hello.setName((char *)"hello")->add(0, _C4, 1)->repeat(0, 4);
+    hello.print();
 }
 
 void playStep() {
