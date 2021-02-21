@@ -53,7 +53,7 @@ void setupSequencer() {
     patterns[3]
         .set((char *)"Kick2", 1)
         ->add(0, _C4, 1)
-        ->add(4, _D4, 1)
+        ->add(4, _F4, 1)
         ->repeat(0, 8)
         ->add(62, _D4, 1)
         ->print();
@@ -64,8 +64,9 @@ void playStep() {
     for (int p = 0; p < MAX_PATTERNS; p++) {
         if (patterns[p].isPlaying &&
             patterns[p].steps[gSeqStepIndex].duration) {
-            // tones[patterns[p].outputId].noteOn(patterns[p].steps[gSeqStepIndex].note);
-            tones[patterns[p].outputId].noteOn();
+            tones[patterns[p].outputId].noteOn(
+                patterns[p].steps[gSeqStepIndex].getFreqDiff());
+            // tones[patterns[p].outputId].noteOn();
         }
     }
 }
