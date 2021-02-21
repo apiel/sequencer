@@ -1,0 +1,29 @@
+- create another phase type called sample to read table like a sample 
+  with adsr and sampleFreq with the possibility to have adsr frequency modulation
+  
+- Bug fix problem of not being able to change table
+- Level per channel/phase
+
+- Think of a way to control shift and envelop in 
+  the same place for all the note?
+
+    we could have mc1 mc2
+       - mc1 is for adsr
+       - mc2 for adsrFreq
+
+Increase number of pattern
+
+Plan pattern sequence
+Plan phase setup sequence
+
+Loop mode on phase
+
+a way save and share and load phase&pattern 
+   -> from a photo resistor? lifi
+         https://github.com/egzola/ESP8266-ScreenSetWifi
+   -> from screen with qr code sequence
+            -> could use the photoresitor to switch QR code everytime flash goes away
+
+
+
+when we increase bmp should we then increase adsr time?

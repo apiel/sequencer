@@ -48,16 +48,16 @@ void setupPhase(byte tableId, byte type, int frequency,
 // Sample<PSY_KICK_NUM_CELLS, AUDIO_RATE> sample;
 
 void setupPhases() {
-    // sample.setTable(PSY_KICK_DATA);
-
     // setupPhase(getTablesCount(), FREQ_ENV, 45);
+    // setupPhase(9, FREQ_ENV, 45, (const float[3]){0.0, 0.0, 0.0},
+    //            (const byte[3]){100, 100, 0});
     // setupPhase(9, SIMPLE, 45);
     // setupPhase(9, SIMPLE, 45,(const float[3]){0.0, 0.0, 0.3},
     //            (const byte[3]){100, 100, 0});
 
     // setupPhase(20, SAMPLE, 1);
-    setupPhase(20, SAMPLE_FREQ, 1, (const float[3]){0.3, 0.4, 0.3},
-               (const byte[3]){10, 8,  0});
+    setupPhase(21, SAMPLE_FREQ, 1, (const float[3]){0.1, 0.3, 0.6},
+               (const byte[3]){20, 15,  0});
 
     // setupPhase(getTablesCount(), FREQ_ENV, 150);
     // setupPhase(10, SIMPLE, 2, (const float[4]){0.0, 0.0, 0.0, 0.3},
