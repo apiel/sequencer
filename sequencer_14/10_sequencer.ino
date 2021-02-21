@@ -1,16 +1,16 @@
-#define D_KICK 1
-#define D_SNARE 2
-#define D_HIHAT 4
-#define D_CLAP 8
-#define D_CRASH 16
-#define D_PHASOR 32
+#define PHASE_A 1
+#define PHASE_B 2
+#define PHASE_C 4
+#define PHASE_D 8
+#define PHASE_E 16
+#define PHASE_F 32
 
 byte gSeqPhases[MAX_PATTERNS][STEP_COUNT] = {
-    {D_KICK, 0, 0, 0, D_SNARE, 0, 0, 0, D_KICK, 0, 0, 0, D_SNARE, 0, 0, D_KICK},
-    {D_KICK + D_CRASH, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT, 0, D_KICK, 0, D_HIHAT,
-     0, D_CLAP, 0, D_HIHAT, D_KICK},
-    {D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0, D_KICK, 0, 0, 0},
-    {D_PHASOR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+    {PHASE_A, 0, 0, 0, PHASE_B, 0, 0, 0, PHASE_A, 0, 0, 0, PHASE_B, 0, 0, PHASE_A},
+    {PHASE_A + PHASE_E, 0, PHASE_C, 0, PHASE_A, 0, PHASE_C, 0, PHASE_A, 0, PHASE_C,
+     0, PHASE_D, 0, PHASE_C, PHASE_A},
+    {PHASE_A, 0, 0, 0, PHASE_A, 0, 0, 0, PHASE_A, 0, 0, 0, PHASE_A, 0, 0, 0},
+    {PHASE_F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
 byte gCurrentPattern[STEP_COUNT] = {0, 0, 0, 0, 0, 0, 0, 0,
                                     0, 0, 0, 0, 0, 0, 0, 0};
