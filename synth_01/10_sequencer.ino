@@ -50,6 +50,9 @@ void handleStepSequencer() {
 }
 
 void setupSequencer() {
+    // Serial.print("C4 freq: ");
+    // Serial.println(NOTE_FREQ[_C4]);
+
     pinMode(PIN_SYNC_OUT, OUTPUT);
     setTempo(gBPM);
     assignCurrentPattern(gCurrentPatternId);
