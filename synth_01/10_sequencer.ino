@@ -4,6 +4,9 @@ a sequence is assign to one instrument/tone (should it be multple output?)
 */
 
 #include <EventDelay.h>
+
+#include "Pattern.h"
+#include "Step.h"
 #include "note.h"
 
 #define PIN_SYNC_OUT 27
@@ -56,6 +59,9 @@ void setupSequencer() {
     pinMode(PIN_SYNC_OUT, OUTPUT);
     setTempo(gBPM);
     assignCurrentPattern(gCurrentPatternId);
+
+    Pattern hello;
+    hello.setName((char *)"hello").add(0, _C4, 1).add(4, _C4, 1);
 }
 
 void playStep() {
