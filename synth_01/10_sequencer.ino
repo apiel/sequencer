@@ -65,7 +65,7 @@ void playStep() {
         if (patterns[p].isPlaying &&
             patterns[p].steps[gSeqStepIndex].duration) {
             tones[patterns[p].outputId].noteOn(
-                patterns[p].steps[gSeqStepIndex].getFreqDiff());
+                patterns[p].steps[gSeqStepIndex].freqDiff);
             // tones[patterns[p].outputId].noteOn();
         }
     }

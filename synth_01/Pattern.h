@@ -26,9 +26,7 @@ class Pattern {
     }
 
     Pattern* add(byte pos, byte note, byte duration, bool slide) {
-        steps[pos].note = note;
-        steps[pos].duration = duration;
-        steps[pos].slide = slide;
+        steps[pos].set(note, duration, slide);
         return this;
     }
 

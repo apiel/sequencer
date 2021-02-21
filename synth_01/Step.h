@@ -8,21 +8,24 @@
 
 class Step {
    public:
-    byte note;
-    byte duration;
+    byte note = 0;
+    byte duration = 0;
     // byte velocity;
-    bool slide;
+    bool slide = false;
+    int freqDiff = 0;
 
-    Step() { clear(); }
+    Step() {}
 
     void clear() {
         note = 0;
         duration = 0;
-        slide = false;
     }
 
-    int getFreqDiff() {
-        return NOTE_FREQ[BASE_FREQ] - NOTE_FREQ[note];
+    void set(byte _note, byte _duration, bool _slide) {
+        note = _note;
+        duration = _duration;
+        slide = _slide;
+        freqDiff = NOTE_FREQ[BASE_FREQ] - NOTE_FREQ[note];
     }
 
     // Step(byte _note, byte _duration, bool _slide) {
