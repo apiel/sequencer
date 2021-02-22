@@ -17,16 +17,19 @@ void displayPattern() {
 
 void displayStep(byte id, byte pos) {
     byte x = pos % 8;
-    byte y = pos / 8;
+    byte y = pos / 8 + 1;
 
     Step* step = &patterns[id].steps[pos];
 
+    display.drawLine(x * 16 + 1, y * 7 + 7, x * 16 + 12, y * 7 + 7,
+                     WHITE);
     if (step->duration) {
-        display.drawRect(x * 16, y * 8 + 8, 14, 7, WHITE);
-        display.setCursor(x * 16 + 2, y * 8 + 5 + 8);
-        display.print(step->note);
-    } else {
-        display.drawLine(x * 16, y * 8 + 8 + 7, x * 16 + 14, y * 8 + 8 + 7,
+        display.setCursor(x * 16 + 2, y * 7 + 5);
+        dprint("%s%d", getNoteDot(step->note), getNoteOctave(step->note));
+    }
+
+    if (gSeqStepIndex == pos) {
+        display.drawLine(x * 16 + 2, y * 7 + 6, x * 16 + 10, y * 7 + 6,
                          WHITE);
     }
 }

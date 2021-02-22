@@ -118,6 +118,22 @@
 #define _A_8 118
 #define _B8 119
 
+const char* getNoteStr(byte initialNote) {
+    const char* noteNames[] = {"C",  "C#", "D",  "D#", "E",  "F",
+                               "F#", "G",  "G#", "A",  "A#", "B"};
+
+    byte idx = (initialNote % 12);
+    return noteNames[idx];
+}
+const char* getNoteDot(byte initialNote) {
+    const char* noteNames[] = {"C",  "C.", "D",  "D.", "E",  "F",
+                               "F.", "G",  "G.", "A",  "A.", "B"};
+
+    byte idx = (initialNote % 12);
+    return noteNames[idx];
+}
+byte getNoteOctave(byte initialNote) { return (initialNote / 12) - 1; }
+
 const float NOTE_FREQ[] = {
     8.1757989156,       8.661957217980946,  9.177023997369927,
     9.72271824126305,   10.300861153472118, 10.913382232223029,

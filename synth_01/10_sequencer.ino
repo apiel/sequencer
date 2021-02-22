@@ -51,9 +51,9 @@ void setupSequencer() {
     patterns[3]
         .set((char *)"Kick2", 1)
         ->add(0, _C4, 1)
-        ->add(4, _F4, 1)
+        ->add(4, _F_4, 1)
         ->repeat(0, 8)
-        ->add(62, _D4, 1)
+        ->add(62, _F4, 1)
         ->print();
     patterns[3].play();
 }
