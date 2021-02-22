@@ -1,3 +1,4 @@
+#define MENU_SIZE (MAX_PATTERNS + MAX_TONES + 1)
 #define KNOB_COUNT 18
 #define KNOB_MAX_VALUE 127
 #define KNOB_INIT_VALUE 200
@@ -63,6 +64,11 @@ void handleDefaultButton(byte key) {
 }
 
 bool isToneMenu() { return currentMenu >= 0 && currentMenu < MAX_TONES; }
+bool isPatternMenu() { return !isToneMenu() && currentMenu < MAX_TONES + MAX_PATTERNS; }
+
+byte getMenuPatternId() {
+    return currentMenu - MAX_TONES;
+}
 
 char getCurrentToneChar() {
     // 65 is 'A' position in ascii table

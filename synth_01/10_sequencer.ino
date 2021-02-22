@@ -64,8 +64,8 @@ void playStep() {
             patterns[p].steps[gSeqStepIndex].duration) {
             tones[patterns[p].outputId].noteOn(
                 patterns[p].steps[gSeqStepIndex].freqDiff);
-            // tones[patterns[p].outputId].noteOn();
 
+            // ToDo: use duration
             // think about substain and release (noteOff())
         }
     }

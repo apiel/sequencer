@@ -1,8 +1,5 @@
 #include <MozziGuts.h>
 
-#define MAX_TONES 6  // number of existing tones
-#define MENU_SIZE (MAX_TONES + 1)
-
 #define MAX_VOLUME 127
 
 byte gVolume = 127;
