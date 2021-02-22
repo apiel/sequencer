@@ -47,7 +47,7 @@ void setupSequencer() {
         ->add(1, _D4, 1)
         ->repeat(0, 2)
         ->print();
-    patterns[2].set((char *)"Phasor", 5)->add(0, _C4, 1)->repeat(0, 8)->print();
+    patterns[2].set((char *)"Phasor", 5)->add(0, _C4, 8)->repeat(0, 8)->print();
     patterns[3]
         .set((char *)"Kick2", 1)
         ->add(0, _C4, 1)
