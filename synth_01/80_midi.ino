@@ -52,6 +52,15 @@ void handlePress(byte key) {
         if (!setToneFromMidiBtn(currentMenu, key)) {
             handleDefaultButton(key);
         }
+    } else if (isPatternMenu()) {
+        if (key == 46 || key == 22) {
+            byte id = getMenuPatternId();
+            if (patterns[id].isPlaying) {
+                patterns[id].stop();
+            } else {
+                patterns[id].play();
+            }
+        }
     }
 }
 
@@ -64,11 +73,11 @@ void handleDefaultButton(byte key) {
 }
 
 bool isToneMenu() { return currentMenu >= 0 && currentMenu < MAX_TONES; }
-bool isPatternMenu() { return !isToneMenu() && currentMenu < MAX_TONES + MAX_PATTERNS; }
-
-byte getMenuPatternId() {
-    return currentMenu - MAX_TONES;
+bool isPatternMenu() {
+    return !isToneMenu() && currentMenu < MAX_TONES + MAX_PATTERNS;
 }
+
+byte getMenuPatternId() { return currentMenu - MAX_TONES; }
 
 char getCurrentToneChar() {
     // 65 is 'A' position in ascii table
