@@ -1,6 +1,18 @@
-- create another phase type called sample to read table like a sample 
-  with adsr and sampleFreq with the possibility to have adsr frequency modulation
-  
+# now
+
+- For the simple envelop we might just have a general level, attack time, substain time, realease time
+    -> simple envelop might still have 4 phases, where attack level is 10-15% higher than substain level
+    -> but for frequency envelop, we might have much more phase level and time
+            --> the middle phases should a same starting and endpoint, so attack end and release start level should be the same.
+            --> freq env, should start and stop at 127 instead of 0, so we can loop over on substain
+
+
+# FIX
+
+- remove noise on pattern screen
+
+# previous
+
 - Bug fix problem of not being able to change table
 - Level per channel/phase
 

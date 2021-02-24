@@ -10,9 +10,13 @@
 
 /*
 REVERB should be applied on top instead of being a type
---> add after int next() { return (this->*ptrNext)(); }
+think of a way to make it generic
+--> doing it in int next() { return (this->*ptrNext)(); } doesnt seem to be
+right
 
 having separate type for FREQ env might not be necessary
+
+PHASOR2 is not using envelop Freq, so no need to display it, or even better make it using it
 */
 
 #define TONE_TYPE_COUNT 7
@@ -45,43 +49,31 @@ class Tone {
         type = newType;
         if (type == FREQ_ENV) {
             ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateFreq;
-            ptrNoteOn =
-                &Tone<NUM_TABLE_CELLS>::noteOnFreqEnv;
+            ptrNoteOn = &Tone<NUM_TABLE_CELLS>::noteOnFreqEnv;
             ptrNext = &Tone<NUM_TABLE_CELLS>::nextFreqEnv;
         } else if (type == REVERB) {
-            ptrUpdate =
-                &Tone<NUM_TABLE_CELLS>::updateSimple;
-            ptrNoteOn =
-                &Tone<NUM_TABLE_CELLS>::noteOnSimple;
+            ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateSimple;
+            ptrNoteOn = &Tone<NUM_TABLE_CELLS>::noteOnSimple;
             ptrNext = &Tone<NUM_TABLE_CELLS>::nextReverb;
         } else if (type == PHASOR2) {
-            ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateFreq;
-            ptrNoteOn =
-                &Tone<NUM_TABLE_CELLS>::noteOnPhasor;
+            ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateSimple;
+            ptrNoteOn = &Tone<NUM_TABLE_CELLS>::noteOnPhasor;
             ptrNext = &Tone<NUM_TABLE_CELLS>::nextPhasor2;
         } else if (type == PHASOR3) {
-            ptrUpdate =
-                &Tone<NUM_TABLE_CELLS>::updatePhasor3;
-            ptrNoteOn =
-                &Tone<NUM_TABLE_CELLS>::noteOnPhasor;
+            ptrUpdate = &Tone<NUM_TABLE_CELLS>::updatePhasor3;
+            ptrNoteOn = &Tone<NUM_TABLE_CELLS>::noteOnPhasor;
             ptrNext = &Tone<NUM_TABLE_CELLS>::nextPhasor3;
         } else if (type == SAMPLE) {
-            ptrUpdate =
-                &Tone<NUM_TABLE_CELLS>::updateNone;
-            ptrNoteOn =
-                &Tone<NUM_TABLE_CELLS>::noteOnSample;
+            ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateNone;
+            ptrNoteOn = &Tone<NUM_TABLE_CELLS>::noteOnSample;
             ptrNext = &Tone<NUM_TABLE_CELLS>::nextSample;
         } else if (type == SAMPLE_FREQ) {
             ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateFreq;
-            ptrNoteOn =
-                &Tone<NUM_TABLE_CELLS>::noteOnSampleFreq;
-            ptrNext =
-                &Tone<NUM_TABLE_CELLS>::nextSampleFreq;
+            ptrNoteOn = &Tone<NUM_TABLE_CELLS>::noteOnSampleFreq;
+            ptrNext = &Tone<NUM_TABLE_CELLS>::nextSampleFreq;
         } else {
-            ptrUpdate =
-                &Tone<NUM_TABLE_CELLS>::updateSimple;
-            ptrNoteOn =
-                &Tone<NUM_TABLE_CELLS>::noteOnSimple;
+            ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateSimple;
+            ptrNoteOn = &Tone<NUM_TABLE_CELLS>::noteOnSimple;
             ptrNext = &Tone<NUM_TABLE_CELLS>::nextSimple;
         }
     }
@@ -134,9 +126,8 @@ class Tone {
 
     void updatePhasor3() {
         updateFreq();
-        float resonance_freq = freq() +
-                               ((float)(freq()) *
-                                ((float)envlopFreq.next() * PDM_SCALE));
+        float resonance_freq =
+            freq() + ((float)(freq()) * ((float)envlopFreq.next() * PDM_SCALE));
         phasorFreq.setFreq(resonance_freq);
     }
 
@@ -176,6 +167,7 @@ class Tone {
 
     int nextPhasor2() {
         handleCounter();
+        oscil.setFreq((int)freq() + (envlopFreq.next() >> freqShift));
         return (envlop.next() *
                 oscil.atIndex(phasorFreq.next() >> phasorShift)) >>
                1;
@@ -195,22 +187,18 @@ class Tone {
     int nextSimple() { return (int)((envlop.next() * oscil.next()) >> 1); }
 
     int nextFreqEnv() {
-        oscil.setFreq((int)freq() +
-                      (envlopFreq.next() >> freqShift));
+        oscil.setFreq((int)freq() + (envlopFreq.next() >> freqShift));
         return nextSimple();
     }
 
     int nextSample() { return (int)sample.next() << 8; }
 
     int nextSampleFreq() {
-        sample.setFreq(
-            (float)(freq() + (envlopFreq.next() >> freqShift)));
+        sample.setFreq((float)(freq() + (envlopFreq.next() >> freqShift)));
         return nextSample();
     }
 
-    int freq() {
-        return frequency + freqAdd;
-    }
+    int freq() { return frequency + freqAdd; }
 };
 
 #endif

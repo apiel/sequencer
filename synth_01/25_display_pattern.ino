@@ -1,5 +1,9 @@
 #include <Fonts/Picopixel.h>
 
+/*
+need to be able to see the related Tone
+*/
+
 void displayPattern() {
     display.clearDisplay();
     display.setCursor(0, 0);
