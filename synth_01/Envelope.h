@@ -6,6 +6,8 @@
 #else
 #include "WProgram.h"
 #endif
+#include <EventDelay.h>
+
 #include "Line.h"
 #include "mozzi_fixmath.h"
 
@@ -17,6 +19,9 @@ class Envelope {
 
     unsigned int update_step_counter;
     unsigned int num_update_steps;
+
+    EventDelay delay;
+    byte scheduled_phase = NUM_PHASES;
 
     byte loop_start = NUM_PHASES;
     byte loop_stop = NUM_PHASES;
@@ -44,9 +49,15 @@ class Envelope {
     }
 
     inline void setNextPhase() {
-        // ToDo: looooop fix bug if loop doesnt have length...
-        if (loop_start < NUM_PHASES && loop_stop < NUM_PHASES &&
+        // instead to use if statement, use ptr like in Tone.h
+        if (scheduled_phase < NUM_PHASES && delay.ready()) {
+            loop_start = NUM_PHASES;
+            loop_stop = NUM_PHASES;
+            setNextPhase(scheduled_phase);
+            scheduled_phase = NUM_PHASES;
+        } else if (loop_start < NUM_PHASES && loop_stop < NUM_PHASES &&
             current == loop_stop) {
+            // ToDo: looooop fix bug if loop doesnt have length...
             setNextPhase(loop_start);
         } else {
             setNextPhase(current + 1);
@@ -152,6 +163,13 @@ class Envelope {
     inline void stop() {
         loop_start = NUM_PHASES;
         loop_stop = NUM_PHASES;
+    }
+
+    inline void schedule(byte index, unsigned int ms) {
+        if (isValidIndex(index)) {
+            scheduled_phase = index;
+            delay.start(ms);
+        }
     }
 
     inline void loop(byte start) { loop(start, start); }

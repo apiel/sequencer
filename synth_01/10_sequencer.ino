@@ -16,12 +16,14 @@ so everytime we play a sequence we define when it start and for how long
 #define PIN_SYNC_OUT 27
 #define MAX_PATTERNS 4
 #define STEP_COUNT MAX_STEPS_IN_PATTERN
+#define STEP_PER_BEAT 4
 
 EventDelay stepDelay;
 
 bool gSeqPlay = true;
 byte gSeqStepIndex = 0;
 byte gBPM = 100;
+byte gStepMs = 37;
 byte gSyncTempo = HIGH;
 
 Pattern patterns[MAX_PATTERNS];

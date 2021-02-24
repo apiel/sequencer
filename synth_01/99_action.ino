@@ -24,6 +24,7 @@ void setTempo(byte bpm) {
     gBPM = between(bpm, 10, 255);
     // 4 ♬ ♬ phase per beat in 60000ms = 1min
     gTempo = 60000 / (gBPM * 4);
+    gStepMs = gTempo / STEP_PER_BEAT;
 
     // Serial.print("Set tempo ");
     // Serial.println(gTempo);
