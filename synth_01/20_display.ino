@@ -40,14 +40,16 @@ void displaySetup() {
 
 void displayUpdate() {
     if (displayDelay.ready()) {
-        if (isToneMenu()) {
-            displayTone();
-        } else if (isPatternMenu()) {
+        if (isPatternMenu()) {
             displayPattern();
         } else {
-            displayMainMenu();
+            if (isToneMenu()) {
+                displayTone();
+            } else {
+                displayMainMenu();
+            }
+            displayStatus();
         }
-        displayStatus();
         display.display();
         // displayDelay.start(150);
         displayDelay.start(gTempo / 2);

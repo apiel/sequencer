@@ -6,6 +6,12 @@ void displayPattern() {
     byte id = getMenuPatternId();
     display.println(patterns[id].name);
 
+    if (patterns[id].isPlaying) {
+        display.fillTriangle(120, 0, 126, 3, 120, 7, WHITE);
+    } else {
+        display.fillRect(120, 1, 6, 6, WHITE);
+    }
+
     display.setFont(&Picopixel);
 
     for (byte pos = 0; pos < STEP_COUNT; pos++) {

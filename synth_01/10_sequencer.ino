@@ -1,6 +1,10 @@
 /**
-create a list of sequences with different pitch
-a sequence is assign to one instrument/tone (should it be multple output?)
+play/stop planning, e.g:
+    - play/stop at next sequence
+    - play/stop at next middle sequence
+    - play/stop at next middle beat
+or is this really necessary and instead focus on pattern chaining to achieve this
+so everytime we play a sequence we define when it start and for how long
 */
 
 #include <EventDelay.h>
