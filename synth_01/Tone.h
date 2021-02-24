@@ -9,12 +9,8 @@
 #include "Fix_Sample.h"
 
 /*
-random freq feature?
-
 REVERB should be applied on top instead of being a type
 --> add after int next() { return (this->*ptrNext)(); }
-
-might move the frequency picht out being part of sequencer
 
 having separate type for FREQ env might not be necessary
 */
@@ -138,14 +134,14 @@ class Tone {
 
     void updatePhasor3() {
         updateFreq();
-        float resonance_freq = frequency + freqAdd +
-                               ((float)(frequency + freqAdd) *
+        float resonance_freq = freq() +
+                               ((float)(freq()) *
                                 ((float)envlopFreq.next() * PDM_SCALE));
         phasorFreq.setFreq(resonance_freq);
     }
 
     void noteOnSample() {
-        sample.setFreq((float)(frequency + freqAdd));
+        sample.setFreq((float)(freq()));
         sample.start();
     }
 
@@ -155,7 +151,7 @@ class Tone {
     }
 
     void noteOnSimple() {
-        oscil.setFreq((int)(frequency + freqAdd));
+        oscil.setFreq(freq());
         envlop.play();
     }
 
@@ -166,8 +162,8 @@ class Tone {
 
     void noteOnPhasor() {
         noteOnFreqEnv();
-        phasor.setFreq((int)(frequency + freqAdd));
-        phasorFreq.setFreq((int)(frequency + freqAdd));
+        phasor.setFreq(freq());
+        phasorFreq.setFreq(freq());
     }
 
     byte handleCounter() {
@@ -199,7 +195,7 @@ class Tone {
     int nextSimple() { return (int)((envlop.next() * oscil.next()) >> 1); }
 
     int nextFreqEnv() {
-        oscil.setFreq((int)frequency + freqAdd +
+        oscil.setFreq((int)freq() +
                       (envlopFreq.next() >> freqShift));
         return nextSimple();
     }
@@ -208,8 +204,12 @@ class Tone {
 
     int nextSampleFreq() {
         sample.setFreq(
-            (float)(frequency + freqAdd + (envlopFreq.next() >> freqShift)));
+            (float)(freq() + (envlopFreq.next() >> freqShift)));
         return nextSample();
+    }
+
+    int freq() {
+        return frequency + freqAdd;
     }
 };
 
