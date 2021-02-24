@@ -3,8 +3,8 @@ play/stop planning, e.g:
     - play/stop at next sequence
     - play/stop at next middle sequence
     - play/stop at next middle beat
-or is this really necessary and instead focus on pattern chaining to achieve this
-so everytime we play a sequence we define when it start and for how long
+or is this really necessary and instead focus on pattern chaining to achieve
+this so everytime we play a sequence we define when it start and for how long
 */
 
 #include <EventDelay.h>
@@ -65,14 +65,23 @@ void setupSequencer() {
 }
 
 void playStep() {
+    Tone<MAX_NUM_CELLS> *tone;
     for (int p = 0; p < MAX_PATTERNS; p++) {
         if (patterns[p].isPlaying &&
             patterns[p].steps[gSeqStepIndex].duration) {
-            tones[patterns[p].outputId].noteOn(
-                patterns[p].steps[gSeqStepIndex].freqDiff);
+            tone = &tones[patterns[p].outputId];
+            tone->noteOn(patterns[p].steps[gSeqStepIndex].freqDiff);
 
-            // ToDo: use duration
-            // think about substain and release (noteOff())
+            // if substain then use duration, else it is a kick
+            // or drum stuff, substain time can be either 0 or 1ms
+            // todo make substain 0 or 1
+            // should this be part of Tone.h ?
+            // if (tone->envlop.getTime(1)) {
+            //     tone->envlop.loop(1);
+            //     tone->envlop.schedule(
+            //         2, patterns[p].steps[gSeqStepIndex].duration * gStepMs -
+            //                tone->envlop.getTime(2));
+            // }
         }
     }
 }
