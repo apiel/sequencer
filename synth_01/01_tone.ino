@@ -36,7 +36,7 @@ Tone<MAX_NUM_CELLS> tones[MAX_TONES];
 
 void setupTone(byte id, byte tableId, byte type, int frequency) {
     const float envlopTimes[] = {0.0, 0.0, 1.0};
-    const byte envlopLevels[] = {200, 200, 1};
+    const byte envlopLevels[] = {200, 200, 0};
     setupTone(id, tableId, type, frequency, envlopTimes, envlopLevels);
 }
 
@@ -80,8 +80,8 @@ void setupTones(byte tonesSetupId) {
         // tones[0].freqSteps[12] = -300;
 
         // setupTone(TONE_B, getTablesCount(), FREQ_ENV, 150);
-        setupTone(TONE_B, getTablesCount(), SIMPLE, 150, (const float[3]){0.0, 1.1, 0.9},
-                  (const byte[3]){100, 100, 1});
+        setupTone(TONE_B, getTablesCount(), SIMPLE, 150, (const float[3]){0.0, 0.2, 0.8},
+                  (const byte[3]){100, 100, 0});
         // setupTone(TONE_B, getTablesCount(), SIMPLE, 150, (const float[3]){0.0, 7.3, 0.7},
         //           (const byte[3]){100, 100, 1});
 

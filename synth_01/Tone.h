@@ -143,6 +143,7 @@ class Tone {
 
     void noteOnSimple() {
         oscil.setFreq(freq());
+        // envlop.play(0, 1);
         envlop.play();
     }
 

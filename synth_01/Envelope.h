@@ -6,10 +6,10 @@
 #else
 #include "WProgram.h"
 #endif
-#include <EventDelay.h>
+// #include <EventDelay.h>
 
-#include "Line.h"
 #include "mozzi_fixmath.h"
+#include "Line.h"
 
 template <unsigned int CONTROL_UPDATE_RATE, byte NUM_PHASES = 2>
 class Envelope {
@@ -20,11 +20,11 @@ class Envelope {
     unsigned int update_step_counter;
     unsigned int num_update_steps;
 
-    EventDelay delay;
-    byte scheduled_phase = NUM_PHASES;
+    // EventDelay delay;
+    // byte scheduled_phase = NUM_PHASES;
 
-    byte loop_start = NUM_PHASES;
-    byte loop_stop = NUM_PHASES;
+    byte stop_index = NUM_PHASES;
+    unsigned char stop_level = 0;
 
     struct phase {
         unsigned int ms;
@@ -48,22 +48,7 @@ class Envelope {
                               10);  // approximate /1000 with shift
     }
 
-    inline void setNextPhase() {
-        // instead to use if statement, use ptr like in Tone.h
-        if (scheduled_phase < NUM_PHASES && delay.ready()) {
-            loop_start = NUM_PHASES;
-            loop_stop = NUM_PHASES;
-            setNextPhase(scheduled_phase);
-            scheduled_phase = NUM_PHASES;
-        } else if (loop_start < NUM_PHASES && loop_stop < NUM_PHASES &&
-            current == loop_stop) {
-                Serial.println("Jump to loop start");
-            // ToDo: looooop fix bug if loop doesnt have length...
-            setNextPhase(loop_start);
-        } else {
-            setNextPhase(current + 1);
-        }
-    }
+    inline void setNextPhase() { setNextPhase(current + 1); }
     inline void setNextPhase(byte index) {
         update_step_counter = 0;
         current = index;
@@ -72,11 +57,10 @@ class Envelope {
                 setNextPhase();
             } else {
                 num_update_steps = phases[current].update_steps;
-                transition.set(current == 0
-                                   ? 0
-                                   : Q8n0_to_Q15n16(phases[current - 1].level));
-                transition.set(Q8n0_to_Q15n16(phases[current].level),
-                               phases[current].lerp_steps);
+                transition.set(
+                    current == 0 ? 0
+                                 : Q8n0_to_Q15n16(phases[current - 1].level),
+                    phases[current].level, phases[current].lerp_steps);
             }
         }
     }
@@ -122,8 +106,6 @@ class Envelope {
 
     inline void setLevel(byte index, byte value) {
         if (isValidIndex(index)) {
-            // seem that when we have level to 0, there is a little noize
-            // phases[index].level = max(value, 1);
             phases[index].level = value;
         }
     }
@@ -144,43 +126,30 @@ class Envelope {
     }
 
     inline unsigned char next() {
-        unsigned char out = 0;
-        if (playing()) out = Q15n16_to_Q8n0(transition.next());
-        return out;
+        if (playing()) {
+            Q15n16 level = transition.next();
+            // There might be a better way to solve this
+            // transition.next() can return negative value 
+            // so -123 will be transform to 255 and therefor make a noize
+            // when next is called before update_step_counter
+            // maybe line should a target value or target step and not exceed it
+            // return Q15n16_to_Q8n0(level);
+            return level > 0 ? Q15n16_to_Q8n0(level) : 0;
+        }
+        // return 0;
+        return stop_level;
     }
 
-    inline void play() { play(0); }
-    inline void play(byte index) {
-        if (isValidIndex(index)) {
-            setNextPhase(index);
+    inline void play() { play(0, NUM_PHASES); }
+    inline void play(byte start_index, byte end_index) {
+        if (isValidIndex(start_index)) {
+            stop_index = end_index;
+            stop_level = phases[stop_index - 1].level;
+            setNextPhase(start_index);
         }
     }
 
-    inline void stop(byte index) {
-        stop();
-        setNextPhase(index);
-    }
-
-    inline void stop() {
-        loop_start = NUM_PHASES;
-        loop_stop = NUM_PHASES;
-    }
-
-    inline void schedule(byte index, unsigned int ms) {
-        if (isValidIndex(index)) {
-            scheduled_phase = index;
-            delay.start(ms);
-        }
-    }
-
-    inline void loop(byte start) { loop(start, start); }
-
-    inline void loop(byte start, byte stop) {
-        loop_start = start;
-        loop_stop = stop;
-    }
-
-    inline bool playing() { return current < NUM_PHASES; }
+    inline bool playing() { return current < stop_index; }
 };
 
 #endif

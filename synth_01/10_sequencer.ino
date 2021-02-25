@@ -55,7 +55,7 @@ void setupSequencer() {
     patterns[2].set((char *)"Phasor", 5)->add(0, _C4, 8)->repeat(0, 8)->print();
     patterns[3]
         .set((char *)"Kick2", 1)
-        ->add(0, _C4, 8)
+        ->add(0, _C4, 6)
         // ->add(0, _C4, 1)
         // ->add(4, _F_4, 1)
         ->repeat(0, 8)
@@ -74,12 +74,12 @@ void playStep() {
             // or drum stuff, substain time can be either 0 or 1ms
             // todo make substain 0 or 1
             // should this be part of Tone.h ?
-            if (tone->envlop.getTime(1)) {
-                tone->envlop.loop(1);
-                tone->envlop.schedule(
-                    2, patterns[p].steps[gSeqStepIndex].duration * gTempo -
-                           tone->envlop.getTime(2));
-            }
+            // if (tone->envlop.getTime(1)) {
+            //     tone->envlop.loop(1);
+            //     tone->envlop.schedule(
+            //         2, patterns[p].steps[gSeqStepIndex].duration * gTempo -
+            //                tone->envlop.getTime(2));
+            // }
             tone->noteOn(patterns[p].steps[gSeqStepIndex].freqDiff);
         }
     }
