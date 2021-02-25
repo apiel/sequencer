@@ -18,7 +18,8 @@
         "istream": "cpp",
         "ostream": "cpp",
         "chrono": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "thread": "cpp"
     },
     "emeraldwalk.runonsave": {
         "commands": [

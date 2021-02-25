@@ -76,6 +76,7 @@ void setupTones(byte tonesSetupId) {
         // tones[0].freqSteps[12] = -300;
 
         setupTone(TONE_B, getTablesCount(), FREQ_ENV, 150);
+        tones[TONE_B].substain = false;
         // setupTone(TONE_B, getTablesCount(), SIMPLE, 150, (const
         // float[2]){0.0, 0.8},
         //           (const byte[2]){100, 0});

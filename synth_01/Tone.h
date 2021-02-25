@@ -36,6 +36,7 @@ class Tone {
     unsigned int frequency;
     byte freqShift;
     byte phasorShift;
+    bool substain = true;
 
     Envelope<CONTROL_RATE, ENV_NUM_PHASE> envlop{AUDIO_RATE};
     // Envelope<CONTROL_RATE, ENV_NUM_PHASE> envlopFreq{CONTROL_RATE};
@@ -83,8 +84,10 @@ class Tone {
     }
 
     void noteOn(int _freqAdd, int ms) {
-        noteOffDelaySet = true;
-        noteOffDelay.start(ms);
+        if (substain) {
+            noteOffDelaySet = true;
+            noteOffDelay.start(ms);
+        }
         noteOn(_freqAdd);
     }
 
@@ -167,7 +170,11 @@ class Tone {
 
     void noteOnSimple() {
         oscil.setFreq(freq());
-        envlop.play(0, 1);
+        if (substain) {
+            envlop.play(0, 1);
+        } else {
+            envlop.play();
+        }
     }
 
     void noteOnFreqEnv() {
