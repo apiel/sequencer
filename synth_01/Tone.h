@@ -23,7 +23,8 @@ it using it
 */
 
 #define TONE_TYPE_COUNT 7
-#define ENV_NUM_PHASE 3
+#define ENV_NUM_PHASE 2
+#define ENV_FREQ_NUM_PHASE 3
 
 enum { SIMPLE, REVERB, FREQ_ENV, PHASOR2, PHASOR3, SAMPLE, SAMPLE_FREQ };
 
@@ -39,7 +40,7 @@ class Tone {
     Envelope<CONTROL_RATE, ENV_NUM_PHASE> envlop{AUDIO_RATE};
     // Envelope<CONTROL_RATE, ENV_NUM_PHASE> envlopFreq{CONTROL_RATE};
     // // before to have PHASOR3 it was AUDIO_RATE
-    Envelope<CONTROL_RATE, ENV_NUM_PHASE> envlopFreq{AUDIO_RATE};
+    Envelope<CONTROL_RATE, ENV_FREQ_NUM_PHASE> envlopFreq{AUDIO_RATE};
 
     Tone() : PDM_SCALE(0.05) {
         freqAdd = 0;
@@ -100,7 +101,7 @@ class Tone {
     // ToDo this should actually be envlop.play(1); when substain will be
     // removed
     // we should unsure that is played only if envelope is used
-    void noteOff() { envlop.play(2); }
+    void noteOff() { envlop.play(1); }
 
     void update() { (this->*ptrUpdate)(); }
 
