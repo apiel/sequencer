@@ -26,7 +26,7 @@ it using it
 #define ENV_NUM_PHASE 2
 #define ENV_FREQ_NUM_PHASE 3
 
-enum { SIMPLE, REVERB, FREQ_ENV, PHASOR2, PHASOR3, SAMPLE, SAMPLE_FREQ };
+enum { SIMPLE, REVERB, SAMPLE, PHASOR2, PHASOR3 };
 
 template <uint16_t NUM_TABLE_CELLS>
 class Tone {
@@ -52,11 +52,7 @@ class Tone {
 
     void setType(byte newType) {
         type = newType;
-        if (type == FREQ_ENV) {
-            ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateFreq;
-            ptrNoteOn = &Tone<NUM_TABLE_CELLS>::noteOnFreqEnv;
-            ptrNext = &Tone<NUM_TABLE_CELLS>::nextFreqEnv;
-        } else if (type == REVERB) {
+        if (type == REVERB) {
             ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateSimple;
             ptrNoteOn = &Tone<NUM_TABLE_CELLS>::noteOnSimple;
             ptrNext = &Tone<NUM_TABLE_CELLS>::nextReverb;
@@ -69,13 +65,9 @@ class Tone {
             ptrNoteOn = &Tone<NUM_TABLE_CELLS>::noteOnPhasor;
             ptrNext = &Tone<NUM_TABLE_CELLS>::nextPhasor3;
         } else if (type == SAMPLE) {
-            ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateNone;
+            ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateSimple;
             ptrNoteOn = &Tone<NUM_TABLE_CELLS>::noteOnSample;
             ptrNext = &Tone<NUM_TABLE_CELLS>::nextSample;
-        } else if (type == SAMPLE_FREQ) {
-            ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateFreq;
-            ptrNoteOn = &Tone<NUM_TABLE_CELLS>::noteOnSampleFreq;
-            ptrNext = &Tone<NUM_TABLE_CELLS>::nextSampleFreq;
         } else {
             ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateSimple;
             ptrNoteOn = &Tone<NUM_TABLE_CELLS>::noteOnSimple;
@@ -144,15 +136,11 @@ class Tone {
             noteOff();
         }
         envlop.update();
-    }
-
-    void updateFreq() {
-        updateSimple();
         envlopFreq.update();
     }
 
     void updatePhasor3() {
-        updateFreq();
+        updateSimple();
         float resonance_freq =
             freq() + ((float)(freq()) * ((float)envlopFreq.next() * PDM_SCALE));
         phasorFreq.setFreq(resonance_freq);
@@ -161,10 +149,6 @@ class Tone {
     void noteOnSample() {
         sample.setFreq((float)(freq()));
         sample.start();
-    }
-
-    void noteOnSampleFreq() {
-        noteOnSample();
         envlopFreq.play();
     }
 
@@ -175,15 +159,11 @@ class Tone {
         } else {
             envlop.play();
         }
-    }
-
-    void noteOnFreqEnv() {
-        noteOnSimple();
         envlopFreq.play();
     }
 
     void noteOnPhasor() {
-        noteOnFreqEnv();
+        noteOnSimple();
         phasor.setFreq(freq());
         phasorFreq.setFreq(freq());
     }
@@ -212,21 +192,18 @@ class Tone {
     }
 
     int nextReverb() {
+        oscil.setFreq((int)freq() + (envlopFreq.next() >> freqShift));
         return (int)((reverb.next(envlop.next()) * oscil.next()) >> 1);
     }
 
-    int nextSimple() { return (int)((envlop.next() * oscil.next()) >> 1); }
-
-    int nextFreqEnv() {
+    int nextSimple() {
         oscil.setFreq((int)freq() + (envlopFreq.next() >> freqShift));
-        return nextSimple();
+        return (int)((envlop.next() * oscil.next()) >> 1); 
     }
 
-    int nextSample() { return (int)sample.next() << 8; }
-
-    int nextSampleFreq() {
+    int nextSample() { 
         sample.setFreq((float)(freq() + (envlopFreq.next() >> freqShift)));
-        return nextSample();
+        return (int)sample.next() << 8;
     }
 
     int freq() { return frequency + freqAdd; }

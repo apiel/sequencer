@@ -74,7 +74,7 @@ void setToneFromMidiKnob(byte toneIdx, byte optionKey, int direction) {
             tone->frequency = between(tone->frequency + direction, 0, 5000);
         }
     } else if (optionKey == 4 || optionKey == 14) {
-        if (tone->type > FREQ_ENV) {
+        if (tone->type == PHASOR2 || tone->type == PHASOR3) {
             tone->phasorShift = between(tone->phasorShift + direction, 0, 24);
         } else {
             // this could be only with gMcMode
