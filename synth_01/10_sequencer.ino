@@ -55,11 +55,12 @@ void setupSequencer() {
     patterns[2].set((char *)"Phasor", 5)->add(0, _C4, 8)->repeat(0, 8)->print();
     patterns[3]
         .set((char *)"Kick2", 1)
-        ->add(0, _C4, 6)
-        // ->add(0, _C4, 1)
-        // ->add(4, _F_4, 1)
+        // ->add(0, _C4, 6)
+        // ->repeat(0, 8)
+        ->add(0, _C4, 1)
+        ->add(4, _F_4, 1)
         ->repeat(0, 8)
-        // ->add(62, _F4, 1)
+        ->add(62, _F4, 1)
         ->print();
     patterns[3].play();
 }
@@ -72,7 +73,7 @@ void playStep() {
             tone = &tones[patterns[p].outputId];
             tone->noteOn(patterns[p].steps[gSeqStepIndex].freqDiff,
                          patterns[p].steps[gSeqStepIndex].duration * gTempo -
-                             tone->envlop.getTime(0) -tone->envlop.getTime(2));
+                             tone->envlop.getTime(0) - tone->envlop.getTime(2));
         }
     }
 }

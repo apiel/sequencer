@@ -99,15 +99,10 @@ class Tone {
 
     // ToDo this should actually be envlop.play(1); when substain will be
     // removed
+    // we should unsure that is played only if envelope is used
     void noteOff() { envlop.play(2); }
 
-    void update() {
-        if (noteOffDelaySet && noteOffDelay.ready()) {
-            noteOffDelaySet = false;
-            noteOff();
-        }
-        (this->*ptrUpdate)();
-    }
+    void update() { (this->*ptrUpdate)(); }
 
     int next() { return (this->*ptrNext)(); }
 
@@ -139,7 +134,13 @@ class Tone {
 
     void updateNone() {}
 
-    void updateSimple() { envlop.update(); }
+    void updateSimple() {
+        if (noteOffDelaySet && noteOffDelay.ready()) {
+            noteOffDelaySet = false;
+            noteOff();
+        }
+        envlop.update();
+    }
 
     void updateFreq() {
         updateSimple();
