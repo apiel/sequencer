@@ -8,8 +8,8 @@
 #endif
 // #include <EventDelay.h>
 
-#include "mozzi_fixmath.h"
 #include "Line.h"
+#include "mozzi_fixmath.h"
 
 template <unsigned int CONTROL_UPDATE_RATE, byte NUM_PHASES = 2>
 class Envelope {
@@ -19,9 +19,6 @@ class Envelope {
 
     unsigned int update_step_counter;
     unsigned int num_update_steps;
-
-    // EventDelay delay;
-    // byte scheduled_phase = NUM_PHASES;
 
     byte stop_index = NUM_PHASES;
     unsigned char stop_level = 0;
@@ -129,7 +126,7 @@ class Envelope {
         if (playing()) {
             Q15n16 level = transition.next();
             // There might be a better way to solve this
-            // transition.next() can return negative value 
+            // transition.next() can return negative value
             // so -123 will be transform to 255 and therefor make a noize
             // when next is called before update_step_counter
             // maybe line should a target value or target step and not exceed it
@@ -140,7 +137,8 @@ class Envelope {
         return stop_level;
     }
 
-    inline void play() { play(0, NUM_PHASES); }
+    inline void play() { play(0); }
+    inline void play(byte start_index) { play(start_index, NUM_PHASES); }
     inline void play(byte start_index, byte end_index) {
         if (isValidIndex(start_index)) {
             stop_index = end_index;

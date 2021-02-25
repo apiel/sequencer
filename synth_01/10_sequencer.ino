@@ -70,17 +70,9 @@ void playStep() {
         if (patterns[p].isPlaying &&
             patterns[p].steps[gSeqStepIndex].duration) {
             tone = &tones[patterns[p].outputId];
-            // if substain then use duration, else it is a kick
-            // or drum stuff, substain time can be either 0 or 1ms
-            // todo make substain 0 or 1
-            // should this be part of Tone.h ?
-            // if (tone->envlop.getTime(1)) {
-            //     tone->envlop.loop(1);
-            //     tone->envlop.schedule(
-            //         2, patterns[p].steps[gSeqStepIndex].duration * gTempo -
-            //                tone->envlop.getTime(2));
-            // }
-            tone->noteOn(patterns[p].steps[gSeqStepIndex].freqDiff);
+            tone->noteOn(patterns[p].steps[gSeqStepIndex].freqDiff,
+                         patterns[p].steps[gSeqStepIndex].duration * gTempo -
+                             tone->envlop.getTime(0) -tone->envlop.getTime(2));
         }
     }
 }

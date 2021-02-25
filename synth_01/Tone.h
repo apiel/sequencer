@@ -5,6 +5,8 @@
 #include <Phasor.h>
 #include <ReverbTank.h>
 // #include <Sample.h>
+#include <EventDelay.h>
+
 #include "Envelope.h"
 #include "Fix_Sample.h"
 
@@ -16,7 +18,8 @@ right
 
 having separate type for FREQ env might not be necessary
 
-PHASOR2 is not using envelop Freq, so no need to display it, or even better make it using it
+PHASOR2 is not using envelop Freq, so no need to display it, or even better make
+it using it
 */
 
 #define TONE_TYPE_COUNT 7
@@ -78,6 +81,12 @@ class Tone {
         }
     }
 
+    void noteOn(int _freqAdd, int ms) {
+        noteOffDelaySet = true;
+        noteOffDelay.start(ms);
+        noteOn(_freqAdd);
+    }
+
     void noteOn(int _freqAdd) {
         freqAdd = _freqAdd;
         (this->*ptrNoteOn)();
@@ -88,7 +97,17 @@ class Tone {
         (this->*ptrNoteOn)();
     }
 
-    void update() { (this->*ptrUpdate)(); }
+    // ToDo this should actually be envlop.play(1); when substain will be
+    // removed
+    void noteOff() { envlop.play(2); }
+
+    void update() {
+        if (noteOffDelaySet && noteOffDelay.ready()) {
+            noteOffDelaySet = false;
+            noteOff();
+        }
+        (this->*ptrUpdate)();
+    }
 
     int next() { return (this->*ptrNext)(); }
 
@@ -108,6 +127,9 @@ class Tone {
     Phasor<AUDIO_RATE> phasorFreq;
 
     ReverbTank reverb;
+
+    EventDelay noteOffDelay;
+    bool noteOffDelaySet = false;
 
     byte previous_counter;
 
@@ -143,8 +165,7 @@ class Tone {
 
     void noteOnSimple() {
         oscil.setFreq(freq());
-        // envlop.play(0, 1);
-        envlop.play();
+        envlop.play(0, 1);
     }
 
     void noteOnFreqEnv() {
