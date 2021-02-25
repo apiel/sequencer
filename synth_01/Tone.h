@@ -22,7 +22,7 @@ PHASOR2 is not using envelop Freq, so no need to display it, or even better make
 it using it
 */
 
-#define TONE_TYPE_COUNT 7
+#define TONE_TYPE_COUNT 5
 #define ENV_NUM_PHASE 2
 #define ENV_FREQ_NUM_PHASE 3
 
@@ -76,7 +76,7 @@ class Tone {
     }
 
     void noteOn(int _freqAdd, int ms) {
-        if (substain) {
+        if (substain && type != SAMPLE) {
             noteOffDelaySet = true;
             noteOffDelay.start(ms);
         }
