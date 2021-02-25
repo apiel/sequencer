@@ -57,6 +57,7 @@ class Envelope {
             scheduled_phase = NUM_PHASES;
         } else if (loop_start < NUM_PHASES && loop_stop < NUM_PHASES &&
             current == loop_stop) {
+                Serial.println("Jump to loop start");
             // ToDo: looooop fix bug if loop doesnt have length...
             setNextPhase(loop_start);
         } else {

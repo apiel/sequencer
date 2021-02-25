@@ -58,7 +58,6 @@ void setupTone(byte id, byte tableId, byte type, int frequency,
     tones[id].setType(type);
     tones[id].frequency = frequency;
 
-// todo fix this, instead of tempo, it should gStepMs
     tones[id].envlop.set(0, envTimes[0] * gTempo, envLevels[0]);
     tones[id].envlop.set(1, envTimes[1] * gTempo, envLevels[1]);
     tones[id].envlop.set(2, envTimes[2] * gTempo, envLevels[2]);
@@ -80,8 +79,10 @@ void setupTones(byte tonesSetupId) {
         // tones[0].freqSteps[8] = 200;
         // tones[0].freqSteps[12] = -300;
 
-        setupTone(TONE_B, getTablesCount(), FREQ_ENV, 150);
-        // setupTone(TONE_B, getTablesCount(), FREQ_ENV, 150, (const float[3]){0.0, 0.1, 1.0},
+        // setupTone(TONE_B, getTablesCount(), FREQ_ENV, 150);
+        setupTone(TONE_B, getTablesCount(), SIMPLE, 150, (const float[3]){0.0, 1.1, 0.9},
+                  (const byte[3]){100, 100, 1});
+        // setupTone(TONE_B, getTablesCount(), SIMPLE, 150, (const float[3]){0.0, 7.3, 0.7},
         //           (const byte[3]){100, 100, 1});
 
         setupTone(TONE_C, 10, SIMPLE, 2, (const float[3]){0.0, 0.0, 0.3},

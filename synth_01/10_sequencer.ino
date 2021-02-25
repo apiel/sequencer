@@ -23,7 +23,6 @@ EventDelay stepDelay;
 bool gSeqPlay = true;
 byte gSeqStepIndex = 0;
 byte gBPM = 100;
-byte gStepMs = 37;
 byte gSyncTempo = HIGH;
 
 Pattern patterns[MAX_PATTERNS];
@@ -56,10 +55,11 @@ void setupSequencer() {
     patterns[2].set((char *)"Phasor", 5)->add(0, _C4, 8)->repeat(0, 8)->print();
     patterns[3]
         .set((char *)"Kick2", 1)
-        ->add(0, _C4, 1)
-        ->add(4, _F_4, 1)
+        ->add(0, _C4, 8)
+        // ->add(0, _C4, 1)
+        // ->add(4, _F_4, 1)
         ->repeat(0, 8)
-        ->add(62, _F4, 1)
+        // ->add(62, _F4, 1)
         ->print();
     patterns[3].play();
 }
@@ -70,18 +70,17 @@ void playStep() {
         if (patterns[p].isPlaying &&
             patterns[p].steps[gSeqStepIndex].duration) {
             tone = &tones[patterns[p].outputId];
-            tone->noteOn(patterns[p].steps[gSeqStepIndex].freqDiff);
-
             // if substain then use duration, else it is a kick
             // or drum stuff, substain time can be either 0 or 1ms
             // todo make substain 0 or 1
             // should this be part of Tone.h ?
-            // if (tone->envlop.getTime(1)) {
-            //     tone->envlop.loop(1);
-            //     tone->envlop.schedule(
-            //         2, patterns[p].steps[gSeqStepIndex].duration * gStepMs -
-            //                tone->envlop.getTime(2));
-            // }
+            if (tone->envlop.getTime(1)) {
+                tone->envlop.loop(1);
+                tone->envlop.schedule(
+                    2, patterns[p].steps[gSeqStepIndex].duration * gTempo -
+                           tone->envlop.getTime(2));
+            }
+            tone->noteOn(patterns[p].steps[gSeqStepIndex].freqDiff);
         }
     }
 }
