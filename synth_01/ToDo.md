@@ -1,6 +1,9 @@
 # now
 
+- need to improve freq selection
+- need to improve freq env?
 - sample improvement
+- improve keyboard note on oscilation
 
 - For the simple envelop we might just have a general level, attack time, substain time, realease time
     -> simple envelop might still have 4 phases, where attack level is 10-15% higher than substain level

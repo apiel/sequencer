@@ -150,6 +150,8 @@ int getKnobDirection(byte knob, byte val) {
 void handleKeyboardFromMidiKnob(byte optionKey, int direction) {
     if (optionKey == 2) {
         keyboard_tone = mod(keyboard_tone + direction, MAX_TONES);
+    } else if (optionKey == 3) {
+        keyboard_base_note = mod(keyboard_base_note + direction, _B8);
     }
 }
 

@@ -44,17 +44,17 @@ void setupSequencer() {
     pinMode(PIN_SYNC_OUT, OUTPUT);
     setTempo(gBPM);
 
-    patterns[0].set((char *)"Kick", 0)->add(0, _C4, 1)->repeat(0, 4)->print();
+    patterns[0].set((char *)"Kick", TONE_A)->add(0, _C4, 1)->repeat(0, 2)->print();
     // patterns[0].play();
     patterns[1]
-        .set((char *)"Bass", 2)
-        ->add(0, _C4, 1)
-        ->add(1, _D4, 1)
+        .set((char *)"Bass", TONE_E)
+        ->add(0, _C0, 1)
+        ->add(1, _D0, 1)
         ->repeat(0, 2)
         ->print();
-    patterns[2].set((char *)"Phasor", 5)->add(0, _C4, 8)->repeat(0, 8)->print();
+    patterns[2].set((char *)"Phasor", TONE_F)->add(0, _C4, 8)->repeat(0, 8)->print();
     patterns[3]
-        .set((char *)"Kick2", 1)
+        .set((char *)"Kick2", TONE_B)
         // ->add(0, _C4, 6)
         // ->repeat(0, 8)
         ->add(0, _C4, 1)
