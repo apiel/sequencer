@@ -42,6 +42,8 @@ void displayUpdate() {
     if (displayDelay.ready()) {
         if (isPatternMenu()) {
             displayPattern();
+        } else if (isKeyboardMenu()) {
+            displayKeyboard();
         } else {
             if (isToneMenu()) {
                 displayTone();

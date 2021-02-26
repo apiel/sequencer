@@ -96,9 +96,11 @@ class Tone {
 
     // we should unsure that is played only if envelope is used
     void noteOff() {
-        envlop.play(1);
-        envlopFreq.stopLoop();
-        envlopFreq.loop((byte)(envlop.getTime(1) / envlopFreq.getTotalTime()));
+        if (substain && type != SAMPLE) {
+            envlop.play(1);
+            envlopFreq.stopLoop();
+            envlopFreq.loop((byte)(envlop.getTime(1) / envlopFreq.getTotalTime()));
+        }
     }
 
     void update() { (this->*ptrUpdate)(); }

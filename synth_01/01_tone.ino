@@ -35,18 +35,17 @@ byte currentTableId = 0;
 Tone<MAX_NUM_CELLS> tones[MAX_TONES];
 
 void setupTone(byte id, byte tableId, byte type, int frequency) {
-    setupTone(id, tableId, type, frequency, (const float[2]){0.0, 1.0},
-              (const byte[2]){200, 0});
+    setupTone(id, tableId, type, frequency, (const float[2]){0.5, 0.5}, 200);
 }
 
 void setupTone(byte id, byte tableId, byte type, int frequency,
-               const float envlopTimes[2], const byte envlopLevels[2]) {
-    setupTone(id, tableId, type, frequency, envlopTimes, envlopLevels,
-              (const float[3]){0.0, 0.0, 1.0}, (const byte[3]){200, 200, 0});
+               const float envTimes[2], const byte envLevel) {
+    setupTone(id, tableId, type, frequency, envTimes, envLevel,
+              (const float[3]){0.0, 0.0, 1.0}, (const byte[3]){0, 0, 0});
 }
 
 void setupTone(byte id, byte tableId, byte type, int frequency,
-               const float envTimes[2], const byte envLevels[2],
+               const float envTimes[2], const byte envLevel,
                const float envFreqTimes[3], const byte envFreqLevels[3]) {
     setTable(id, tableId);
 
@@ -55,8 +54,8 @@ void setupTone(byte id, byte tableId, byte type, int frequency,
     tones[id].setType(type);
     tones[id].frequency = frequency;
 
-    tones[id].envlop.set(0, envTimes[0] * gTempo, envLevels[0]);
-    tones[id].envlop.set(1, envTimes[1] * gTempo, envLevels[1]);
+    tones[id].envlop.set(0, envTimes[0] * gTempo, envLevel);
+    tones[id].envlop.set(1, envTimes[1] * gTempo, 0);
 
     tones[id].envlopFreq.set(0, envFreqTimes[0] * gTempo, envFreqLevels[0]);
     tones[id].envlopFreq.set(1, envFreqTimes[1] * gTempo, envFreqLevels[1]);
@@ -69,32 +68,23 @@ void setupTones(byte tonesSetupId) {
     gCurrentTonesSetup = mod(tonesSetupId, MAX_TONES_SETUP);
 
     if (gCurrentTonesSetup == 0) {
-        setupTone(TONE_A, getTablesCount(), SIMPLE, 45);
-        // tones[0].freqSteps[0] = 100;
-        // tones[0].freqSteps[4] = 400;
-        // tones[0].freqSteps[8] = 200;
-        // tones[0].freqSteps[12] = -300;
+        setupTone(
+            TONE_A, getTablesCount(), SIMPLE, 45, (const float[2]){0.0, 1.0},
+            200, (const float[3]){0.0, 0.0, 1.0}, (const byte[3]){200, 200, 0});
 
-        setupTone(TONE_B, getTablesCount(), SIMPLE, 150);
+        setupTone(
+            TONE_B, getTablesCount(), SIMPLE, 150, (const float[2]){0.0, 1.0},
+            200, (const float[3]){0.0, 0.0, 1.0}, (const byte[3]){200, 200, 0});
         tones[TONE_B].substain = false;
 
-        // setupTone(TONE_B, getTablesCount(), SIMPLE, 150, (const
-        // float[2]){0.0, 0.8},
-        //           (const byte[2]){100, 0});
-        // setupTone(TONE_B, getTablesCount(), SIMPLE, 150, (const
-        // float[3]){0.0, 7.3, 0.7},
-        //           (const byte[3]){100, 100, 1});
-
-        setupTone(TONE_C, 10, SIMPLE, 2, (const float[2]){0.0, 0.3},
-                  (const byte[2]){100, 1});
+        setupTone(TONE_C, 10, SIMPLE, 2, (const float[2]){0.0, 0.3}, 100);
         tones[TONE_C].substain = false;
 
         setupTone(TONE_D, 10, SIMPLE, 0);
-        setupTone(TONE_E, 10, SIMPLE, 0);
-        setupTone(TONE_F, getTablesCount(), PHASOR3, 30,
-                  (const float[2]){1.0, 2.0}, (const byte[2]){70, 1},
-                  (const float[3]){3.0, 8.0, 2.0},
-                  (const byte[3]){255, 100, 0});
+        setupTone(TONE_E, 2, SIMPLE, 0);
+        setupTone(
+            TONE_F, getTablesCount(), PHASOR3, 30, (const float[2]){1.0, 2.0},
+            70, (const float[3]){3.0, 8.0, 2.0}, (const byte[3]){255, 100, 0});
         tones[5].envlopFreq.setLerpRate(CONTROL_RATE);
     } else {
         setupTone(TONE_A, 9, SIMPLE, 45);

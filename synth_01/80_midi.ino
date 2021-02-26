@@ -1,4 +1,4 @@
-#define MENU_SIZE (MAX_PATTERNS + MAX_TONES + 1)
+#define MENU_SIZE (MAX_PATTERNS + MAX_TONES + 2)
 #define KNOB_COUNT 18
 #define KNOB_MAX_VALUE 127
 #define KNOB_INIT_VALUE 200
@@ -26,6 +26,9 @@ void handleMidi(byte type, byte key, byte val) {
         Serial.print(key);
         Serial.print(',');
         Serial.println(val);
+        if (isKeyboardMenu()) {
+            handleKeyboardFromMidiUp(key);
+        }
     }
     // displayUpdate();
 }
@@ -61,6 +64,8 @@ void handlePress(byte key) {
                 patterns[id].play();
             }
         }
+    } else if (isKeyboardMenu()) {
+        handleKeyboardFromMidiPress(key);
     }
 }
 
@@ -76,12 +81,15 @@ bool isToneMenu() { return currentMenu >= 0 && currentMenu < MAX_TONES; }
 bool isPatternMenu() {
     return !isToneMenu() && currentMenu < MAX_TONES + MAX_PATTERNS;
 }
+bool isKeyboardMenu() { return currentMenu == MAX_TONES + MAX_PATTERNS; }
 
 byte getMenuPatternId() { return currentMenu - MAX_TONES; }
 
-char getCurrentToneChar() {
+char getCurrentToneChar() { return getToneChar(currentMenu); }
+
+char getToneChar(byte menu) {
     // 65 is 'A' position in ascii table
-    return currentMenu + 65;
+    return menu + 65;
 }
 
 byte getCurrentToneIdx() { return currentMenu; }
@@ -108,6 +116,8 @@ void handleKnob(byte key, byte val) {
         // Serial.println(currentMenu);
     } else if (isToneMenu()) {
         setToneFromMidiKnob(currentMenu, key, direction);
+    } else if (isKeyboardMenu()) {
+        handleKeyboardFromMidiKnob(key, direction);
     } else if (currentMenu == MAIN_MENU) {
         if (knob == 2 || knob == 12) {
             increaseBPM(direction);
@@ -135,4 +145,18 @@ int getKnobDirection(byte knob, byte val) {
             between(knobValues[knob] + direction, 0, KNOB_MAX_VALUE);
     }
     return direction;
+}
+
+void handleKeyboardFromMidiKnob(byte optionKey, int direction) {
+    if (optionKey == 2) {
+        keyboard_tone = mod(keyboard_tone + direction, MAX_TONES);
+    }
+}
+
+void handleKeyboardFromMidiPress(byte key) {
+    tones[keyboard_tone].noteOn();
+}
+
+void handleKeyboardFromMidiUp(byte key) {
+    tones[keyboard_tone].noteOff();
 }
