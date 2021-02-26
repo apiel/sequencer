@@ -93,10 +93,12 @@ class Tone {
         (this->*ptrNoteOn)();
     }
 
-    // ToDo this should actually be envlop.play(1); when substain will be
-    // removed
     // we should unsure that is played only if envelope is used
-    void noteOff() { envlop.play(1); }
+    void noteOff() {
+        envlop.play(1);
+        envlopFreq.stopLoop();
+        envlopFreq.loop((byte)(envlop.getTime(1) / envlopFreq.getTotalTime()));
+    }
 
     void update() { (this->*ptrUpdate)(); }
 
@@ -159,6 +161,7 @@ class Tone {
         } else {
             envlop.play();
         }
+        envlopFreq.loop();
         envlopFreq.play();
     }
 
@@ -198,10 +201,10 @@ class Tone {
 
     int nextSimple() {
         oscil.setFreq((int)freq() + (envlopFreq.next() >> freqShift));
-        return (int)((envlop.next() * oscil.next()) >> 1); 
+        return (int)((envlop.next() * oscil.next()) >> 1);
     }
 
-    int nextSample() { 
+    int nextSample() {
         sample.setFreq((float)(freq() + (envlopFreq.next() >> freqShift)));
         return (int)sample.next() << 8;
     }

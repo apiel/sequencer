@@ -24,7 +24,7 @@
 #include "tables/psy_kick2.h"
 #include "tables/psy_kick3.h"
 
-#define PI 3.141592653589793
+// #define PI 3.141592653589793
 #define TABLES_COUNT 29
 
 int8_t dynTables[6][MAX_NUM_CELLS];
@@ -40,9 +40,40 @@ void yoyoyo(unsigned int x, int8_t y) {
 }
 
 void setTable(byte tableId) {
-    if (tableId < 6) {
+    if (tableId == 0) {
+        phase.tableName = "dynTabl0";
+        unsigned int x = 0;
+        for (; x < 10; x++) {
+            dynTables[tableId][x] = 127 - ((int)(x * x * 0.1) % 255);
+        }
+        for (; x < 50; x++) {
+            dynTables[tableId][x] = 127 - ((int)(1 + x) % 255);
+        }
+        for (; x < 40; x++) {
+            dynTables[tableId][x] = 127 - ((int)(80 + (int8_t)(1 + x * 3)) % 255);
+        }
+        for (; x < 470; x++) {
+            dynTables[tableId][x] = 127 - ((int)(x * x * 0.5) % 255);
+        }
+        for (; x < 600; x++) {
+            dynTables[tableId][x] = 127 - ((int)(x * x * 0.1) % 255);
+        }
+        for (; x < 6144; x++) {
+            dynTables[tableId][x] = -(int8_t)(x * 0.1);
+        }
+        for (; x < 7168; x++) {
+            dynTables[tableId][x] = 127 - (int8_t)(1 + x * 0.1);
+        }
+        for (; x < 8192; x++) {
+            dynTables[tableId][x] = 127 - (int8_t)(1 + x * 0.1);
+        }
+        phase.setTable(dynTables[tableId]);
+
+    } else if (tableId == 1) {
+        phase.tableName = "dynTabl1";
         for (unsigned int x = 0; x < MAX_NUM_CELLS; x++) {
-            dynTables[tableId][x] = sin(x) * 100;
+            dynTables[tableId][x] = cos(x) * 100;
+
             // dynTables[tableId][x] = sin(tan(x)) * 100;
             // dynTables[tableId][x] = cos(x) * 100;
             // dynTables[tableId][x] = (cos(2*PI*x-PI)+1)/2 * 100;
@@ -60,20 +91,30 @@ void setTable(byte tableId) {
             // }
         }
         phase.setTable(dynTables[tableId]);
-
-        if (tableId == 0) {
-            phase.tableName = "dynTabl0";
-        } else if (tableId == 1) {
-            phase.tableName = "dynTabl1";
-        } else if (tableId == 2) {
-            phase.tableName = "dynTabl2";
-        } else if (tableId == 3) {
-            phase.tableName = "dynTabl3";
-        } else if (tableId == 4) {
-            phase.tableName = "dynTabl4";
-        } else if (tableId == 5) {
-            phase.tableName = "dynTabl5";
+    } else if (tableId == 2) {
+        phase.tableName = "dynTabl2";
+        for (unsigned int x = 0; x < MAX_NUM_CELLS; x++) {
+            dynTables[tableId][x] = sin(x) * 100;
         }
+        phase.setTable(dynTables[tableId]);
+    } else if (tableId == 3) {
+        phase.tableName = "dynTabl3";
+        for (unsigned int x = 0; x < MAX_NUM_CELLS; x++) {
+            dynTables[tableId][x] = (tan(PI / (x + 1))) * 1000;
+        }
+        phase.setTable(dynTables[tableId]);
+    } else if (tableId == 4) {
+        phase.tableName = "dynTabl4";
+        for (unsigned int x = 0; x < MAX_NUM_CELLS; x++) {
+            dynTables[tableId][x] = (sin(PI / (x + 1))) * 1000;
+        }
+        phase.setTable(dynTables[tableId]);
+    } else if (tableId == 5) {
+        phase.tableName = "dynTabl5";
+        for (unsigned int x = 0; x < MAX_NUM_CELLS; x++) {
+            dynTables[tableId][x] = (cos(2 * PI * x - PI) + 1) / 2 * 100;
+        }
+        phase.setTable(dynTables[tableId]);
     } else if (tableId == 6) {
         phase.setTable(PHASOR_DATA);
         phase.tableName = "phasor";

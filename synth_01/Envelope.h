@@ -23,6 +23,9 @@ class Envelope {
     byte stop_index = NUM_PHASES;
     unsigned char stop_level = 0;
 
+    bool isLooping = false;
+    byte loopCounter = 0;
+
     struct phase {
         unsigned int ms;
         byte phase_type;
@@ -59,6 +62,11 @@ class Envelope {
                                  : Q8n0_to_Q15n16(phases[current - 1].level),
                     phases[current].level, phases[current].lerp_steps);
             }
+        } else if (isLooping) {
+            setNextPhase(0);
+        } else if (loopCounter) {
+            loopCounter--;
+            setNextPhase(0);
         }
     }
 
@@ -83,6 +91,14 @@ class Envelope {
     inline void set(byte index, unsigned int msec, byte value) {
         setTime(index, msec);
         setLevel(index, value);
+    }
+
+    unsigned int getTotalTime() {
+        unsigned int ms = 0;
+        for (byte i = 0; i < NUM_PHASES; i++) {
+            ms += phases[i].ms;
+        }
+        return ms;
     }
 
     inline void setTime(byte index, unsigned int msec) {
@@ -146,6 +162,13 @@ class Envelope {
             setNextPhase(start_index);
         }
     }
+
+    inline void loop() { isLooping = true; }
+    inline void stopLoop() {
+        isLooping = false;
+        loopCounter = 0;
+    }
+    inline void loop(byte count) { loopCounter = count; }
 
     inline bool playing() { return current < stop_index; }
 };
