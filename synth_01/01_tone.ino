@@ -81,7 +81,7 @@ void setupTones(byte tonesSetupId) {
         tones[TONE_C].substain = false;
 
         setupTone(TONE_D, 10, SIMPLE, 0);
-        setupTone(TONE_E, 2, SIMPLE, 0);
+        setupTone(TONE_E, 2, SIMPLE, 30);
         setupTone(
             TONE_F, getTablesCount(), PHASOR3, 30, (const float[2]){1.0, 2.0},
             70, (const float[3]){3.0, 8.0, 2.0}, (const byte[3]){255, 100, 0});

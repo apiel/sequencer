@@ -1,3 +1,5 @@
+#define BASE_NOTE _C4
+
 byte keyboard_tone = TONE_A;
 
 void displayKeyboard() {
