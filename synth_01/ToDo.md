@@ -1,6 +1,5 @@
 # now
 
-- Freq env loop
 - sample improvement
 
 - For the simple envelop we might just have a general level, attack time, substain time, realease time

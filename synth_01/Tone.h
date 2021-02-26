@@ -24,6 +24,7 @@ it using it
 
 #define TONE_TYPE_COUNT 5
 #define ENV_NUM_PHASE 2
+// should we use 5 phases?
 #define ENV_FREQ_NUM_PHASE 3
 
 enum { SIMPLE, REVERB, SAMPLE, PHASOR2, PHASOR3 };
