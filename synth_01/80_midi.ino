@@ -154,9 +154,12 @@ void handleKeyboardFromMidiKnob(byte optionKey, int direction) {
 }
 
 void handleKeyboardFromMidiPress(byte key) {
-    tones[keyboard_tone].noteOn(NOTE_FREQ[BASE_NOTE + key] - NOTE_FREQ[BASE_NOTE]);
+    tones[keyboard_tone].noteOn(NOTE_FREQ[keyboard_base_note + key] -
+                                NOTE_FREQ[keyboard_base_note]);
+    keyboard_note_pressed = keyboard_base_note + key;
 }
 
 void handleKeyboardFromMidiUp(byte key) {
     tones[keyboard_tone].noteOff();
+    keyboard_note_pressed = 0;
 }
