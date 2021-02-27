@@ -79,52 +79,61 @@ void displayKick() {
         dprintxyAbs(0, 4 + 3 * 8, "R %d", kick.envlop.getTime(2));
         dprintxyAbs(10 * 6, 4 + 3 * 8, "Level %d", kick.envlop.getLevel(0));
 
-        // dprintxyAbs(4, 32, "A");
-        // dprintxyTimePct(0, 40, kick.envlop.getTime(0));
-        // dprintxyLevelPct(0, 48, kick.envlop.getLevel(0));
-
-        // display.drawLine(15, 32, 15, 55, WHITE);
-
-        // dprintxyAbs(21, 32, "S");
-        // dprintxyTimePct(17, 40, kick.envlop.getTime(1));
-        // dprintxyLevelPct(17, 48, kick.envlop.getLevel(1));
-
-        // display.drawLine(31, 32, 31, 55, WHITE);
-
-        // dprintxyAbs(37, 32, "D");
-        // dprintxyTimePct(33, 40, kick.envlop.getTime(2));
-        // dprintxyLevelPct(33, 48, kick.envlop.getLevel(2));
-
-        // if (gMcMode) {
-        //     display.fillTriangle(82, 33, 82, 38, 84, 35, WHITE);
-        //     display.fillTriangle(98, 33, 98, 38, 100, 35, WHITE);
-        //     display.fillTriangle(114, 33, 114, 38, 116, 35, WHITE);
-        // } else {
-        //     display.fillTriangle(0, 33, 0, 38, 2, 35, WHITE);
-        //     display.fillTriangle(17, 33, 17, 38, 19, 35, WHITE);
-        //     display.fillTriangle(33, 33, 33, 38, 35, 35, WHITE);
-        // }
-
-        // dprintxyAbs(86, 32, "A");
-        // dprintxyTimePct(81, 40, kick.envlopFreq.getTime(0));
-        // dprintxyLevelPct(81, 48, kick.envlopFreq.getLevel(0));
-
-        // display.drawLine(95, 32, 95, 55, WHITE);
-
-        // dprintxyAbs(102, 32, "S");
-        // dprintxyTimePct(97, 40, kick.envlopFreq.getTime(1));
-        // dprintxyLevelPct(97, 48, kick.envlopFreq.getLevel(1));
-
-        // display.drawLine(111, 32, 111, 55, WHITE);
-
-        // dprintxyAbs(118, 32, "D");
-        // dprintxyTimePct(113, 40, kick.envlopFreq.getTime(2));
-        // dprintxyLevelPct(113, 48, kick.envlopFreq.getLevel(2));
+        dprintxy(0, 5, "T");
+        dprintxy(0, 6, "L");
+        displayPhase(0);
+        displayPhase(1);
+        displayPhase(2);
+        displayPhase(3);
+        displayPhase(4);
+        displayPhase(5);
     }
+}
+
+void displayPhase(byte id) {
+    byte T = 5 * 8;
+    byte L = 6 * 8;
+    byte x = 10 + id * 18;
+
+    display.drawLine(x, T, x, L + 8, WHITE);
+
+    dprintxyTimePct(
+        x + 2, T,
+        (float)kick.envlopFreq.getTime(id) / (float)kick.envlop.getTotalTime());
+    // dprintxyLevelPct(113, 48, kick.envlopFreq.getLevel(2));
 }
 
 // todo
 void displayLpf() {
     dprintln("Cutoff: %d", gCutoff);
     dprintln("Resonance: %d", gResonance);
+}
+
+void dprintxyLevelPct(byte x, byte y, byte level) {
+    if (level == 255) {
+        display.setCursor(x + 4, y);
+        display.print(1);
+    } else {
+        int value = (float)level / 255 * 100;
+        display.setCursor(x + 2, y);
+        display.print(value);
+        display.drawPixel(x, y + 6, WHITE);
+    }
+}
+
+void dprintxyTimePct(byte x, byte y, float value) {
+    if (value < 1) {
+        byte f = value * 100;
+        display.setCursor(x + 2, y);
+        display.print(f);
+        display.drawPixel(x, y + 6, WHITE);
+    } else {
+        display.setCursor(x, y);
+        byte i = (byte)value;
+        display.print(i);
+        display.setCursor(x + 8, y);
+        byte f = (value - i) * 10;
+        display.print(f);
+        display.drawPixel(x + 6, y + 6, WHITE);
+    }
 }

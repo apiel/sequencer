@@ -5,7 +5,7 @@
 
 #define NUM_TABLE_CELLS 8192 
 
-class Kick : public ToneBase<NUM_TABLE_CELLS, 3, 3> {
+class Kick : public ToneBase<NUM_TABLE_CELLS, 3, 6> {
    public:
     
 
