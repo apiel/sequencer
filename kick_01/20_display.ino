@@ -43,14 +43,12 @@ void displaySetup() {
 
 byte refreshCount = 2;
 void displayUpdate() {
-    Serial.println("displayUpdate");
     refreshCount = 2;
     displayRefresh();
 }
 
 // First print sometime miss pixel, so let's print it several time
 void displayRefresh() {
-    Serial.println(refreshCount);
     if (refreshCount > 0 && displayDelay.ready()) {
         refreshCount--;
         displayKick();
