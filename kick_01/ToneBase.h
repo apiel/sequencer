@@ -10,6 +10,7 @@
 #include "Fix_Sample.h"
 
 #define TONE_TYPE_COUNT 5
+#define FREQ_ENV_BASE 127
 
 enum { SIMPLE, REVERB, SAMPLE, PHASOR2, PHASOR3 };
 
@@ -78,6 +79,10 @@ class ToneBase {
         oscil.setTable(table);
     }
 
+    void setEnvlopFreq(byte index, unsigned int msec, int value) {
+        envlopFreq.set(index, msec, FREQ_ENV_BASE + value);
+    }
+
    protected:
     const float PDM_SCALE;
     int freqAdd;
@@ -138,7 +143,7 @@ class ToneBase {
 
     int nextPhasor2() {
         handleCounter();
-        oscil.setFreq((int)freq() + (envlopFreq.next() >> freqShift));
+        oscil.setFreq(nextFreqEnv());
         return (envlop.next() *
                 oscil.atIndex(phasorFreq.next() >> phasorShift)) >>
                1;
@@ -152,18 +157,23 @@ class ToneBase {
     }
 
     int nextReverb() {
-        oscil.setFreq((int)freq() + (envlopFreq.next() >> freqShift));
+        oscil.setFreq(nextFreqEnv());
         return (int)((reverb.next(envlop.next()) * oscil.next()) >> 1);
     }
 
     int nextSimple() {
-        oscil.setFreq((int)freq() + (envlopFreq.next() >> freqShift));
+        oscil.setFreq(nextFreqEnv());
         return (int)((envlop.next() * oscil.next()) >> 1);
     }
 
     int nextSample() {
-        sample.setFreq((float)(freq() + (envlopFreq.next() >> freqShift)));
+        sample.setFreq((float)nextFreqEnv());
         return (int)sample.next() << 8;
+    }
+
+    int nextFreqEnv() {
+        return (int)(freq() +
+                     ((envlopFreq.next() - FREQ_ENV_BASE) >> freqShift));
     }
 
     int freq() { return frequency + freqAdd; }

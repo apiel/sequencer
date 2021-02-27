@@ -1,6 +1,7 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <EventDelay.h>
+#include <Fonts/Picopixel.h>
 #include <Wire.h>
 
 // OLED pins
@@ -78,47 +79,43 @@ void displayKick() {
 
         dprintxyAbs(0, 4 + 3 * 8, "R %d", kick.envlop.getTime(2));
         dprintxyAbs(10 * 6, 4 + 3 * 8, "Level %d", kick.envlop.getLevel(0));
-
-        dprintxy(0, 5, "T");
-        dprintxy(0, 6, "L");
-        displayPhase(0);
-        displayPhase(1);
-        displayPhase(2);
-        displayPhase(3);
-        displayPhase(4);
-        displayPhase(5);
     }
+
+    dprintxy(0, 5, "T");
+    dprintxy(0, 6, "F");
+    displayPhase(0);
+    displayPhase(1);
+    displayPhase(2);
+    displayPhase(3);
+    displayPhase(4);
+    displayPhase(5);
 }
 
 void displayPhase(byte id) {
     byte T = 5 * 8;
-    byte L = 6 * 8;
-    byte x = 10 + id * 18;
+    byte F = 6 * 8;
+    byte x = 8 + id * 20;
 
-    display.drawLine(x, T, x, L + 8, WHITE);
+    display.drawLine(x, T, x, F + 8, WHITE);
 
     dprintxyTimePct(
         x + 2, T,
         (float)kick.envlopFreq.getTime(id) / (float)kick.envlop.getTotalTime());
     // dprintxyLevelPct(113, 48, kick.envlopFreq.getLevel(2));
+    display.setFont(&Picopixel);
+    int freqAdd = kick.envlopFreq.getLevel(id) - FREQ_ENV_BASE;
+    if (freqAdd < 0) {
+        dprintxyAbs(x + 2, F + 6, "%d", freqAdd);
+    } else {
+        dprintxyAbs(x + 2, F + 6, "+%d", freqAdd);
+    }
+    display.setFont();
 }
 
 // todo
 void displayLpf() {
     dprintln("Cutoff: %d", gCutoff);
     dprintln("Resonance: %d", gResonance);
-}
-
-void dprintxyLevelPct(byte x, byte y, byte level) {
-    if (level == 255) {
-        display.setCursor(x + 4, y);
-        display.print(1);
-    } else {
-        int value = (float)level / 255 * 100;
-        display.setCursor(x + 2, y);
-        display.print(value);
-        display.drawPixel(x, y + 6, WHITE);
-    }
 }
 
 void dprintxyTimePct(byte x, byte y, float value) {

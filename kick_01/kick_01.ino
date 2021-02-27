@@ -37,12 +37,12 @@ void setup() {
     kick.envlop.set(0, 50, 200);
     kick.envlop.set(1, 50, 200);
     kick.envlop.set(2, 100, 0);
-    kick.envlopFreq.set(0, 50, 150);
-    kick.envlopFreq.set(1, 50, 200);
-    kick.envlopFreq.set(2, 50, 100);
-    kick.envlopFreq.set(3, 0, 0);
-    kick.envlopFreq.set(4, 0, 0);
-    kick.envlopFreq.set(5, 0, 0);
+    kick.setEnvlopFreq(0, 50, 70);
+    kick.setEnvlopFreq(1, 50, 120);
+    kick.setEnvlopFreq(2, 50, 50);
+    kick.setEnvlopFreq(3, 0, 0);
+    kick.setEnvlopFreq(4, 0, 0);
+    kick.setEnvlopFreq(5, 50, 0);
 
     displaySetup();
     startMozzi();
