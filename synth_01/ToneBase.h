@@ -8,12 +8,13 @@
 
 #include "Envelope.h"
 #include "Fix_Sample.h"
-#include "ToneDef.h"
+// #include "ToneDef.h"
 
 #define TONE_TYPE_COUNT 5
 
 enum { SIMPLE, REVERB, SAMPLE, PHASOR2, PHASOR3 };
 
+template <uint16_t NUM_TABLE_CELLS, byte ENV_NUM_PHASE, byte ENV_FREQ_NUM_PHASE>
 class ToneBase {
    public:
     byte type;

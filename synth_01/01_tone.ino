@@ -14,8 +14,6 @@ Look at synth in general:
 
 #include "Tone.h"
 
-#define MAX_NUM_CELLS 8192
-
 #define MAX_TONES 6  // number of existing tones
 
 #define TONE_A 0

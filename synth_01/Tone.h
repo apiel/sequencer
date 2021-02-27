@@ -17,7 +17,9 @@ PHASOR2 is not using envelop Freq, so no need to display it, or even better make
 it using it
 */
 
-class Tone : public ToneBase {
+#define NUM_TABLE_CELLS 8192 
+
+class Tone : public ToneBase<NUM_TABLE_CELLS, 2, 3> {
    public:
     bool substain = true;
 
@@ -43,7 +45,6 @@ class Tone : public ToneBase {
     EventDelay noteOffDelay;
     bool noteOffDelaySet = false;
 
-    // using ToneBase::updateSimple;
     void updateSimple() {
         if (noteOffDelaySet && noteOffDelay.ready()) {
             noteOffDelaySet = false;
@@ -53,7 +54,6 @@ class Tone : public ToneBase {
         this->envlopFreq.update();
     }
 
-    // using ToneBase::noteOnSimple;
     void noteOnSimple() {
         this->oscil.setFreq(this->freq());
         if (substain) {
