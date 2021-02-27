@@ -28,6 +28,8 @@ void handleMidi(byte type, byte key, byte val) {
         Serial.println(val);
         if (isKeyboardMenu()) {
             handleKeyboardFromMidiUp(key);
+        } else if (isToneMenu()) {
+            setToneFromMidiBtnUp(currentMenu, key);
         }
     }
     // displayUpdate();

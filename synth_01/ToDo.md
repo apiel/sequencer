@@ -16,6 +16,23 @@
 
 - remove noise on pattern screen
 
+# todo
+
+- make a module just for kick, without seq or synth
+  - btn manual trigger
+  - btn reverb?
+  - btn LRate switch?
+  - jack gate
+  - jack cv
+  - jack out
+  - knob table
+  - knob substain
+  - knob decay
+  - knob level
+  - knob freq modulation, how many?
+  - knob shift
+  - knob frequency
+
 # previous
 
 - Bug fix problem of not being able to change table
