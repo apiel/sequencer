@@ -20,6 +20,12 @@ void handleKnob(byte key, byte val) {
     } else if (knob == 3) {
         byte type = mod(kick.type + direction, TONE_TYPE_COUNT);
         kick.setType(type);
+    } else if (knob == 4) {
+        if (kick.type == PHASOR2 || kick.type == PHASOR3) {
+            kick.phasorShift = between(kick.phasorShift + direction, 0, 24);
+        } else {
+            kick.freqShift = between(kick.freqShift + direction, 0, 16);
+        }
     }
 }
 

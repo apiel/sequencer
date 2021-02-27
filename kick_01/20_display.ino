@@ -65,6 +65,13 @@ void displayKick() {
         dprintxy(15, 0, "Simple");
     }
 
+    if (kick.type == PHASOR2 || kick.type == PHASOR3) {
+        dprintxy(0, 1, "Shift %d", kick.phasorShift);
+    } else {
+        dprintxy(0, 1, "Shift %d", kick.freqShift);
+    }
+    dprintxy(8, 1, "Lerp %d", kick.envlopFreq.getLerpRate());
+
     if (gMcMode) {
         // dprintln("%d-> %d", gStepMode + 1, kick.freqSteps[gStepMode]);
     }
@@ -113,9 +120,6 @@ void displayKick() {
     dprintxyAbs(118, 32, "D");
     dprintxyTimePct(113, 40, kick.envlopFreq.getTime(2));
     dprintxyLevelPct(113, 48, kick.envlopFreq.getLevel(2));
-
-    dprintxy(12, 2, "Shift %d", kick.freqShift);
-    dprintxy(12, 3, "LR %d", kick.envlopFreq.getLerpRate());
 }
 
 // todo
