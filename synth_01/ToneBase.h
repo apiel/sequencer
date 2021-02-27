@@ -8,7 +8,6 @@
 
 #include "Envelope.h"
 #include "Fix_Sample.h"
-// #include "ToneDef.h"
 
 #define TONE_TYPE_COUNT 5
 

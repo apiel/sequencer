@@ -1,50 +1,33 @@
-#ifndef TONE_H_
-#define TONE_H_
+#ifndef TONE_BASE_H_
+#define TONE_BASE_H_
 
 #include <Oscil.h>
 #include <Phasor.h>
 #include <ReverbTank.h>
 // #include <Sample.h>
-#include <EventDelay.h>
 
 #include "Envelope.h"
 #include "Fix_Sample.h"
 
-/*
-REVERB should be applied on top instead of being a type
-think of a way to make it generic
---> doing it in int next() { return (this->*ptrNext)(); } doesnt seem to be
-right
-
-having separate type for FREQ env might not be necessary
-
-PHASOR2 is not using envelop Freq, so no need to display it, or even better make
-it using it
-*/
-
 #define TONE_TYPE_COUNT 5
-#define ENV_NUM_PHASE 2
-// should we use 5 phases?
-#define ENV_FREQ_NUM_PHASE 3
 
 enum { SIMPLE, REVERB, SAMPLE, PHASOR2, PHASOR3 };
 
-template <uint16_t NUM_TABLE_CELLS>
-class Tone {
+template <uint16_t NUM_TABLE_CELLS, byte ENV_NUM_PHASE, byte ENV_FREQ_NUM_PHASE>
+class ToneBase {
    public:
     byte type;
     const char* tableName;
     unsigned int frequency;
     byte freqShift;
     byte phasorShift;
-    bool substain = true;
 
     Envelope<CONTROL_RATE, ENV_NUM_PHASE> envlop{AUDIO_RATE};
     // Envelope<CONTROL_RATE, ENV_NUM_PHASE> envlopFreq{CONTROL_RATE};
     // // before to have PHASOR3 it was AUDIO_RATE
     Envelope<CONTROL_RATE, ENV_FREQ_NUM_PHASE> envlopFreq{AUDIO_RATE};
 
-    Tone() : PDM_SCALE(0.05) {
+    ToneBase() : PDM_SCALE(0.05) {
         freqAdd = 0;
         freqShift = 1;
         phasorShift = 21;
@@ -54,34 +37,26 @@ class Tone {
     void setType(byte newType) {
         type = newType;
         if (type == REVERB) {
-            ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateSimple;
-            ptrNoteOn = &Tone<NUM_TABLE_CELLS>::noteOnSimple;
-            ptrNext = &Tone<NUM_TABLE_CELLS>::nextReverb;
+            ptrUpdate = &ToneBase::updateSimple;
+            ptrNoteOn = &ToneBase::noteOnSimple;
+            ptrNext = &ToneBase::nextReverb;
         } else if (type == PHASOR2) {
-            ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateSimple;
-            ptrNoteOn = &Tone<NUM_TABLE_CELLS>::noteOnPhasor;
-            ptrNext = &Tone<NUM_TABLE_CELLS>::nextPhasor2;
+            ptrUpdate = &ToneBase::updateSimple;
+            ptrNoteOn = &ToneBase::noteOnPhasor;
+            ptrNext = &ToneBase::nextPhasor2;
         } else if (type == PHASOR3) {
-            ptrUpdate = &Tone<NUM_TABLE_CELLS>::updatePhasor3;
-            ptrNoteOn = &Tone<NUM_TABLE_CELLS>::noteOnPhasor;
-            ptrNext = &Tone<NUM_TABLE_CELLS>::nextPhasor3;
+            ptrUpdate = &ToneBase::updatePhasor3;
+            ptrNoteOn = &ToneBase::noteOnPhasor;
+            ptrNext = &ToneBase::nextPhasor3;
         } else if (type == SAMPLE) {
-            ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateSimple;
-            ptrNoteOn = &Tone<NUM_TABLE_CELLS>::noteOnSample;
-            ptrNext = &Tone<NUM_TABLE_CELLS>::nextSample;
+            ptrUpdate = &ToneBase::updateSimple;
+            ptrNoteOn = &ToneBase::noteOnSample;
+            ptrNext = &ToneBase::nextSample;
         } else {
-            ptrUpdate = &Tone<NUM_TABLE_CELLS>::updateSimple;
-            ptrNoteOn = &Tone<NUM_TABLE_CELLS>::noteOnSimple;
-            ptrNext = &Tone<NUM_TABLE_CELLS>::nextSimple;
+            ptrUpdate = &ToneBase::updateSimple;
+            ptrNoteOn = &ToneBase::noteOnSimple;
+            ptrNext = &ToneBase::nextSimple;
         }
-    }
-
-    void noteOn(int _freqAdd, int ms) {
-        if (substain && type != SAMPLE) {
-            noteOffDelaySet = true;
-            noteOffDelay.start(ms);
-        }
-        noteOn(_freqAdd);
     }
 
     void noteOn(int _freqAdd) {
@@ -94,15 +69,6 @@ class Tone {
         (this->*ptrNoteOn)();
     }
 
-    // we should unsure that is played only if envelope is used
-    void noteOff() {
-        if (substain && type != SAMPLE) {
-            envlop.play(1);
-            envlopFreq.stopLoop();
-            envlopFreq.loop((byte)(envlop.getTime(1) / envlopFreq.getTotalTime()));
-        }
-    }
-
     void update() { (this->*ptrUpdate)(); }
 
     int next() { return (this->*ptrNext)(); }
@@ -112,7 +78,7 @@ class Tone {
         oscil.setTable(table);
     }
 
-   private:
+   protected:
     const float PDM_SCALE;
     int freqAdd;
 
@@ -124,22 +90,15 @@ class Tone {
 
     ReverbTank reverb;
 
-    EventDelay noteOffDelay;
-    bool noteOffDelaySet = false;
-
     byte previous_counter;
 
-    int (Tone<NUM_TABLE_CELLS>::*ptrNext)();
-    void (Tone<NUM_TABLE_CELLS>::*ptrUpdate)();
-    void (Tone<NUM_TABLE_CELLS>::*ptrNoteOn)();
+    int (ToneBase::*ptrNext)();
+    void (ToneBase::*ptrUpdate)();
+    void (ToneBase::*ptrNoteOn)();
 
     void updateNone() {}
 
-    void updateSimple() {
-        if (noteOffDelaySet && noteOffDelay.ready()) {
-            noteOffDelaySet = false;
-            noteOff();
-        }
+    virtual void updateSimple() {
         envlop.update();
         envlopFreq.update();
     }
@@ -157,14 +116,9 @@ class Tone {
         envlopFreq.play();
     }
 
-    void noteOnSimple() {
+    virtual void noteOnSimple() {
         oscil.setFreq(freq());
-        if (substain) {
-            envlop.play(0, 1);
-        } else {
-            envlop.play();
-        }
-        envlopFreq.loop();
+        envlop.play();
         envlopFreq.play();
     }
 

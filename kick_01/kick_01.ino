@@ -2,7 +2,7 @@
 // after MozziGuts
 #include <LowPassFilter.h>
 
-#include "Tone.h"
+#include "Kick.h"
 
 #define MAX_NUM_CELLS 8192
 #define MAX_VOLUME 127
@@ -14,7 +14,7 @@ LowPassFilter lpf;
 byte gCutoff = 255;
 byte gResonance = 0;
 
-Tone<MAX_NUM_CELLS> kick;
+Kick kick;
 
 void updateControl() {
     kick.update();
@@ -34,11 +34,11 @@ void setup() {
     kick.setType(SIMPLE);
     kick.frequency = 100;
     kick.envlop.set(0, 100, 200);
-    kick.envlop.set(1, 100, 0);
+    kick.envlop.set(1, 100, 200);
+    kick.envlop.set(2, 100, 0);
     kick.envlopFreq.set(0, 50, 150);
     kick.envlopFreq.set(1, 50, 200);
     kick.envlopFreq.set(2, 50, 100);
-    kick.substain = false;
 
     displaySetup();
     startMozzi();
