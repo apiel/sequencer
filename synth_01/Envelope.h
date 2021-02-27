@@ -60,7 +60,7 @@ class Envelope {
                 transition.set(
                     current == 0 ? 0
                                  : Q8n0_to_Q15n16(phases[current - 1].level),
-                    phases[current].level, phases[current].lerp_steps);
+                    Q8n0_to_Q15n16(phases[current].level), phases[current].lerp_steps);
             }
         } else if (isLooping) {
             setNextPhase(0);

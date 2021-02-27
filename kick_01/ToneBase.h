@@ -173,8 +173,8 @@ class ToneBase {
     }
 
     int nextFreqEnv() {
-        return (int)(freq() +
-                     ((envlopFreq.next() - FREQ_ENV_BASE) >> freqShift));
+        int val = (envlopFreq.next() - FREQ_ENV_BASE) >> freqShift;
+        return freq() + val;
     }
 
     int freq() { return frequency + freqAdd; }

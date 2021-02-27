@@ -24,7 +24,7 @@ void updateControl() {
 }
 
 int updateAudio() {
-    return lpf.next((int)(kick.next() *gVolume / MAX_VOLUME)) >> 8;
+    return lpf.next((int)(kick.next() * gVolume / MAX_VOLUME)) >> 8;
 }
 
 void setup() {
@@ -34,12 +34,18 @@ void setup() {
     lpf.setCutoffFreqAndResonance(gCutoff, gResonance);
     kick.setType(SIMPLE);
     kick.frequency = 100;
-    kick.envlop.set(0, 50, 200);
-    kick.envlop.set(1, 50, 200);
-    kick.envlop.set(2, 100, 0);
-    kick.setEnvlopFreq(0, 50, 70);
-    kick.setEnvlopFreq(1, 50, 120);
-    kick.setEnvlopFreq(2, 50, 50);
+    // kick.envlop.set(0, 50, 200);
+    // kick.envlop.set(1, 50, 200);
+    // kick.envlop.set(2, 100, 0);
+    kick.envlop.set(0, 0, 200);
+    kick.envlop.set(1, 0, 200);
+    kick.envlop.set(2, 300, 0);
+    // kick.setEnvlopFreq(0, 50, 70);
+    // kick.setEnvlopFreq(1, 50, 120);
+    // kick.setEnvlopFreq(2, 50, 50);
+    kick.setEnvlopFreq(0, 50, 0);
+    kick.setEnvlopFreq(1, 50, 0);
+    kick.setEnvlopFreq(2, 50, 0);
     kick.setEnvlopFreq(3, 0, 0);
     kick.setEnvlopFreq(4, 0, 0);
     kick.setEnvlopFreq(5, 50, 0);
