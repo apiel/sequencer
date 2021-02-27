@@ -33,7 +33,7 @@ class Envelope {
         unsigned int update_steps;
         long lerp_steps;  // signed, to match params to transition (line) type
                           // Q15n16, below
-        Q8n0 level;
+        Q8n0 level = START_LEVEL;
     };
 
     byte current = NUM_PHASES;  // NUM_PHASES = off

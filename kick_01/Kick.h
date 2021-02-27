@@ -17,7 +17,8 @@ class Kick : public ToneBase<NUM_TABLE_CELLS, 3, FREQ_ENV_PHASES> {
     void updateFreqTimes() {
         unsigned int ms = envlop.getTotalTime();
         for (byte i = 0; i < FREQ_ENV_PHASES; i++) {
-            setEnvlopFreq(i, ms * timePct[i] / 100, 0);
+            setEnvlopFreq(i, ms * timePct[i] / 100,
+                          envlopFreq.getLevel(i) - FREQ_ENV_BASE);
         }
         balancePct(255);
     }
