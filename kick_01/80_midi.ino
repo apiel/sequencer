@@ -6,4 +6,5 @@ void handleMidi(byte type, byte key, byte val) {
     } else if (type == 138) {
         handleUp(key);
     }
+    displayUpdate();
 }

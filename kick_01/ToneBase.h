@@ -26,7 +26,8 @@ class ToneBase {
     Envelope<CONTROL_RATE, ENV_NUM_PHASE> envlop{AUDIO_RATE};
     // Envelope<CONTROL_RATE, ENV_NUM_PHASE> envlopFreq{CONTROL_RATE};
     // // before to have PHASOR3 it was AUDIO_RATE
-    Envelope<CONTROL_RATE, ENV_FREQ_NUM_PHASE> envlopFreq{AUDIO_RATE};
+    Envelope<CONTROL_RATE, ENV_FREQ_NUM_PHASE, FREQ_ENV_BASE> envlopFreq{
+        AUDIO_RATE};
 
     ToneBase() : PDM_SCALE(0.05) {
         freqAdd = 0;

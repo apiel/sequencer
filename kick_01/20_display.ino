@@ -40,8 +40,19 @@ void displaySetup() {
     displayUpdate();
 }
 
+
+byte refreshCount = 2;
 void displayUpdate() {
-    if (displayDelay.ready()) {
+    Serial.println("displayUpdate");
+    refreshCount = 2;
+    displayRefresh();
+}
+
+// First print sometime miss pixel, so let's print it several time
+void displayRefresh() {
+    Serial.println(refreshCount);
+    if (refreshCount > 0 && displayDelay.ready()) {
+        refreshCount--;
         displayKick();
         display.display();
         displayDelay.start(100);
@@ -101,7 +112,6 @@ void displayPhase(byte id) {
     dprintxyTimePct(
         x + 2, T,
         (float)kick.envlopFreq.getTime(id) / (float)kick.envlop.getTotalTime());
-    // dprintxyLevelPct(113, 48, kick.envlopFreq.getLevel(2));
     display.setFont(&Picopixel);
     int freqAdd = kick.envlopFreq.getLevel(id) - FREQ_ENV_BASE;
     if (freqAdd < 0) {

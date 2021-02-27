@@ -19,7 +19,7 @@ Kick kick;
 
 void updateControl() {
     kick.update();
-    displayUpdate();
+    displayRefresh();
     handleSerial();
 }
 
