@@ -33,7 +33,7 @@ void setup() {
     lpf.setCutoffFreqAndResonance(gCutoff, gResonance);
     kick.setType(SIMPLE);
     kick.frequency = 100;
-    kick.envlop.set(0, 0, 200);
+    kick.envlop.set(0, 100, 200);
     kick.envlop.set(1, 100, 0);
     kick.envlopFreq.set(0, 50, 150);
     kick.envlopFreq.set(1, 50, 200);

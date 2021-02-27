@@ -69,7 +69,7 @@ void setToneFromMidiKnob(byte toneIdx, byte optionKey, int direction) {
     // Serial.print(" dir: ");
     // Serial.println(direction);
 
-    Tone<MAX_NUM_CELLS> *tone = &tones[toneIdx];
+    Tone *tone = &tones[toneIdx];
 
     if (optionKey == 2) {
         currentTableId = mod(currentTableId + direction, getTablesCount());

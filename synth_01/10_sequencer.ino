@@ -44,7 +44,11 @@ void setupSequencer() {
     pinMode(PIN_SYNC_OUT, OUTPUT);
     setTempo(gBPM);
 
-    patterns[0].set((char *)"Kick", TONE_A)->add(0, _C4, 1)->repeat(0, 2)->print();
+    patterns[0]
+        .set((char *)"Kick", TONE_A)
+        ->add(0, _C4, 1)
+        ->repeat(0, 2)
+        ->print();
     // patterns[0].play();
     patterns[1]
         .set((char *)"Bass", TONE_E)
@@ -52,7 +56,11 @@ void setupSequencer() {
         ->add(1, _D0, 1)
         ->repeat(0, 2)
         ->print();
-    patterns[2].set((char *)"Phasor", TONE_F)->add(0, _C4, 8)->repeat(0, 8)->print();
+    patterns[2]
+        .set((char *)"Phasor", TONE_F)
+        ->add(0, _C4, 8)
+        ->repeat(0, 8)
+        ->print();
     patterns[3]
         .set((char *)"Kick2", TONE_B)
         // ->add(0, _C4, 6)
@@ -66,14 +74,15 @@ void setupSequencer() {
 }
 
 void playStep() {
-    Tone<MAX_NUM_CELLS> *tone;
+    Tone *tone;
     for (int p = 0; p < MAX_PATTERNS; p++) {
         if (patterns[p].isPlaying &&
             patterns[p].steps[gSeqStepIndex].duration) {
             tone = &tones[patterns[p].outputId];
-            tone->noteOn(patterns[p].steps[gSeqStepIndex].freqDiff,
-                         patterns[p].steps[gSeqStepIndex].duration * gTempo -
-                             tone->envlop.getTime(0) - tone->envlop.getTime(2));
+            tone->noteOnMs(patterns[p].steps[gSeqStepIndex].freqDiff,
+                           patterns[p].steps[gSeqStepIndex].duration * gTempo -
+                               tone->envlop.getTime(0) -
+                               tone->envlop.getTime(2));
         }
     }
 }

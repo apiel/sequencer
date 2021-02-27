@@ -1,11 +1,9 @@
-Tone<MAX_NUM_CELLS> *getCurrentTone() { return &tones[getCurrentToneIdx()]; }
-
 void displayTone() {
     display.clearDisplay();
     display.setCursor(0, 0);
     dprintln("Tone %c", getCurrentToneChar());
 
-    Tone<MAX_NUM_CELLS> *tone = getCurrentTone();
+    Tone *tone = &tones[getCurrentToneIdx()];
 
     display.println(tone->tableName);
     dprintln("Freq %d", tone->frequency);

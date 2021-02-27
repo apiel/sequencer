@@ -32,7 +32,7 @@ byte gResonance = 0;
 
 byte currentTableId = 0;
 
-Tone<MAX_NUM_CELLS> tones[MAX_TONES];
+Tone tones[MAX_TONES];
 
 void setupTone(byte id, byte tableId, byte type, int frequency) {
     setupTone(id, tableId, type, frequency, (const float[2]){0.5, 0.5}, 200);

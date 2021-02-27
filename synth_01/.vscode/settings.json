@@ -19,7 +19,9 @@
         "ostream": "cpp",
         "chrono": "cpp",
         "typeinfo": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "string_view": "cpp",
+        "memory_resource": "cpp"
     },
     "emeraldwalk.runonsave": {
         "commands": [
