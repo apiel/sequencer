@@ -26,6 +26,18 @@ void handleKnob(byte key, byte val) {
         } else {
             kick.freqShift = between(kick.freqShift + direction, 0, 16);
         }
+    } else if (knob == 5) {
+        kick.envlop.setTime(
+            0, between(kick.envlop.getTime(0) + direction, 0, 60000));
+    } else if (knob == 6) {
+        kick.envlop.setTime(
+            1, between(kick.envlop.getTime(1) + direction, 0, 60000));
+    } else if (knob == 7) {
+        kick.envlop.setTime(
+            2, between(kick.envlop.getTime(2) + direction, 0, 60000));
+    } else if (knob == 8) {
+        kick.envlop.setLevel(
+            0, between(kick.envlop.getLevel(0) + direction, 0, 255));
     }
 }
 
