@@ -38,24 +38,15 @@ void handleKnob(byte key, byte val) {
     } else if (knob == 8) {
         kick.envlop.setLevel(
             0, between(kick.envlop.getLevel(0) + direction, 0, 255));
-    } else if (knob == 11) {
-        kick.envlopFreq.setLevel(
-            0, between(kick.envlopFreq.getLevel(0) + direction, 0, 255));
-    } else if (knob == 12) {
-        kick.envlopFreq.setLevel(
-            1, between(kick.envlopFreq.getLevel(1) + direction, 0, 255));
-    } else if (knob == 13) {
-        kick.envlopFreq.setLevel(
-            2, between(kick.envlopFreq.getLevel(2) + direction, 0, 255));
-    } else if (knob == 14) {
-        kick.envlopFreq.setLevel(
-            3, between(kick.envlopFreq.getLevel(3) + direction, 0, 255));
-    } else if (knob == 15) {
-        kick.envlopFreq.setLevel(
-            4, between(kick.envlopFreq.getLevel(4) + direction, 0, 255));
-    } else if (knob == 16) {
-        kick.envlopFreq.setLevel(
-            5, between(kick.envlopFreq.getLevel(5) + direction, 0, 255));
+    } else if (knob >= 11 && knob <= 16) {
+        if (gMcMode) {
+            kick.envlopFreq.setLevel(
+                knob - 11,
+                between(kick.envlopFreq.getLevel(knob - 11) + direction, 0,
+                        255));
+        } else {
+            kick.incFreqTime(knob - 11, direction);
+        }
     }
 }
 

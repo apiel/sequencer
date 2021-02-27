@@ -3,14 +3,58 @@
 
 #include "ToneBase.h"
 
-#define NUM_TABLE_CELLS 8192 
+#define NUM_TABLE_CELLS 8192
 
-class Kick : public ToneBase<NUM_TABLE_CELLS, 3, 6> {
+#define FREQ_ENV_PHASES 6
+
+class Kick : public ToneBase<NUM_TABLE_CELLS, 3, FREQ_ENV_PHASES> {
    public:
-    
+    byte distribute = 0;
+    byte timePct[FREQ_ENV_PHASES] = {
+        100 / FREQ_ENV_PHASES, 100 / FREQ_ENV_PHASES, 100 / FREQ_ENV_PHASES,
+        100 / FREQ_ENV_PHASES, 100 / FREQ_ENV_PHASES, 100 / FREQ_ENV_PHASES};
+
+    void updateFreqTimes() {
+        unsigned int ms = envlop.getTotalTime();
+        for (byte i = 0; i < FREQ_ENV_PHASES; i++) {
+            setEnvlopFreq(i, ms * timePct[i] / 100, 0);
+        }
+        balancePct(255);
+    }
+
+    void setEnvlop(byte index, unsigned int msec, int value) {
+        envlop.set(index, msec, value);
+        updateFreqTimes();
+    }
+
+    void incFreqTime(byte index, int value) {
+        timePct[index] = between(timePct[index] + value, 0, 100);
+        balancePct(index);
+        updateFreqTimes();
+    }
 
    protected:
+    int between(int val, int minVal, int maxVal) {
+        return min(max(val, minVal), maxVal);
+    }
 
+    void balancePct(byte index) {
+        while (sumPct() != 100) {
+            distribute = (distribute + 1) % FREQ_ENV_PHASES;
+            if (distribute != index) {
+                timePct[distribute] = between(
+                    timePct[distribute] - (sumPct() > 100 ? 1 : -1), 0, 100);
+            }
+        }
+    }
+
+    byte sumPct() {
+        byte pct = 0;
+        for (byte i = 0; i < FREQ_ENV_PHASES; i++) {
+            pct += timePct[i];
+        }
+        return pct;
+    }
 };
 
 #endif

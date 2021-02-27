@@ -40,7 +40,6 @@ void displaySetup() {
     displayUpdate();
 }
 
-
 byte refreshCount = 2;
 void displayUpdate() {
     refreshCount = 2;
@@ -92,6 +91,7 @@ void displayKick() {
 
     dprintxy(0, 5, "T");
     dprintxy(0, 6, "F");
+    display.fillRect(5, (gMcMode ? 6 : 5) * 8 + 4, 2, 2, WHITE);
     displayPhase(0);
     displayPhase(1);
     displayPhase(2);

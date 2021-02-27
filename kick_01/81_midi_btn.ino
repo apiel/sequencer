@@ -7,6 +7,8 @@ void handlePress(byte key) {
         } else {
             kick.envlopFreq.setLerpRate(CONTROL_RATE);
         }
+    } else if (key == 16 || key == 40) {
+        gMcMode = !gMcMode;
     }
 }
 
