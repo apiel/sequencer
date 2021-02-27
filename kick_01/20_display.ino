@@ -1,7 +1,7 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-#include <Wire.h>
 #include <EventDelay.h>
+#include <Wire.h>
 
 // OLED pins
 #define OLED_SDA 4
@@ -52,7 +52,19 @@ void displayKick() {
     display.setCursor(0, 0);
 
     display.println(kick.tableName);
-    dprintln("Freq %d", kick.frequency);
+    dprintxy(10, 0, "%d", kick.frequency);
+    if (kick.type == REVERB) {
+        dprintxy(15, 0, "Reverb");
+    } else if (kick.type == SAMPLE) {
+        dprintxy(15, 0, "Sample");
+    } else if (kick.type == PHASOR2) {
+        dprintxy(14, 0, "Phasor2");
+    } else if (kick.type == PHASOR3) {
+        dprintxy(14, 0, "Phasor3");
+    } else {
+        dprintxy(15, 0, "Simple");
+    }
+
     if (gMcMode) {
         // dprintln("%d-> %d", gStepMode + 1, kick.freqSteps[gStepMode]);
     }
@@ -102,11 +114,6 @@ void displayKick() {
     dprintxyTimePct(113, 40, kick.envlopFreq.getTime(2));
     dprintxyLevelPct(113, 48, kick.envlopFreq.getLevel(2));
 
-    if (kick.type == REVERB) {
-        dprintxy(12, 1, "Reverb");
-    } else {
-        dprintxy(12, 1, "Simple");
-    }
     dprintxy(12, 2, "Shift %d", kick.freqShift);
     dprintxy(12, 3, "LR %d", kick.envlopFreq.getLerpRate());
 }

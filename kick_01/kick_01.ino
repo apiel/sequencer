@@ -8,6 +8,7 @@
 #define MAX_VOLUME 127
 
 byte gVolume = MAX_VOLUME;
+byte currentTableId = 0;
 
 // seem to be kind of useless
 LowPassFilter lpf;
@@ -29,12 +30,12 @@ int updateAudio() {
 void setup() {
     Serial.begin(115200);
 
-    setTable(0);
+    setTable(currentTableId);
     lpf.setCutoffFreqAndResonance(gCutoff, gResonance);
     kick.setType(SIMPLE);
     kick.frequency = 100;
-    kick.envlop.set(0, 100, 200);
-    kick.envlop.set(1, 100, 200);
+    kick.envlop.set(0, 50, 200);
+    kick.envlop.set(1, 50, 200);
     kick.envlop.set(2, 100, 0);
     kick.envlopFreq.set(0, 50, 150);
     kick.envlopFreq.set(1, 50, 200);

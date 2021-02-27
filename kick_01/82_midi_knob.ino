@@ -12,6 +12,14 @@ void handleKnob(byte key, byte val) {
 
     if (knob == 9 || knob == 10) {
         gVolume = val;
+    } else if (knob == 1) {
+        currentTableId = mod(currentTableId + direction, getTablesCount());
+        setTable(currentTableId);
+    } else if (knob == 2) {
+        kick.frequency = between(kick.frequency + direction, 1, 5000);
+    } else if (knob == 3) {
+        byte type = mod(kick.type + direction, TONE_TYPE_COUNT);
+        kick.setType(type);
     }
 }
 
