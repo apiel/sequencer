@@ -18,6 +18,7 @@ byte gResonance = 0;
 Kick kick;
 
 void updateControl() {
+    handleGateIn();
     kick.update();
     displayRefresh();
     handleSerial();
