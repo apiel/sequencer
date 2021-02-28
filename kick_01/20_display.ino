@@ -81,7 +81,10 @@ void displayKick() {
     }
     dprintxy(10, 1, "Lerp %d", kick.envlopFreq.getLerpRate());
 
-    if (kick.type != SAMPLE) {
+    if (kick.type == SAMPLE) {
+        dprintxyAbs(0, 4 + 2 * 8, "Start %d", kick.sample.start_pos);
+        dprintxyAbs(0, 4 + 3 * 8, "End %d", kick.sample.end_pos);
+    } else {
         dprintxyAbs(0, 4 + 2 * 8, "A %d", kick.envlop.getTime(0));
         dprintxyAbs(10 * 6, 4 + 2 * 8, "S %d", kick.envlop.getTime(1));
 

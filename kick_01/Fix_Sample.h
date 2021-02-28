@@ -51,6 +51,8 @@ class Sample
 {
 
 public:
+	unsigned int start_pos = 0;
+	unsigned int end_pos = NUM_TABLE_CELLS;
 
 	/** Constructor.
 	@param TABLE_NAME the name of the array the Sample will be using. This
@@ -94,6 +96,7 @@ public:
 	inline
 	void setStart(unsigned int startpos)
 	{
+		start_pos = startpos;
 		startpos_fractional = (unsigned long) startpos << SAMPLE_F_BITS;
 	}
 
@@ -122,9 +125,10 @@ public:
 	@param end position in samples.
 	*/
 	inline
-	void setEnd(unsigned int end)
+	void setEnd(unsigned int endpos)
 	{
-		endpos_fractional = (unsigned long) end << SAMPLE_F_BITS;
+		end_pos = endpos;
+		endpos_fractional = (unsigned long) endpos << SAMPLE_F_BITS;
 	}
 
 

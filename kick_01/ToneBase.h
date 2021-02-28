@@ -23,6 +23,8 @@ class ToneBase {
     byte freqShift;
     byte phasorShift;
 
+    Sample<NUM_TABLE_CELLS, AUDIO_RATE> sample;
+
     Envelope<CONTROL_RATE, ENV_NUM_PHASE> envlop{AUDIO_RATE};
     // Envelope<CONTROL_RATE, ENV_NUM_PHASE> envlopFreq{CONTROL_RATE};
     // // before to have PHASOR3 it was AUDIO_RATE
@@ -89,7 +91,6 @@ class ToneBase {
     int freqAdd;
 
     Oscil<NUM_TABLE_CELLS, AUDIO_RATE> oscil;
-    Sample<NUM_TABLE_CELLS, AUDIO_RATE> sample;
 
     Phasor<AUDIO_RATE> phasor;
     Phasor<AUDIO_RATE> phasorFreq;

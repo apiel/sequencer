@@ -27,11 +27,22 @@ void handleKnob(byte key, byte val) {
             kick.freqShift = between(kick.freqShift + direction, 0, 16);
         }
     } else if (knob == 5) {
-        kick.envlop.setTime(
-            0, between(kick.envlop.getTime(0) + direction, 0, 60000));
+        if (kick.type == SAMPLE) {
+            kick.sample.setStart(
+                between(kick.sample.start_pos + (direction * 10), 0,
+                        kick.sample.end_pos));
+        } else {
+            kick.envlop.setTime(
+                0, between(kick.envlop.getTime(0) + direction, 0, 60000));
+        }
     } else if (knob == 6) {
-        kick.envlop.setTime(
-            1, between(kick.envlop.getTime(1) + direction, 0, 60000));
+        if (kick.type == SAMPLE) {
+            kick.sample.setEnd(between(kick.sample.end_pos + (direction * 10),
+                                       kick.sample.start_pos, NUM_TABLE_CELLS));
+        } else {
+            kick.envlop.setTime(
+                1, between(kick.envlop.getTime(1) + direction, 0, 60000));
+        }
     } else if (knob == 7) {
         kick.envlop.setTime(
             2, between(kick.envlop.getTime(2) + direction, 0, 60000));
