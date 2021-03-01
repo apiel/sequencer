@@ -5,3 +5,7 @@ Save by exporting with the format set to "Other uncompressed formats",
 node js/tableConverterBlank.js guitar3.h ../tables/guitar3.h
 rm guitar3.h
 rm guitar3.raw
+
+or
+
+./convert.sh guitar3

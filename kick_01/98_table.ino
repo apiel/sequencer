@@ -2,6 +2,7 @@
 #include "tables/cos8192_int8.h"
 #include "tables/phasor.h"
 #include "tables/pinknoise8192_int8.h"
+#include "tables/psy_kick.h"
 #include "tables/saw8192_int8.h"
 #include "tables/saw_analog.h"
 #include "tables/sin8192_int8.h"
@@ -18,10 +19,12 @@
 #include "tables/waveshape_chebyshev_3rd.h"
 #include "tables/waveshape_sigmoid.h"
 #include "tables/whitenoise8192_int8.h"
-#include "tables/psy_kick.h"
-// we could remove one of the kick
-#include "tables/psy_kick2.h"
-#include "tables/psy_kick3.h"
+#include "tables/dirtkik.h"
+#include "tables/guitar2.h"
+#include "tables/guitar3.h"
+#include "tables/guitar5.h"
+#include "tables/guitar7.h"
+#include "tables/hihat2.h"
 #include "tables/kick.h"
 #include "tables/kick001.h"
 #include "tables/kick002.h"
@@ -29,14 +32,13 @@
 #include "tables/kick004.h"
 #include "tables/kick005.h"
 #include "tables/kick006.h"
-#include "tables/guitar2.h"
-#include "tables/guitar3.h"
+#include "tables/psy_kick2.h"
+#include "tables/psy_kick3.h"
+#include "tables/wawaw.h"
 
-#define TABLES_COUNT 32
+#define TABLES_COUNT 37
 
-byte getTablesCount() {
-    return TABLES_COUNT;
-}
+byte getTablesCount() { return TABLES_COUNT; }
 
 void setTable(byte tableId) {
     if (tableId == 1) {
@@ -132,6 +134,21 @@ void setTable(byte tableId) {
     } else if (tableId == 31) {
         kick.setTable(GUITAR3_DATA);
         kick.tableName = "guitar3";
+    } else if (tableId == 32) {
+        kick.setTable(GUITAR5_DATA);
+        kick.tableName = "guitar5";
+    } else if (tableId == 33) {
+        kick.setTable(GUITAR7_DATA);
+        kick.tableName = "guitar7";
+    } else if (tableId == 34) {
+        kick.setTable(DIRTKIK_DATA);
+        kick.tableName = "dirtkik";
+    } else if (tableId == 35) {
+        kick.setTable(HIHAT2_DATA);
+        kick.tableName = "hihat2";
+    } else if (tableId == 36) {
+        kick.setTable(WAWAW_DATA);
+        kick.tableName = "wawaw";
     } else {
         kick.setTable(SIN8192_DATA);
         kick.tableName = "sin";
