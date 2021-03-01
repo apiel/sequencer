@@ -1,5 +1,5 @@
-#ifndef SIN8192_INT8_H_
-#define SIN8192_INT8_H_
+#ifndef SIN_H_
+#define SIN_H_
 
 #if ARDUINO >= 100
  #include "Arduino.h"
@@ -8,10 +8,10 @@
 #endif
 #include "mozzi_pgmspace.h"
 
-#define SIN8192_NUM_CELLS 8192
-#define SIN8192_SAMPLERATE 8192
+#define SIN_NUM_CELLS 8192
+#define SIN_SAMPLERATE 8192
 
-CONSTTABLE_STORAGE(int8_t) SIN8192_DATA []  =
+CONSTTABLE_STORAGE(int8_t) SIN_DATA []  =
         {
                 0, 0, 0, 0, 0, 1, 1, 1,
                 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
@@ -520,4 +520,4 @@ CONSTTABLE_STORAGE(int8_t) SIN8192_DATA []  =
                 -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 
         };
 
-#endif	/* SIN8192_INT8_H_ */
+#endif	/* SIN_H_ */

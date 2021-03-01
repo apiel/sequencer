@@ -1,5 +1,5 @@
-#ifndef BROWNNOISE8192_H_
-#define BROWNNOISE8192_H_
+#ifndef NOISE_B_H_
+#define NOISE_B_H_
 
 #if ARDUINO >= 100
  #include "Arduino.h"
@@ -11,10 +11,10 @@
 /* Brown noise generated in Audacity
 */
 
-#define BROWNNOISE8192_NUM_CELLS 8192
-#define BROWNNOISE8192_SAMPLERATE 8192
+#define NOISE_B_NUM_CELLS 8192
+#define NOISE_B_SAMPLERATE 8192
 
-CONSTTABLE_STORAGE(int8_t) BROWNNOISE8192_DATA []  =
+CONSTTABLE_STORAGE(int8_t) NOISE_B_DATA []  =
         {
                 54, 75, 42, 8, 11, 63, 34, -6, 36,
                 79, 36, 72, 108, 99, 59, 106, 70, 102, 60, 100, 101, 97, 95, 127, 127, 127, 127,
@@ -503,4 +503,4 @@ CONSTTABLE_STORAGE(int8_t) BROWNNOISE8192_DATA []  =
                 -42, -95, -112, -101, -61, -51, -65, -114, -96, -110, -116, -91,
         };
 
-#endif /* BROWNNOISE8192_H_ */
+#endif /* NOISE_B_H_ */

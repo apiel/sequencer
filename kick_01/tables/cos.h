@@ -1,5 +1,5 @@
-#ifndef COS8192_INT8_H_
-#define COS8192_INT8_H_
+#ifndef COS_INT8_H_
+#define COS_INT8_H_
 
 #if ARDUINO >= 100
  #include "Arduino.h"
@@ -8,10 +8,10 @@
 #endif
 #include "mozzi_pgmspace.h"
 
-#define COS8192_NUM_CELLS 8192
-#define COS8192_SAMPLERATE 8192
+#define COS_NUM_CELLS 8192
+#define COS_SAMPLERATE 8192
 
-CONSTTABLE_STORAGE(int8_t) COS8192_DATA []  =
+CONSTTABLE_STORAGE(int8_t) COS_DATA []  =
         {
                 -128, -128, -128, -128, -128, -128, -128,
                 -128, -128, -128, -128, -128, -128, -128, -128, -128, -128, -128, -128, -128,
@@ -520,4 +520,4 @@ CONSTTABLE_STORAGE(int8_t) COS8192_DATA []  =
                 -128,
         };
 
-#endif /* COS8192_INT8_H_ */
+#endif /* COS_INT8_H_ */

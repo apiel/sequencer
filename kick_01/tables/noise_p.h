@@ -1,5 +1,5 @@
-#ifndef PINKNOISE8192_H_
-#define PINKNOISE8192_H_
+#ifndef NOISE_P_H_
+#define NOISE_P_H_
 
 #if ARDUINO >= 100
  #include "Arduino.h"
@@ -11,10 +11,10 @@
 /* generated pink noise
 */
 
-#define PINKNOISE8192_NUM_CELLS 8192
-#define PINKNOISE8192_SAMPLERATE 8192
+#define NOISE_P_NUM_CELLS 8192
+#define NOISE_P_SAMPLERATE 8192
 
-CONSTTABLE_STORAGE(int8_t) PINKNOISE8192_DATA []  =
+CONSTTABLE_STORAGE(int8_t) NOISE_P_DATA []  =
         {
                 -27, -51, -55, -63, -69, -29, -48,
                 -46, -37, 4, -40, -6, 12, 17, -34, -22, -30, 0, -33, -18, 19, -14, -4, 29, -26,
@@ -463,4 +463,4 @@ CONSTTABLE_STORAGE(int8_t) PINKNOISE8192_DATA []  =
                 -91, -67, -96, -97, -99, -72, -85,
         };
 
-#endif /* PINKNOISE8192_H_ */
+#endif /* NOISE_P_H_ */

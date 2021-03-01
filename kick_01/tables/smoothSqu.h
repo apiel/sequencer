@@ -1,5 +1,5 @@
-#ifndef SMOOTHSQUARE8192_H_
-#define SMOOTHSQUARE8192_H_
+#ifndef SMOOTHSQU_H_
+#define SMOOTHSQU_H_
 
 #if ARDUINO >= 100
  #include "Arduino.h"
@@ -11,10 +11,10 @@
 /* hand-drawn square wave with rounded corners from Audacity
 */
 
-#define SMOOTHSQUARE8192_NUM_CELLS 8192
-#define SMOOTHSQUARE8192_SAMPLERATE 8192
+#define SMOOTHSQU_NUM_CELLS 8192
+#define SMOOTHSQU_SAMPLERATE 8192
 
-CONSTTABLE_STORAGE(int8_t) SMOOTHSQUARE8192_DATA []  =
+CONSTTABLE_STORAGE(int8_t) SMOOTHSQU_DATA []  =
         {
                 -1, 0, -1, 0, -1, 0, 0, 0, -1, 0,
                 -1, 0, -1, 0, 0, -1, 0, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, -1, 0,
@@ -562,4 +562,4 @@ CONSTTABLE_STORAGE(int8_t) SMOOTHSQUARE8192_DATA []  =
                 -128, -128, -128, -128, -128, -128, -128, -128, -128, -128, -128,
         };
 
-#endif /* SMOOTHSQUARE8192_H_ */
+#endif /* SMOOTHSQU_H_ */

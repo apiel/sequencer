@@ -1,5 +1,5 @@
-#ifndef SAW8192_H_
-#define SAW8192_H_
+#ifndef SAW_H_
+#define SAW_H_
 
 #if ARDUINO >= 100
  #include "Arduino.h"
@@ -8,10 +8,10 @@
 #endif
 #include "mozzi_pgmspace.h"
 
-#define SAW8192_NUM_CELLS 8192
-#define SAW8192_SAMPLERATE 8192
+#define SAW_NUM_CELLS 8192
+#define SAW_SAMPLERATE 8192
 
-CONSTTABLE_STORAGE(int8_t) SAW8192_DATA []  =
+CONSTTABLE_STORAGE(int8_t) SAW_DATA []  =
         {
                 -128, -128, -128, -128, -128, -128, -128,
                 -128, -128, -128, -128, -128, -128, -128, -128, -128, -128, -128, -128, -128,
@@ -494,4 +494,4 @@ CONSTTABLE_STORAGE(int8_t) SAW8192_DATA []  =
                 127, 127,
         };
 
-#endif /* SAW8192_H_ */
+#endif /* SAW_H_ */
