@@ -23,8 +23,16 @@
 #include "tables/psy_kick2.h"
 #include "tables/psy_kick3.h"
 #include "tables/kick.h"
+#include "tables/kick001.h"
+#include "tables/kick002.h"
+#include "tables/kick003.h"
+#include "tables/kick004.h"
+#include "tables/kick005.h"
+#include "tables/kick006.h"
+#include "tables/guitar2.h"
+#include "tables/guitar3.h"
 
-#define TABLES_COUNT 24
+#define TABLES_COUNT 32
 
 byte getTablesCount() {
     return TABLES_COUNT;
@@ -99,7 +107,31 @@ void setTable(byte tableId) {
         kick.tableName = "psyKick3";
     } else if (tableId == 23) {
         kick.setTable(KICK_DATA);
-        kick.tableName = "kick";
+        kick.tableName = "kick000";
+    } else if (tableId == 24) {
+        kick.setTable(KICK001_DATA);
+        kick.tableName = "kick001";
+    } else if (tableId == 25) {
+        kick.setTable(KICK002_DATA);
+        kick.tableName = "kick002";
+    } else if (tableId == 26) {
+        kick.setTable(KICK003_DATA);
+        kick.tableName = "kick003";
+    } else if (tableId == 27) {
+        kick.setTable(KICK004_DATA);
+        kick.tableName = "kick004";
+    } else if (tableId == 28) {
+        kick.setTable(KICK005_DATA);
+        kick.tableName = "kick005";
+    } else if (tableId == 29) {
+        kick.setTable(KICK006_DATA);
+        kick.tableName = "kick006";
+    } else if (tableId == 30) {
+        kick.setTable(GUITAR2_DATA);
+        kick.tableName = "guitar2";
+    } else if (tableId == 31) {
+        kick.setTable(GUITAR3_DATA);
+        kick.tableName = "guitar3";
     } else {
         kick.setTable(SIN8192_DATA);
         kick.tableName = "sin";
