@@ -6,3 +6,4 @@ echo "Convert: $1";
 node js/tableConverterBlank.js $1.h ../tables/$1.h
 rm $1.h
 rm $1.raw
+node js/genTables.h.js
