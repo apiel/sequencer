@@ -50,9 +50,15 @@ void displayEnvelope(byte yAbsPos) {
     if (tone->type == SAMPLE) {
         dprintxyAbs(0, yAbsPos, "Start %d", tone->sample.start_pos);
         dprintxyAbs(0, yAbsPos + 8, "End %d", tone->sample.end_pos);
-    } else {
+    } else if (tone->isDrum) {
         dprintxyAbs(0, yAbsPos, "A %d", tone->envlop.getTime(0));
         dprintxyAbs(10 * 6, yAbsPos, "S %d", tone->envlop.getTime(1));
+
+        dprintxyAbs(0, yAbsPos + 8, "R %d", tone->envlop.getTime(2));
+        dprintxyAbs(10 * 6, yAbsPos + 8, "Level %d", tone->envlop.getLevel(0));
+    } else {
+        // here we might want to use pct?
+        dprintxyAbs(0, yAbsPos, "A %d", tone->envlop.getTime(0));
 
         dprintxyAbs(0, yAbsPos + 8, "R %d", tone->envlop.getTime(2));
         dprintxyAbs(10 * 6, yAbsPos + 8, "Level %d", tone->envlop.getLevel(0));
