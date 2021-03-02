@@ -17,5 +17,10 @@ void handlePress(byte key) {
     }
 }
 
-void handleUp(byte key) {}
-
+void handleUp(byte key) {
+    if (key == 22 || key == 46) {
+        if (!tone->isDrum) {
+            tone->noteOff();
+        }
+    }
+}
