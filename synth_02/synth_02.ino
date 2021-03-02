@@ -42,17 +42,16 @@ void setup() {
 
     lpf.setCutoffFreqAndResonance(gCutoff, gResonance);
 
-    // tone = &tones[0];
+    tone = &tones[0];
 
     // ToDo: load settings from eeprom?
     for (int i = 0; i < MAX_TONES; i++) {
-        tone = &tones[i];
-        setTable(currentTableId);
-        tone->setType(SIMPLE);
-        tone->frequency = 30;
-        tone->setEnvlop(0, 0, 200);
-        tone->setEnvlop(1, 0, 200);
-        tone->setEnvlop(2, 300, 0);
+        setTable(&tones[i], currentTableId);
+        tones[i].setType(SIMPLE);
+        tones[i].frequency = 30;
+        tones[i].setEnvlop(0, 0, 200);
+        tones[i].setEnvlop(1, 0, 200);
+        tones[i].setEnvlop(2, 300, 0);
     }
 
     displaySetup();

@@ -2,7 +2,7 @@
 
 byte getTablesCount() { return TABLES_COUNT; }
 
-void setTable(byte tableId) {
-    tone->setTable(tables[tableId].table);
-    tone->tableName = tables[tableId].tableName;
+void setTable(Tone * ptrTone, byte tableId) {
+    ptrTone->setTable(tables[tableId].table);
+    ptrTone->tableName = tables[tableId].tableName;
 }

@@ -14,7 +14,7 @@ void handleKnob(byte key, byte val) {
         gVolume = val;
     } else if (knob == 1) {
         currentTableId = mod(currentTableId + direction, getTablesCount());
-        setTable(currentTableId);
+        setTable(tone, currentTableId);
     } else if (knob == 2) {
         tone->frequency = between(tone->frequency + direction, 1, 5000);
     } else if (knob == 3) {
