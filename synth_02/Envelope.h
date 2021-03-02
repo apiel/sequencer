@@ -11,7 +11,8 @@
 #include "Line.h"
 #include "mozzi_fixmath.h"
 
-template <unsigned int CONTROL_UPDATE_RATE, byte NUM_PHASES = 2>
+template <unsigned int CONTROL_UPDATE_RATE, byte NUM_PHASES = 2,
+          byte START_LEVEL = 0>
 class Envelope {
    private:
     unsigned int LERPS_PER_CONTROL;
@@ -32,7 +33,7 @@ class Envelope {
         unsigned int update_steps;
         long lerp_steps;  // signed, to match params to transition (line) type
                           // Q15n16, below
-        Q8n0 level;
+        Q8n0 level = START_LEVEL;
     };
 
     byte current = NUM_PHASES;  // NUM_PHASES = off
@@ -57,10 +58,11 @@ class Envelope {
                 setNextPhase();
             } else {
                 num_update_steps = phases[current].update_steps;
-                transition.set(
-                    current == 0 ? 0
-                                 : Q8n0_to_Q15n16(phases[current - 1].level),
-                    Q8n0_to_Q15n16(phases[current].level), phases[current].lerp_steps);
+                transition.set(current == 0
+                                   ? Q8n0_to_Q15n16(START_LEVEL)
+                                   : Q8n0_to_Q15n16(phases[current - 1].level),
+                               Q8n0_to_Q15n16(phases[current].level),
+                               phases[current].lerp_steps);
             }
         } else if (isLooping) {
             setNextPhase(0);

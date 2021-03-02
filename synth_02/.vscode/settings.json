@@ -20,8 +20,15 @@
         "chrono": "cpp",
         "typeinfo": "cpp",
         "thread": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "vector": "cpp",
         "string_view": "cpp",
-        "memory_resource": "cpp"
+        "initializer_list": "cpp",
+        "cstdarg": "cpp",
+        "algorithm": "cpp"
     },
     "emeraldwalk.runonsave": {
         "commands": [
