@@ -1,6 +1,31 @@
-#define KNOB_COUNT 18
+void tone_handlePress(byte key) {
+    byte toneId = getItemKey(key);
+    if (toneId < MAX_TONES) {
+        tone = &tones[toneId];
+    } else if (key == 22 || key == 46) {
+        tone->noteOn();
+    } else if (key == 20 || key == 44) {
+        tone->isDrum = !tone->isDrum;
+    } else if (key == 17 || key == 41) {
+        if (tone->envlopFreq.getLerpRate() == CONTROL_RATE) {
+            tone->envlopFreq.setLerpRate(AUDIO_RATE);
+        } else {
+            tone->envlopFreq.setLerpRate(CONTROL_RATE);
+        }
+    } else {
+        default_handlePress(key);
+    }
+}
 
-void handleKnob(byte key, byte val) {
+void tone_handleUp(byte key) {
+    if (key == 22 || key == 46) {
+        if (!tone->isDrum) {
+            tone->noteOff();
+        }
+    }
+}
+
+void tone_handleKnob(byte key, byte val) {
     byte knob = key % KNOB_COUNT;
     int direction = getKnobDirection(knob, val);
     // Serial.print("midi knob: ");
@@ -10,9 +35,7 @@ void handleKnob(byte key, byte val) {
     // Serial.print(" new value: ");
     // Serial.println(knobValues[knob]);
 
-    if (knob == 9 || knob == 10) {
-        gVolume = val;
-    } else if (knob == 1) {
+    if (knob == 1) {
         currentTableId = mod(currentTableId + direction, getTablesCount());
         setTable(tone, currentTableId);
     } else if (knob == 2) {
@@ -58,19 +81,7 @@ void handleKnob(byte key, byte val) {
         } else {
             tone->incFreqTime(knob - 11, direction);
         }
+    } else {
+        default_handleKnob(key, val);
     }
 }
-
-// void increaseCutoff(int direction) {
-//     gCutoff = (byte)between(gCutoff + (direction * 2), 0, 255);
-//     lpf.setCutoffFreq(gCutoff);
-//     // Serial.print("Set gCutoff ");
-//     // Serial.println(gCutoff);
-// }
-
-// void increaseResonance(int direction) {
-//     gResonance = (byte)between(gResonance + (direction * 2), 0, 255);
-//     lpf.setResonance(gResonance);
-//     // Serial.print("Set gResonance ");
-//     // Serial.println(gResonance);
-// }

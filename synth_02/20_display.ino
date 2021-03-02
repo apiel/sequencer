@@ -11,10 +11,14 @@
 #define SCREEN_W 128  // OLED display width, in pixels
 #define SCREEN_H 64   // OLED display height, in pixels
 
+enum { VIEW_TONE, VIEW_KEYBOARD, VIEW_COUNT };
+
 Adafruit_SSD1306 display(SCREEN_W, SCREEN_H, &Wire, OLED_RST);
 
 EventDelay displayDelay;
 bool gMcMode = false;
+
+byte currentView = VIEW_TONE;
 
 void displaySetup() {
     // reset OLED display via software
@@ -51,7 +55,11 @@ void displayUpdate() {
 void displayRefresh() {
     if (refreshCount > 0 && displayDelay.ready()) {
         refreshCount--;
-        displayTone();
+        if (currentView == VIEW_KEYBOARD) {
+            displayKeyboard();
+        } else {
+            displayTone();
+        }
         display.display();
         displayDelay.start(100);
     }

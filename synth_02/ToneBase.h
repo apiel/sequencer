@@ -9,10 +9,9 @@
 #include "Envelope.h"
 #include "Fix_Sample.h"
 
-#define TONE_TYPE_COUNT 5
 #define FREQ_ENV_BASE 127
 
-enum { SIMPLE, REVERB, SAMPLE, PHASOR2, PHASOR3 };
+enum { SIMPLE, REVERB, SAMPLE, PHASOR2, PHASOR3, TONE_TYPE_COUNT };
 
 template <uint16_t NUM_TABLE_CELLS, byte ENV_NUM_PHASE, byte ENV_FREQ_NUM_PHASE>
 class ToneBase {
