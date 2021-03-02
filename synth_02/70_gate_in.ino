@@ -9,7 +9,7 @@ void handleGateIn() {
     if (analogRead(GATE_IN_PIN) > 0) {
         if (!gateTriggered) {
             gateTriggered = true;
-            tone.noteOn();
+            tone->noteOn();
         }
     } else {
         gateTriggered = false;

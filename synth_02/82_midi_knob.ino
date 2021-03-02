@@ -16,47 +16,47 @@ void handleKnob(byte key, byte val) {
         currentTableId = mod(currentTableId + direction, getTablesCount());
         setTable(currentTableId);
     } else if (knob == 2) {
-        tone.frequency = between(tone.frequency + direction, 1, 5000);
+        tone->frequency = between(tone->frequency + direction, 1, 5000);
     } else if (knob == 3) {
-        byte type = mod(tone.type + direction, TONE_TYPE_COUNT);
-        tone.setType(type);
+        byte type = mod(tone->type + direction, TONE_TYPE_COUNT);
+        tone->setType(type);
     } else if (knob == 4) {
-        if (tone.type == PHASOR2 || tone.type == PHASOR3) {
-            tone.phasorShift = between(tone.phasorShift + direction, 0, 24);
+        if (tone->type == PHASOR2 || tone->type == PHASOR3) {
+            tone->phasorShift = between(tone->phasorShift + direction, 0, 24);
         } else {
-            tone.freqShift = between(tone.freqShift + direction, 0, 16);
+            tone->freqShift = between(tone->freqShift + direction, 0, 16);
         }
     } else if (knob == 5) {
-        if (tone.type == SAMPLE) {
-            tone.sample.setStart(
-                between(tone.sample.start_pos + (direction * 10), 0,
-                        tone.sample.end_pos));
+        if (tone->type == SAMPLE) {
+            tone->sample.setStart(
+                between(tone->sample.start_pos + (direction * 10), 0,
+                        tone->sample.end_pos));
         } else {
-            tone.envlop.setTime(
-                0, between(tone.envlop.getTime(0) + direction, 0, 60000));
+            tone->envlop.setTime(
+                0, between(tone->envlop.getTime(0) + direction, 0, 60000));
         }
     } else if (knob == 6) {
-        if (tone.type == SAMPLE) {
-            tone.sample.setEnd(between(tone.sample.end_pos + (direction * 10),
-                                       tone.sample.start_pos, NUM_TABLE_CELLS));
+        if (tone->type == SAMPLE) {
+            tone->sample.setEnd(between(tone->sample.end_pos + (direction * 10),
+                                       tone->sample.start_pos, NUM_TABLE_CELLS));
         } else {
-            tone.envlop.setTime(
-                1, between(tone.envlop.getTime(1) + direction, 0, 60000));
+            tone->envlop.setTime(
+                1, between(tone->envlop.getTime(1) + direction, 0, 60000));
         }
     } else if (knob == 7) {
-        tone.envlop.setTime(
-            2, between(tone.envlop.getTime(2) + direction, 0, 60000));
+        tone->envlop.setTime(
+            2, between(tone->envlop.getTime(2) + direction, 0, 60000));
     } else if (knob == 8) {
-        tone.envlop.setLevel(
-            0, between(tone.envlop.getLevel(0) + direction, 0, 255));
+        tone->envlop.setLevel(
+            0, between(tone->envlop.getLevel(0) + direction, 0, 255));
     } else if (knob >= 11 && knob <= 16) {
         if (gMcMode) {
-            tone.envlopFreq.setLevel(
+            tone->envlopFreq.setLevel(
                 knob - 11,
-                between(tone.envlopFreq.getLevel(knob - 11) + direction, 0,
+                between(tone->envlopFreq.getLevel(knob - 11) + direction, 0,
                         255));
         } else {
-            tone.incFreqTime(knob - 11, direction);
+            tone->incFreqTime(knob - 11, direction);
         }
     }
 }
