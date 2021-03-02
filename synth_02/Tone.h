@@ -7,8 +7,14 @@
 
 #define FREQ_ENV_PHASES 6
 
+// need to add feature to play as a synth from synth 01
+
+
 class Tone : public ToneBase<NUM_TABLE_CELLS, 3, FREQ_ENV_PHASES> {
    public:
+    bool isDrum = true;
+    byte id = 0;
+
     byte distribute = 0;
     byte timePct[FREQ_ENV_PHASES] = {
         100 / FREQ_ENV_PHASES, 100 / FREQ_ENV_PHASES, 100 / FREQ_ENV_PHASES,

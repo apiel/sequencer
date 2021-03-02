@@ -46,6 +46,7 @@ void setup() {
 
     // ToDo: load settings from eeprom?
     for (int i = 0; i < MAX_TONES; i++) {
+        tones[i].id = i;
         setTable(&tones[i], currentTableId);
         tones[i].setType(SIMPLE);
         tones[i].frequency = 30;
