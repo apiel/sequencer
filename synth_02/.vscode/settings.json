@@ -1,0 +1,34 @@
+{
+    "files.associations": {
+        "cstddef": "cpp",
+        "array": "cpp",
+        "string": "cpp",
+        "bitset": "cpp",
+        "cstdio": "cpp",
+        "*.tcc": "cpp",
+        "fstream": "cpp",
+        "functional": "cpp",
+        "regex": "cpp",
+        "optional": "cpp",
+        "ratio": "cpp",
+        "system_error": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "chrono": "cpp",
+        "typeinfo": "cpp",
+        "thread": "cpp",
+        "string_view": "cpp",
+        "memory_resource": "cpp"
+    },
+    "emeraldwalk.runonsave": {
+        "commands": [
+            {
+                // "match": "\\.(html|js|css)$",
+                // "cmd": "xxd -i ${relativeFile} > ${relativeFile}.h"
+            }
+        ]
+    }
+}
