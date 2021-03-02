@@ -2,7 +2,7 @@
 // after MozziGuts
 #include <LowPassFilter.h>
 
-#include "Kick.h"
+#include "Tone.h"
 
 #define MAX_NUM_CELLS 8192
 #define MAX_VOLUME 127
@@ -15,17 +15,17 @@ LowPassFilter lpf;
 byte gCutoff = 255;
 byte gResonance = 0;
 
-Kick kick;
+Tone tone;
 
 void updateControl() {
     handleGateIn();
-    kick.update();
+    tone.update();
     displayRefresh();
     handleSerial();
 }
 
 int updateAudio() {
-    return lpf.next((int)(kick.next() * gVolume / MAX_VOLUME)) >> 8;
+    return lpf.next((int)(tone.next() * gVolume / MAX_VOLUME)) >> 8;
 }
 
 void setup() {
@@ -33,24 +33,24 @@ void setup() {
 
     setTable(currentTableId);
     lpf.setCutoffFreqAndResonance(gCutoff, gResonance);
-    kick.setType(SIMPLE);
-    kick.frequency = 100;
-    // kick.setEnvlop(0, 50, 200);
-    // kick.setEnvlop(1, 50, 200);
-    // kick.setEnvlop(2, 100, 0);
-    kick.setEnvlop(0, 0, 200);
-    kick.setEnvlop(1, 0, 200);
-    kick.setEnvlop(2, 300, 0);
-    // kick.setEnvlopFreq(0, 50, 70);
-    // kick.setEnvlopFreq(1, 50, 120);
-    // kick.setEnvlopFreq(2, 50, 50);
+    tone.setType(SIMPLE);
+    tone.frequency = 100;
+    // tone.setEnvlop(0, 50, 200);
+    // tone.setEnvlop(1, 50, 200);
+    // tone.setEnvlop(2, 100, 0);
+    tone.setEnvlop(0, 0, 200);
+    tone.setEnvlop(1, 0, 200);
+    tone.setEnvlop(2, 300, 0);
+    // tone.setEnvlopFreq(0, 50, 70);
+    // tone.setEnvlopFreq(1, 50, 120);
+    // tone.setEnvlopFreq(2, 50, 50);
 
-    // kick.setEnvlopFreq(0, 50, 0);
-    // kick.setEnvlopFreq(1, 50, 0);
-    // kick.setEnvlopFreq(2, 50, 0);
-    // kick.setEnvlopFreq(3, 0, 0);
-    // kick.setEnvlopFreq(4, 0, 0);
-    // kick.setEnvlopFreq(5, 50, 0);
+    // tone.setEnvlopFreq(0, 50, 0);
+    // tone.setEnvlopFreq(1, 50, 0);
+    // tone.setEnvlopFreq(2, 50, 0);
+    // tone.setEnvlopFreq(3, 0, 0);
+    // tone.setEnvlopFreq(4, 0, 0);
+    // tone.setEnvlopFreq(5, 50, 0);
 
     displaySetup();
     startMozzi();

@@ -60,36 +60,36 @@ void displayKick() {
     display.clearDisplay();
     display.setCursor(0, 0);
 
-    display.println(kick.tableName);
-    dprintxy(10, 0, "%d", kick.frequency);
-    if (kick.type == REVERB) {
+    display.println(tone.tableName);
+    dprintxy(10, 0, "%d", tone.frequency);
+    if (tone.type == REVERB) {
         dprintxy(15, 0, "Reverb");
-    } else if (kick.type == SAMPLE) {
+    } else if (tone.type == SAMPLE) {
         dprintxy(15, 0, "Sample");
-    } else if (kick.type == PHASOR2) {
+    } else if (tone.type == PHASOR2) {
         dprintxy(14, 0, "Phasor2");
-    } else if (kick.type == PHASOR3) {
+    } else if (tone.type == PHASOR3) {
         dprintxy(14, 0, "Phasor3");
     } else {
         dprintxy(15, 0, "Simple");
     }
 
-    if (kick.type == PHASOR2 || kick.type == PHASOR3) {
-        dprintxy(0, 1, "Shift %d", kick.phasorShift);
+    if (tone.type == PHASOR2 || tone.type == PHASOR3) {
+        dprintxy(0, 1, "Shift %d", tone.phasorShift);
     } else {
-        dprintxy(0, 1, "Shift %d", kick.freqShift);
+        dprintxy(0, 1, "Shift %d", tone.freqShift);
     }
-    dprintxy(10, 1, "Lerp %d", kick.envlopFreq.getLerpRate());
+    dprintxy(10, 1, "Lerp %d", tone.envlopFreq.getLerpRate());
 
-    if (kick.type == SAMPLE) {
-        dprintxyAbs(0, 4 + 2 * 8, "Start %d", kick.sample.start_pos);
-        dprintxyAbs(0, 4 + 3 * 8, "End %d", kick.sample.end_pos);
+    if (tone.type == SAMPLE) {
+        dprintxyAbs(0, 4 + 2 * 8, "Start %d", tone.sample.start_pos);
+        dprintxyAbs(0, 4 + 3 * 8, "End %d", tone.sample.end_pos);
     } else {
-        dprintxyAbs(0, 4 + 2 * 8, "A %d", kick.envlop.getTime(0));
-        dprintxyAbs(10 * 6, 4 + 2 * 8, "S %d", kick.envlop.getTime(1));
+        dprintxyAbs(0, 4 + 2 * 8, "A %d", tone.envlop.getTime(0));
+        dprintxyAbs(10 * 6, 4 + 2 * 8, "S %d", tone.envlop.getTime(1));
 
-        dprintxyAbs(0, 4 + 3 * 8, "R %d", kick.envlop.getTime(2));
-        dprintxyAbs(10 * 6, 4 + 3 * 8, "Level %d", kick.envlop.getLevel(0));
+        dprintxyAbs(0, 4 + 3 * 8, "R %d", tone.envlop.getTime(2));
+        dprintxyAbs(10 * 6, 4 + 3 * 8, "Level %d", tone.envlop.getLevel(0));
     }
 
     dprintxy(0, 5, "T");
@@ -112,9 +112,9 @@ void displayPhase(byte id) {
 
     dprintxyTimePct(
         x + 2, T,
-        (float)kick.envlopFreq.getTime(id) / (float)kick.envlop.getTotalTime());
+        (float)tone.envlopFreq.getTime(id) / (float)tone.envlop.getTotalTime());
     display.setFont(&Picopixel);
-    int freqAdd = kick.envlopFreq.getLevel(id) - FREQ_ENV_BASE;
+    int freqAdd = tone.envlopFreq.getLevel(id) - FREQ_ENV_BASE;
     if (freqAdd < 0) {
         dprintxyAbs(x + 2, F + 6, "%d", freqAdd);
     } else {

@@ -7,7 +7,7 @@
 
 #define FREQ_ENV_PHASES 6
 
-class Kick : public ToneBase<NUM_TABLE_CELLS, 3, FREQ_ENV_PHASES> {
+class Tone : public ToneBase<NUM_TABLE_CELLS, 3, FREQ_ENV_PHASES> {
    public:
     byte distribute = 0;
     byte timePct[FREQ_ENV_PHASES] = {
