@@ -1,6 +1,8 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <EventDelay.h>
+// seem that picopixel doesnt have logic for redeclaration
+// so lets keep it at one place
 #include <Fonts/Picopixel.h>
 #include <Wire.h>
 
@@ -11,7 +13,7 @@
 #define SCREEN_W 128  // OLED display width, in pixels
 #define SCREEN_H 64   // OLED display height, in pixels
 
-enum { VIEW_TONE, VIEW_KEYBOARD, VIEW_COUNT };
+enum { VIEW_TONE, VIEW_PATTERN, VIEW_KEYBOARD, VIEW_COUNT };
 
 Adafruit_SSD1306 display(SCREEN_W, SCREEN_H, &Wire, OLED_RST);
 
@@ -57,6 +59,8 @@ void displayRefresh() {
         refreshCount--;
         if (currentView == VIEW_KEYBOARD) {
             displayKeyboard();
+        } else if (currentView == VIEW_PATTERN) {
+            displayPattern();
         } else {
             displayTone();
         }

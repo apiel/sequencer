@@ -10,6 +10,7 @@ bool gateTriggered = false;
 
 EventDelay stepDelay;
 
+// ToDo give possibility to select clock type
 bool sequencerClockReady() { return internalClock() || gateInClock(); }
 
 bool gateInClock() {

@@ -6,18 +6,24 @@ void handleMidi(byte type, byte key, byte val) {
             tone_handleKnob(key, val);
         } else if (currentView == VIEW_KEYBOARD) {
             kb_handleKnob(key, val);
+        } else if (currentView == VIEW_PATTERN) {
+            pattern_handleKnob(key, val);
         }
     } else if (type == 154) {
         if (currentView == VIEW_TONE) {
             tone_handlePress(key);
         } else if (currentView == VIEW_KEYBOARD) {
             kb_handlePress(key);
+        } else if (currentView == VIEW_PATTERN) {
+            pattern_handlePress(key);
         }
     } else if (type == 138) {
         if (currentView == VIEW_TONE) {
             tone_handleUp(key);
         } else if (currentView == VIEW_KEYBOARD) {
             kb_handleUp(key);
+        } else if (currentView == VIEW_PATTERN) {
+            pattern_handleUp(key);
         }
     }
     displayUpdate();
