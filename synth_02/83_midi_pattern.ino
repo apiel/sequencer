@@ -4,6 +4,11 @@ void pattern_handlePress(byte key) {
         tone = &tones[toneId];
     } else if (key == 22 || key == 46) {
         // here we should toggle active pattern
+        if (playingPatterns[tone->id] == currentPatternView) {
+            playingPatterns[tone->id] = PATTERN_STOP;
+        } else {
+            playingPatterns[tone->id] = currentPatternView;
+        }
     } else {
         default_handlePress(key);
     }
