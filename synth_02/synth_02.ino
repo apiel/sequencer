@@ -21,7 +21,7 @@ Tone tones[MAX_TONES];
 Tone* tone;
 
 void updateControl() {
-    handleGateIn();
+    handleStepSequencer();
     for (int i = 0; i < MAX_TONES; i++) {
         tones[i].update();
     }
@@ -56,6 +56,7 @@ void setup() {
     }
 
     displaySetup();
+    setupSequencer();
     startMozzi();
 }
 
