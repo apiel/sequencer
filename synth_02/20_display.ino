@@ -43,7 +43,10 @@ void displaySetup() {
     display.setTextSize(1);
     display.setCursor(0, 0);
 
-    Serial.println(tone->tableName);
+    display.println("Init synth...");
+    display.display();
+
+    // Serial.println(tone->tableName);
     // displayUpdate();
 }
 

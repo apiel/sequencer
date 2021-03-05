@@ -39,6 +39,8 @@ int updateAudio() {
 
 void setup() {
     Serial.begin(115200);
+    displaySetup();
+    setupStorage();
 
     lpf.setCutoffFreqAndResonance(gCutoff, gResonance);
 
@@ -55,7 +57,6 @@ void setup() {
         tones[i].setEnvlop(2, 300, 0);
     }
 
-    displaySetup();
     setupSequencer();
     startMozzi();
 }

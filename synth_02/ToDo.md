@@ -3,6 +3,7 @@
 ## Pattern synth
 
 - save pattern in memory
+        - need to have a splash screen to load
 - chain pattern, plan sequence...
 - click stop on pattern will stop what ever pattern is for the current tone
 - slide pattern

@@ -65,34 +65,36 @@ void setupSequencer() {
     setTempo(gBPM);
 
     initDefaultPattern();
-    loadCustomPattern();
+    // loadCustomPattern();
 }
 
 void initDefaultPattern() {
     for (byte toneId = 0; toneId < MAX_TONES; toneId++) {
         playingPatterns[toneId] = PATTERN_STOP;
         for (byte patternId = 0; patternId < MAX_PATTERNS; patternId++) {
-            patterns[toneId][patternId].add(0, _C4, 1)->repeat(0, 4);
+            if (!loadPatternFromStorage(toneId, patternId)) {
+                patterns[toneId][patternId].add(0, _C4, 1)->repeat(0, 4);
+            }
         }
     }
 }
 
-void loadCustomPattern() {
-    patterns[0][0].clear()->add(0, _C4, 1)->repeat(0, 2)->print();
-    patterns[1][0]
-        .clear()
-        ->add(0, _C0, 1)
-        ->add(1, _D0, 1)
-        ->repeat(0, 2)
-        ->print();
-    patterns[2][0].clear()->add(0, _C4, 8)->repeat(0, 8)->print();
-    patterns[3][0]
-        .clear()
-        // ->add(0, _C4, 6)
-        // ->repeat(0, 8)
-        ->add(0, _C4, 1)
-        ->add(4, _F_4, 1)
-        ->repeat(0, 8)
-        ->add(30, _F4, 1)
-        ->print();
-}
+// void loadCustomPattern() {
+//     patterns[0][0].clear()->add(0, _C4, 1)->repeat(0, 2)->print();
+//     patterns[1][0]
+//         .clear()
+//         ->add(0, _C0, 1)
+//         ->add(1, _D0, 1)
+//         ->repeat(0, 2)
+//         ->print();
+//     patterns[2][0].clear()->add(0, _C4, 8)->repeat(0, 8)->print();
+//     patterns[3][0]
+//         .clear()
+//         // ->add(0, _C4, 6)
+//         // ->repeat(0, 8)
+//         ->add(0, _C4, 1)
+//         ->add(4, _F_4, 1)
+//         ->repeat(0, 8)
+//         ->add(30, _F4, 1)
+//         ->print();
+// }

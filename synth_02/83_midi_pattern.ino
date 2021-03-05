@@ -30,10 +30,12 @@ void pattern_handleKnob(byte key, byte val) {
             &patterns[tone->id][currentPatternView].steps[currentStepSelection];
         // Instead of STEP_COUNT could try to find the next...
         pStep->duration = between(pStep->duration + direction, 0, STEP_COUNT);
+        savePatternToStorage(tone->id, currentPatternView);
     } else if (knob == 4) {
         Step* pStep =
             &patterns[tone->id][currentPatternView].steps[currentStepSelection];
         pStep->set(between(pStep->note + direction, _C0, _B8));
+        savePatternToStorage(tone->id, currentPatternView);
     } else {
         default_handleKnob(key, val);
     }
