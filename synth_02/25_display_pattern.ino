@@ -3,6 +3,7 @@ need to be able to see the related Tone
 */
 
 byte currentPatternView = 0;
+byte currentStepSelection = 0;
 
 void displayPattern() {
     display.clearDisplay();
@@ -43,10 +44,8 @@ void displayStep(byte index, byte pos) {
         }
     }
 
-    // since we dont refresh the screen anymore all the time, let's comment this
-    // // display active step
     // if (gSeqStepIndex == pos) {
-    //     display.drawLine(x * 16 + 2, y * 7 + 6, x * 16 + 10, y * 7 + 6,
-    //     WHITE);
-    // }
+    if (currentStepSelection == pos) {
+        display.drawLine(x * 16 + 2, y * 7 + 6, x * 16 + 10, y * 7 + 6, WHITE);
+    }
 }

@@ -13,7 +13,8 @@ this so everytime we play a sequence we define when it start and for how long
 
 #define PIN_SYNC_OUT 27
 #define MAX_PATTERNS 8
-#define STEP_COUNT MAX_STEPS_IN_PATTERN
+// #define STEP_COUNT MAX_STEPS_IN_PATTERN
+#define STEP_COUNT 32
 #define STEP_PER_BEAT 4
 
 #define PATTERN_STOP 255
@@ -92,6 +93,6 @@ void loadCustomPattern() {
         ->add(0, _C4, 1)
         ->add(4, _F_4, 1)
         ->repeat(0, 8)
-        ->add(62, _F4, 1)
+        ->add(30, _F4, 1)
         ->print();
 }
