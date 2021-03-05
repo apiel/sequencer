@@ -1,28 +1,26 @@
-# Note
 
-- edit pattern
+# Pattern
+## Pattern synth
+
 - save pattern in memory
 - chain pattern, plan sequence...
 - click stop on pattern will stop what ever pattern is for the current tone
-
-- save tones setting in memory
-- load extra tone from memory
-
-- main menu
-        - change clock source
-        - change tempo
-
-- tone
-        - Filter & resonnance?
+- slide pattern
 
 - should be able to change tone level from pattern?
+
+## Pattern midi
 
 - pattern midi
 - connect td3 to see if midi work
 
-- !! sample level
-- sample scrubbing
-- sample start end
+# Tone
+
+- save tones setting in memory
+- load extra tone from memory
+
+- tone
+        - Filter & resonnance?
 
 - create some new synth settings like 
         - FMsynth
@@ -31,3 +29,14 @@
         - atIndex table
         - ...
 
+# Main menu
+
+- main menu
+        - change clock source
+        - change tempo
+
+# Sample
+
+- !! sample level
+- sample scrubbing
+- sample start end
