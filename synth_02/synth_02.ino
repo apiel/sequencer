@@ -1,6 +1,9 @@
 #include <MozziGuts.h>
 // after MozziGuts
 #include <LowPassFilter.h>
+// need to be there else compile error
+// to remove if storage doesn't use FS anymore
+#include <FS.h>
 
 #include "Tone.h"
 

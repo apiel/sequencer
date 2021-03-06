@@ -4,8 +4,11 @@ bool loadPatternFromStorage(byte toneId, byte patternId) {
 
     if (!SPIFFS.exists(storagePath)) {
         Serial.println("> no data found for this pattern.");
-        return false; 
+        return false;
     }
+
+    // cleanup for testing purpose
+    // SPIFFS.remove(storagePath);
 
     File file = SPIFFS.open(storagePath);
     if (!file || file.isDirectory()) {
@@ -14,24 +17,21 @@ bool loadPatternFromStorage(byte toneId, byte patternId) {
     }
 
     size_t len;
-    while (file.available()) {
-        len = file.readBytesUntil(' ', storageBuffer, STORAGE_BUFFER_SIZE);
-        storageBuffer[len] = 0;
-        Serial.printf("pos %s\n", storageBuffer);
-        byte pos = (byte)atoi(storageBuffer);
-        len = file.readBytesUntil(' ', storageBuffer, STORAGE_BUFFER_SIZE);
-        storageBuffer[len] = 0;
-        Serial.printf("note %s\n", storageBuffer);
-        byte note = (byte)atoi(storageBuffer);
-        len = file.readBytesUntil(' ', storageBuffer, STORAGE_BUFFER_SIZE);
-        storageBuffer[len] = 0;
-        Serial.printf("duration %s\n", storageBuffer);
-        byte duration = (byte)atoi(storageBuffer);
-        file.readBytesUntil('\n', storageBuffer, STORAGE_BUFFER_SIZE);
-        bool slide = storageBuffer[0] == '1';
-        Serial.printf("slide %s\n", storageBuffer);
-        patterns[toneId][patternId].add(pos, note, duration, slide);
-        Serial.println("-");
+    while (file.available() && assignStorageValues(&file)) {
+        // len = file.readBytesUntil(' ', storageBuffer, STORAGE_BUFFER_SIZE);
+        // storageBuffer[len] = 0;
+        // byte pos = (byte)atoi(storageBuffer);
+        // len = file.readBytesUntil(' ', storageBuffer, STORAGE_BUFFER_SIZE);
+        // storageBuffer[len] = 0;
+        // byte note = (byte)atoi(storageBuffer);
+        // len = file.readBytesUntil(' ', storageBuffer, STORAGE_BUFFER_SIZE);
+        // storageBuffer[len] = 0;
+        // byte duration = (byte)atoi(storageBuffer);
+        // file.readBytesUntil('\n', storageBuffer, STORAGE_BUFFER_SIZE);
+        // bool slide = storageBuffer[0] == '1';
+        patterns[toneId][patternId].add(
+            (byte)storageValues[0], (byte)storageValues[1],
+            (byte)storageValues[2], storageValues[3] == 1);
     }
     file.close();
 
@@ -50,10 +50,12 @@ bool savePatternToStorage(byte toneId, byte patternId) {
     Pattern* pattern = &patterns[toneId][patternId];
     for (byte pos = 0; pos < MAX_STEPS_IN_PATTERN; pos++) {
         Step* step = &pattern->steps[pos];
-        sprintf(storageBuffer, "%x %x %x %d\n\0", pos, step->note,
-                step->duration, step->slide);
+        sprintf(storageBuffer, "%d %d %d %d\n\0", (int)pos, (int)step->note,
+                (int)step->duration, step->slide ? 1 : 0);
+        // Serial.println(storageBuffer);
         file.print(storageBuffer);
     }
+    // Serial.println("-");
     file.close();
     return true;
 }
