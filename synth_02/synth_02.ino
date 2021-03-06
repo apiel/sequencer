@@ -58,6 +58,7 @@ void setup() {
         tones[i].setEnvlop(0, 0, 200);
         tones[i].setEnvlop(1, 0, 200);
         tones[i].setEnvlop(2, 300, 0);
+        // try to load from storage
         loadToneFromStorage(i);
     }
 
