@@ -29,7 +29,7 @@ bool loadToneFromStorage(byte toneId) {
                 tones[toneId].isDrum = storageValues[1] == 1;
                 break;
             case 3:
-                tones[toneId].type = (byte)storageValues[1];
+                tones[toneId].setType((byte)storageValues[1]);
                 break;
             case 4:
                 tones[toneId].freqShift = (byte)storageValues[1];
