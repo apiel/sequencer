@@ -2,13 +2,14 @@
 # Pattern
 ## Pattern synth
 
-- save pattern in memory
-        - need to have a splash screen to load
 - chain pattern, plan sequence...
+        -> can chain up 8 pattern, in loop or for x times
 - click stop on pattern will stop what ever pattern is for the current tone
 - slide pattern
 
 - should be able to change tone level from pattern?
+- improve loading time by reading dir...
+- instead to use record button to save, would be great to save in background, but need to find a way to don't impact sound
 
 ## Pattern midi
 
