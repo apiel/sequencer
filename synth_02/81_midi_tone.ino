@@ -6,6 +6,8 @@ void tone_handlePress(byte key) {
         tone->noteOn();
     } else if (key == 20 || key == 44) {
         tone->isDrum = !tone->isDrum;
+    } else if (key == 23 || key == 47) {
+        saveToneToStorage(tone->id);
     } else if (key == 17 || key == 41) {
         if (tone->envlopFreq.getLerpRate() == CONTROL_RATE) {
             tone->envlopFreq.setLerpRate(AUDIO_RATE);

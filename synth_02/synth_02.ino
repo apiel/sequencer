@@ -49,15 +49,16 @@ void setup() {
 
     tone = &tones[0];
 
-    // ToDo: load settings from eeprom?
     for (int i = 0; i < MAX_TONES; i++) {
         tones[i].id = i;
+        // Load some default setting anyway
         setTable(&tones[i], currentTableId);
         tones[i].setType(SIMPLE);
         tones[i].frequency = 30;
         tones[i].setEnvlop(0, 0, 200);
         tones[i].setEnvlop(1, 0, 200);
         tones[i].setEnvlop(2, 300, 0);
+        loadToneFromStorage(i);
     }
 
     setupSequencer();

@@ -13,6 +13,7 @@
 
 class Tone : public ToneBase<NUM_TABLE_CELLS, 3, FREQ_ENV_PHASES> {
    public:
+    byte tableId = 0;
     bool isDrum = true;
     byte id = 0;
 

@@ -18,17 +18,6 @@ bool loadPatternFromStorage(byte toneId, byte patternId) {
 
     size_t len;
     while (file.available() && assignStorageValues(&file)) {
-        // len = file.readBytesUntil(' ', storageBuffer, STORAGE_BUFFER_SIZE);
-        // storageBuffer[len] = 0;
-        // byte pos = (byte)atoi(storageBuffer);
-        // len = file.readBytesUntil(' ', storageBuffer, STORAGE_BUFFER_SIZE);
-        // storageBuffer[len] = 0;
-        // byte note = (byte)atoi(storageBuffer);
-        // len = file.readBytesUntil(' ', storageBuffer, STORAGE_BUFFER_SIZE);
-        // storageBuffer[len] = 0;
-        // byte duration = (byte)atoi(storageBuffer);
-        // file.readBytesUntil('\n', storageBuffer, STORAGE_BUFFER_SIZE);
-        // bool slide = storageBuffer[0] == '1';
         patterns[toneId][patternId].add(
             (byte)storageValues[0], (byte)storageValues[1],
             (byte)storageValues[2], storageValues[3] == 1);
