@@ -4,12 +4,21 @@
 #include "Step.h"
 
 #define MAX_STEPS_IN_PATTERN 64
+#define MAX_CHAINED_PATTERN 8
+#define LOOP_CHAIN 255
 
 class Pattern {
    public:
+    byte priority = 0;
+    byte counterSetter = LOOP_CHAIN;
+    byte counters[MAX_CHAINED_PATTERN];
     Step steps[MAX_STEPS_IN_PATTERN];
 
-    Pattern() {}
+    Pattern() {
+        for (byte c = 0; c < MAX_CHAINED_PATTERN; c++) {
+            counters[c] = 0;
+        }
+    }
 
     Pattern* add(byte pos, byte note, byte duration) {
         return add(pos, note, duration, false);

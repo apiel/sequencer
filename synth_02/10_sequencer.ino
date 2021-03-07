@@ -7,7 +7,6 @@ or is this really necessary and instead focus on pattern chaining to achieve
 this so everytime we play a sequence we define when it start and for how long
 */
 
-#include "Pattern.h"
 #include "Step.h"
 #include "note.h"
 
@@ -15,6 +14,7 @@ this so everytime we play a sequence we define when it start and for how long
 #define MAX_PATTERNS 8
 // #define STEP_COUNT MAX_STEPS_IN_PATTERN
 #define STEP_COUNT 32
+// 4 ♬ ♬ step per beat
 #define STEP_PER_BEAT 4
 
 #define PATTERN_STOP 255

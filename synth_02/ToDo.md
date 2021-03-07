@@ -9,7 +9,6 @@
 
 - should be able to change tone level from pattern?
 - improve loading time by reading dir...
-- instead to use record button to save, would be great to save in background, but need to find a way to don't impact sound
 
 ## Pattern midi
 
@@ -18,9 +17,9 @@
 
 # Tone
 
-- save tones setting in memory
+- add a second oscilator
 - load extra tone from memory
-
+- use graph instead of number for freq env?
 - tone
         - Filter & resonnance?
 
@@ -36,9 +35,10 @@
 - main menu
         - change clock source
         - change tempo
+        - stop all?
+        - sound level
 
 # Sample
 
 - !! sample level
 - sample scrubbing
-- sample start end

@@ -9,6 +9,8 @@ void displayPattern() {
     display.clearDisplay();
     display.setCursor(0, 0);
 
+    Pattern* pPattern = &patterns[tone->id][currentPatternView];
+
     dprintln("%s %d - Pattern %d", tone->isDrum ? "Drum" : "Synth", tone->id,
              currentPatternView);
 
@@ -20,16 +22,18 @@ void displayPattern() {
 
     display.setFont(&Picopixel);
     for (byte pos = 0; pos < STEP_COUNT; pos++) {
-        displayStep(currentPatternView, pos);
+        displayStep(pPattern, pos);
     }
     display.setFont();
+
+    displayChains(pPattern);
 }
 
-void displayStep(byte index, byte pos) {
+void displayStep(Pattern* pPattern, byte pos) {
     byte x = pos % 8;
     byte y = pos / 8 + 1;
 
-    Step* step = &patterns[tone->id][index].steps[pos];
+    Step* step = &pPattern->steps[pos];
 
     display.drawLine(x * 16 + 1, y * 7 + 7, x * 16 + 12, y * 7 + 7, WHITE);
     if (step->duration) {
@@ -44,8 +48,30 @@ void displayStep(byte index, byte pos) {
         }
     }
 
-    // if (gSeqStepIndex == pos) {
     if (currentStepSelection == pos) {
         display.drawLine(x * 16 + 2, y * 7 + 6, x * 16 + 10, y * 7 + 6, WHITE);
     }
+}
+
+void displayChains(Pattern* pPattern) {
+    dprintxy(0, 5, "Priority %d", pPattern->priority);
+    if (pPattern->counterSetter == LOOP_CHAIN) {
+        dprintxy(14, 5, "Set oo");
+    } else {
+        dprintxy(14, 5, "Set %d", pPattern->counterSetter);
+    }
+
+    display.setFont(&Picopixel);
+
+    byte y = 48;
+    for (byte c = 0; c < MAX_CHAINED_PATTERN; c++) {
+        display.drawLine(c * 16 + 1, y + 7, c * 16 + 12, y + 7, WHITE);
+        display.setCursor(c * 16 + 2, y + 5);
+        if (pPattern->counters[c] == LOOP_CHAIN) {
+            dprint("oo");
+        } else {
+            dprint("%d", pPattern->counters[c]);
+        }
+    }
+    display.setFont();
 }

@@ -5,6 +5,7 @@
 // to remove if storage doesn't use FS anymore
 #include <FS.h>
 
+#include "Pattern.h"
 #include "Tone.h"
 
 #define MAX_NUM_CELLS 8192
