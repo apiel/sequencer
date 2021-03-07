@@ -4,15 +4,11 @@ void pattern_handlePress(byte key) {
     if (toneId < MAX_TONES) {
         tone = &tones[toneId];
     } else if (chain < MAX_CHAINED_PATTERN) {
-        patterns[tone->id][currentPatternView].counters[chain] =
-            patterns[tone->id][currentPatternView].counterSetter;
+        patterns[tone->id][currentPatternView].chain(chain);
     } else if (key == 22 || key == 46) {
-        // todo instead here we should feed the counter
-        if (playingPatterns[tone->id] == currentPatternView) {
-            playingPatterns[tone->id] = PATTERN_STOP;
-        } else {
-            playingPatterns[tone->id] = currentPatternView;
-        }
+        patterns[tone->id][currentPatternView].chainAll();
+    } else if (key == 21 || key == 45) {
+        patterns[tone->id][currentPatternView].chainStopAll();
     } else if (key == 23 || key == 47) {
         savePatternToStorage(tone->id, currentPatternView);
     } else {

@@ -20,6 +20,25 @@ class Pattern {
         }
     }
 
+    Pattern* chain(byte pos) {
+        counters[pos] = counterSetter;
+        return this;
+    }
+
+    Pattern* chainAll() {
+        for (byte c = 0; c < MAX_CHAINED_PATTERN; c++) {
+            chain(c);
+        }
+        return this;
+    }
+
+    Pattern* chainStopAll() {
+        for (byte c = 0; c < MAX_CHAINED_PATTERN; c++) {
+            counters[c] = 0;
+        }
+        return this;
+    }
+
     Pattern* add(byte pos, byte note, byte duration) {
         return add(pos, note, duration, false);
     }
