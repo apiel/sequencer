@@ -26,6 +26,8 @@ unsigned int gTempo = 150;
 byte gSyncTempo = HIGH;
 
 Pattern patterns[MAX_TONES][MAX_PATTERNS];
+// should stay like this but at the end of each pattern, it should look
+// what are next patterns to play, and update this array
 byte playingPatterns[MAX_TONES];
 
 void setTempo(byte bpm) {

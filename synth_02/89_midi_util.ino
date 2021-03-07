@@ -29,9 +29,18 @@ int getKnobDirection(byte knob, byte val) {
 // used for first row from x touch mini to know which item
 // number is it, e.g. which tone selected
 byte getItemKey(byte key) {
+    if (getItemKeyA(key) < 255) {
+        return getItemKeyA(key);
+    }
+    return getItemKeyB(key);
+}
+byte getItemKeyA(byte key) {
     if (key >= 8 && key <= 15) {
         return key - 8;
     }
+    return 255;
+}
+byte getItemKeyB(byte key) {
     if (key >= 32 && key <= 39) {
         return key - 32;
     }

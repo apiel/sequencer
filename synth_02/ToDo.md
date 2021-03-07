@@ -4,6 +4,7 @@
 
 - chain pattern, plan sequence...
         -> can chain up 8 pattern, in loop or for x times
+        -> use play to feed all counters at once
 - click stop on pattern will stop what ever pattern is for the current tone
 - slide pattern
 

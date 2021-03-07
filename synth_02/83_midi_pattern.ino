@@ -1,9 +1,13 @@
 void pattern_handlePress(byte key) {
-    byte toneId = getItemKey(key);
+    byte toneId = getItemKeyA(key);
+    byte chain = getItemKeyB(key);
     if (toneId < MAX_TONES) {
         tone = &tones[toneId];
+    } else if (chain < MAX_CHAINED_PATTERN) {
+        patterns[tone->id][currentPatternView].counters[chain] =
+            patterns[tone->id][currentPatternView].counterSetter;
     } else if (key == 22 || key == 46) {
-        // here we should toggle active pattern
+        // todo instead here we should feed the counter
         if (playingPatterns[tone->id] == currentPatternView) {
             playingPatterns[tone->id] = PATTERN_STOP;
         } else {
@@ -36,6 +40,8 @@ void pattern_handleKnob(byte key, byte val) {
         Step* pStep =
             &patterns[tone->id][currentPatternView].steps[currentStepSelection];
         pStep->set(between(pStep->note + direction, _C0, _B8));
+    } else if (knob == 8 || knob == 0) { // 0 is knob 18
+        patterns[tone->id][currentPatternView].counterSetter += direction;
     } else {
         default_handleKnob(key, val);
     }
