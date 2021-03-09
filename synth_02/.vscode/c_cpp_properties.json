@@ -18,7 +18,8 @@
                 "/snap/arduino/current/hardware/tools/**",
                 "/snap/arduino/current/hardware/arduino/avr/**",
                 "/home/alex/snap/arduino/current/Arduino/libraries/**",
-                "/home/alex/Arduino/libraries/**"
+                "/home/alex/Arduino/libraries/**",
+                "/home/alex/dev/arduino/app/arduino-1.8.13/libraries/**"
             ]
         }
     ],
