@@ -11,6 +11,8 @@
 - should be able to change tone level from pattern?
 - improve loading time by reading dir...
 
+- should it be possible to play pattern right away, without to mwait for the next chain?
+
 ## Pattern midi
 
 - pattern midi

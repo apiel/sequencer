@@ -1,12 +1,3 @@
-/**
-play/stop planning, e.g:
-    - play/stop at next sequence
-    - play/stop at next middle sequence
-    - play/stop at next middle beat
-or is this really necessary and instead focus on pattern chaining to achieve
-this so everytime we play a sequence we define when it start and for how long
-*/
-
 #include "Step.h"
 #include "note.h"
 
