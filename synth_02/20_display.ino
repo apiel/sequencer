@@ -71,3 +71,10 @@ void displayRefresh() {
         displayDelay.start(100);
     }
 }
+
+void displayRefreshPattern() {
+    if (currentView == VIEW_PATTERN) {
+        displayPattern();
+        display.display();
+    }
+}

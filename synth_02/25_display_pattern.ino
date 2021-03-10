@@ -72,6 +72,9 @@ void displayChains(Pattern* pPattern) {
         } else {
             dprint("%d", pPattern->counters[c]);
         }
+        if (gSeqChainIndex == c) {
+            display.drawLine(c * 16 + 3, y + 8, c * 16 + 10, y + 8, WHITE);
+        }
     }
     display.setFont();
 }

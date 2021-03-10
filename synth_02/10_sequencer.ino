@@ -34,6 +34,7 @@ void handleStepSequencer() {
         if (gSeqStepIndex == 0) {
             gSeqChainIndex = (gSeqChainIndex + 1) % MAX_CHAINED_PATTERN;
             assignPlayingPatterns();
+            displayRefreshPattern();
         }
         gSyncTempo = (gSyncTempo + 1) % 2;
         digitalWrite(PIN_SYNC_OUT, gSyncTempo);
