@@ -58,7 +58,7 @@ void assignPlayingPatterns() {
                 }
             }
         }
-        if (nextPattern != PATTERN_STOP) {
+        if (nextPattern != PATTERN_STOP && patterns[toneId][nextPattern].counters[gSeqChainIndex] != LOOP_CHAIN) {
             patterns[toneId][nextPattern].counters[gSeqChainIndex]--;
         }
         playingPatterns[toneId] = nextPattern;

@@ -38,6 +38,8 @@ void pattern_handleKnob(byte key, byte val) {
         pStep->set(between(pStep->note + direction, _C0, _B8));
     } else if (knob == 8 || knob == 0) { // 0 is knob 18
         patterns[tone->id][currentPatternView].counterSetter += direction;
+    } else if (knob == 7 || knob == 17) {
+        patterns[tone->id][currentPatternView].priority += direction;
     } else {
         default_handleKnob(key, val);
     }
